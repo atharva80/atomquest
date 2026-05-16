@@ -1,0 +1,41 @@
+// ============================================
+// shadcn/ui Components Directory
+// ============================================
+// FILE: src/components/ui/.gitkeep
+//
+// This directory will be populated by running:
+//   npx shadcn-ui@latest init
+//   npx shadcn-ui@latest add button input label select textarea
+//   npx shadcn-ui@latest add dialog dropdown-menu tabs toast
+//   npx shadcn-ui@latest add table card badge separator avatar
+//   npx shadcn-ui@latest add tooltip popover calendar progress skeleton
+//   npx shadcn-ui@latest add command sheet scroll-area
+//
+// Each command generates a component file in this directory.
+// These are real, working components — not stubs.
+//
+// REQUIRED COMPONENTS:
+//   1.  button.tsx       — Primary, secondary, ghost, destructive variants
+//   2.  input.tsx        — Text input with error state
+//   3.  label.tsx        — Form label
+//   4.  select.tsx       — Radix Select (thrust area, UoM, department dropdowns)
+//   5.  textarea.tsx     — Multi-line input (descriptions, comments)
+//   6.  dialog.tsx       — Modal dialogs (confirm, create, edit)
+//   7.  dropdown-menu.tsx— User menu, context menus
+//   8.  tabs.tsx         — Quarter tabs, analytics tabs
+//   9.  toast.tsx        — Success/error notifications
+//   10. toaster.tsx      — Toast provider (mounted in root layout)
+//   11. table.tsx        — Base table primitives
+//   12. card.tsx         — Card container
+//   13. badge.tsx        — Status badges, role badges
+//   14. separator.tsx    — Horizontal/vertical dividers
+//   15. avatar.tsx       — User avatars
+//   16. tooltip.tsx      — Hover tooltips
+//   17. popover.tsx      — Popover panels
+//   18. calendar.tsx     — Date picker for timeline UoM
+//   19. progress.tsx     — Progress bars (weightage, completion)
+//   20. skeleton.tsx     — Loading skeletons
+//   21. command.tsx      — Command palette (optional, nice-to-have)
+//   22. sheet.tsx        — Mobile sidebar overlay
+//   23. scroll-area.tsx  — Custom scrollbar wrapper
+// ============================================
