@@ -13,10 +13,10 @@
  *   ⚠️ Only use in Server Actions, Route Handlers, and Cron routes
  */
 
-import { createClient } from '@supabase/supabase-js';
-import { Database } from '@/types'; // Temporarily using Database from index.ts until supabase.ts is generated
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 
-export function createAdminClient() {
+export function createAdminClient(): SupabaseClient<Database> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -34,5 +34,5 @@ export function createAdminClient() {
         detectSessionInUrl: false,
       },
     }
-  );
+  ) as SupabaseClient<Database>;
 }

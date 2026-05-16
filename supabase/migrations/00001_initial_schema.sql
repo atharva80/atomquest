@@ -30,6 +30,7 @@ CREATE TABLE profiles (
     email TEXT NOT NULL UNIQUE,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
+    full_name TEXT NOT NULL DEFAULT '',
     role user_role NOT NULL DEFAULT 'employee',
     department_id UUID REFERENCES departments(id) ON DELETE SET NULL,
     manager_id UUID REFERENCES profiles(id) ON DELETE SET NULL,
@@ -351,12 +352,20 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, first_name, last_name)
+  INSERT INTO public.profiles (id, email, first_name, last_name, full_name)
   VALUES (
     new.id, 
     new.email, 
     COALESCE(new.raw_user_meta_data->>'first_name', ''), 
-    COALESCE(new.raw_user_meta_data->>'last_name', '')
+    COALESCE(new.raw_user_meta_data->>'last_name', ''),
+    COALESCE(
+      new.raw_user_meta_data->>'full_name',
+      trim(concat(
+        COALESCE(new.raw_user_meta_data->>'first_name', ''),
+        ' ',
+        COALESCE(new.raw_user_meta_data->>'last_name', '')
+      ))
+    )
   );
   RETURN new;
 END;

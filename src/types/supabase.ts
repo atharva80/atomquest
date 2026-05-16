@@ -397,6 +397,7 @@ export type Database = {
           email: string
           employee_code: string | null
           first_name: string
+          full_name: string
           id: string
           last_name: string
           manager_id: string | null
@@ -409,6 +410,7 @@ export type Database = {
           email: string
           employee_code?: string | null
           first_name: string
+          full_name?: string
           id: string
           last_name: string
           manager_id?: string | null
@@ -421,6 +423,7 @@ export type Database = {
           email?: string
           employee_code?: string | null
           first_name?: string
+          full_name?: string
           id?: string
           last_name?: string
           manager_id?: string | null
@@ -567,7 +570,7 @@ export type Database = {
         }[]
       }
       get_goal_distribution: {
-        Args: { p_cycle_id: string; p_department_id: string }
+        Args: { p_cycle_id: string; p_department_id: string | null }
         Returns: {
           count: number
           percentage: number
@@ -589,7 +592,7 @@ export type Database = {
         Returns: Database["public"]["Enums"]["user_role"]
       }
       get_team_achievement_trend: {
-        Args: { p_cycle_id: string; p_manager_id: string }
+        Args: { p_cycle_id: string; p_manager_id: string | null }
         Returns: {
           avg_score: number
           count: number

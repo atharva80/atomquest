@@ -15,10 +15,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ReactNode, useState } from "react";
 
 export function ConfirmDialog({
-  open,
-  onOpenChange,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
   title,
   description,
   confirmLabel = "Confirm",
@@ -26,9 +27,10 @@ export function ConfirmDialog({
   variant = "default",
   onConfirm,
   loading = false,
+  trigger,
 }: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   title: string;
   description: string;
   confirmLabel?: string;
@@ -36,10 +38,17 @@ export function ConfirmDialog({
   variant?: 'default' | 'destructive';
   onConfirm: () => void | Promise<void>;
   loading?: boolean;
+  trigger?: ReactNode;
 }) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const onOpenChange = controlledOnOpenChange ?? setInternalOpen;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <>
+      {trigger ? <span onClick={() => onOpenChange(true)}>{trigger}</span> : null}
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -60,7 +69,8 @@ export function ConfirmDialog({
             {loading ? "Please wait..." : confirmLabel}
           </Button>
         </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

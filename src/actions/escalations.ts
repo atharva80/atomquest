@@ -17,12 +17,12 @@ export async function updateEscalationRule(ruleId: string, formData: FormData): 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    const threshold_days = Number(formData.get('threshold_days'));
+    const days_threshold = Number(formData.get('threshold_days'));
     const is_active = formData.get('is_active') === 'true';
 
     const { error } = await supabase
       .from('escalation_rules')
-      .update({ threshold_days, is_active })
+      .update({ days_threshold, is_active })
       .eq('id', ruleId);
 
     if (error) throw error;

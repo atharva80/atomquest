@@ -26,7 +26,7 @@ export function GoalRejectedEmail({ employeeName, managerComment, editUrl }: Goa
             
             <div style={commentBox}>
               <Text style={{ ...text, margin: 0, fontStyle: 'italic' }}>
-                "{managerComment}"
+                &quot;{managerComment}&quot;
               </Text>
             </div>
 

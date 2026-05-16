@@ -28,7 +28,7 @@ export default async function EmployeeDetailPage({ params }: { params: { employe
   const { data: goals } = await supabase
     .from('goals')
     .select('*, thrust_areas(*), quarterly_checkins(*)')
-    .eq('employee_id', params.employeeId)
+    .eq('profile_id', params.employeeId)
     .eq('cycle_id', cycle.id);
 
   return (

@@ -20,7 +20,7 @@ export function GoalDistributionChart({ data, groupBy }: GoalDistributionChartPr
 
   const chartData = data.map(d => ({
     // Use whatever grouping key is present in the data item
-    name: (d as any).thrustArea || (d as any).uomType || d.status || d.thrustArea || 'Unknown',
+    name: d.thrust_area || d.uom_type || d.status || 'Unknown',
     value: d.count
   })).sort((a, b) => b.value - a.value);
 
@@ -28,7 +28,7 @@ export function GoalDistributionChart({ data, groupBy }: GoalDistributionChartPr
 
   return (
     <Card className="ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-sm">
-      <Flex className="mb-4" alignItems="center" justify="between">
+      <Flex className="mb-4" alignItems="center" justifyContent="between">
         <div>
           <Title className="text-slate-800 dark:text-slate-200">Goal Distribution</Title>
           <Text className="text-slate-500">{titleMap[groupBy]}</Text>
@@ -57,7 +57,7 @@ export function GoalDistributionChart({ data, groupBy }: GoalDistributionChartPr
         <BarList 
           data={chartData} 
           className="mt-6 h-[250px] overflow-y-auto pr-2" 
-          valueFormatter={(n) => `${n} goals`}
+          valueFormatter={(n: number) => `${n} goals`}
         />
       ) : (
         <div className="mt-6 flex justify-center">
@@ -67,7 +67,7 @@ export function GoalDistributionChart({ data, groupBy }: GoalDistributionChartPr
             index="name"
             colors={colors}
             className="h-[250px]"
-            valueFormatter={(n) => `${n} goals`}
+            valueFormatter={(n: number) => `${n} goals`}
             showAnimation={true}
           />
         </div>

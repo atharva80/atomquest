@@ -27,7 +27,7 @@ export function GoalCard({ goal, showActions = false, showScore = true, compact 
   let score = 0;
   if (hasCheckins) {
     const latestCheckin = goal.quarterly_checkins[goal.quarterly_checkins.length - 1];
-    score = calculateProgressScore(goal.uom_type, goal.target || 0, latestCheckin.actual_achievement);
+    score = calculateProgressScore(goal.uom_type, goal.target || 0, latestCheckin.achievement);
   }
 
   const handleDelete = async () => {

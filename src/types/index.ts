@@ -6,6 +6,8 @@
  * used across components, actions, and queries.
  */
 
+import type { Database as SupabaseDatabase, Json } from './supabase';
+
 export const UserRole = {
   EMPLOYEE: 'employee',
   MANAGER: 'manager',
@@ -63,146 +65,12 @@ export const ApprovalAction = {
 } as const;
 export type ApprovalAction = typeof ApprovalAction[keyof typeof ApprovalAction];
 
-// --- Temporary Database Types (Replace when supabase types are generated) ---
-export interface Database {
-  public: {
-    Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          email: string;
-          first_name: string;
-          last_name: string;
-          role: UserRole;
-          department_id: string | null;
-          manager_id: string | null;
-          employee_code: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-      goals: {
-        Row: {
-          id: string;
-          profile_id: string;
-          cycle_id: string;
-          thrust_area_id: string;
-          title: string;
-          description: string | null;
-          uom_type: UomType;
-          target: number | null;
-          weightage: number;
-          status: GoalStatus;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-      cycles: {
-        Row: {
-          id: string;
-          name: string;
-          start_date: string;
-          end_date: string;
-          is_active: boolean;
-          created_at: string;
-        };
-      };
-      quarterly_checkins: {
-        Row: {
-          id: string;
-          goal_id: string;
-          quarter: QuarterType;
-          achievement: number | null;
-          comment: string | null;
-          status: ProgressStatus;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-      manager_comments: {
-        Row: {
-          id: string;
-          profile_id: string;
-          manager_id: string;
-          cycle_id: string;
-          quarter: QuarterType;
-          comment: string;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-      approvals: {
-        Row: {
-          id: string;
-          profile_id: string;
-          manager_id: string | null;
-          cycle_id: string;
-          action: ApprovalAction;
-          comment: string | null;
-          created_at: string;
-        };
-      };
-      escalations: {
-        Row: {
-          id: string;
-          target_user_id: string;
-          escalated_to_id: string;
-          type: EscalationType;
-          cycle_id: string;
-          resolved_at: string | null;
-          created_at: string;
-        };
-      };
-      audit_logs: {
-        Row: {
-          id: string;
-          profile_id: string;
-          goal_id: string | null;
-          action: string;
-          previous_state: any | null;
-          new_state: any | null;
-          reason: string | null;
-          created_at: string;
-        };
-      };
-      departments: {
-        Row: {
-          id: string;
-          name: string;
-          created_at: string;
-        };
-      };
-      thrust_areas: {
-        Row: {
-          id: string;
-          name: string;
-          description: string | null;
-          created_at: string;
-        };
-      };
-      shared_goals: {
-        Row: {
-          id: string;
-          primary_goal_id: string;
-          recipient_profile_id: string;
-          created_at: string;
-        };
-      };
-      escalation_rules: {
-        Row: {
-          id: string;
-          type: EscalationType;
-          days_threshold: number;
-          is_active: boolean;
-          created_at: string;
-        };
-      };
-    };
-  };
-}
+export type Database = SupabaseDatabase;
 
 // --- Table Row Aliases ---
-export type Profile = Database['public']['Tables']['profiles']['Row'];
+export type Profile = Database['public']['Tables']['profiles']['Row'] & {
+  full_name: string;
+};
 export type Goal = Database['public']['Tables']['goals']['Row'];
 export type Cycle = Database['public']['Tables']['cycles']['Row'];
 export type QuarterlyCheckin = Database['public']['Tables']['quarterly_checkins']['Row'];
@@ -252,24 +120,26 @@ export type EscalationWithUser = Escalation & {
 
 export type AchievementTrend = {
   quarter: QuarterType;
-  avgScore: number;
+  avg_score: number;
   count: number;
 };
 
 export type CompletionHeatmapCell = {
   department: string;
   quarter: QuarterType;
-  completionRate: number;
+  completion_rate: number;
 };
 
 export type GoalDistribution = {
-  thrustArea: string;
+  thrust_area?: string;
+  uom_type?: string;
+  status?: GoalStatus;
   count: number;
   percentage: number;
 };
 
 export type ManagerEffectiveness = {
   manager: Profile;
-  checkInCompletionRate: number;
-  avgTeamScore: number;
+  check_in_completion_rate: number;
+  avg_team_score: number;
 };

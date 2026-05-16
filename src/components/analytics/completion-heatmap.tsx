@@ -51,7 +51,7 @@ export function CompletionHeatmap({ data, departments, quarters }: CompletionHea
                 </div>
                 {quarters.map(q => {
                   const cellData = data.find(d => d.department === dept && d.quarter === q);
-                  const percent = cellData ? Math.round(cellData.completionRate * 100) : 0;
+                  const percent = cellData ? Math.round(cellData.completion_rate * 100) : 0;
                   const colorClass = getColorClass(percent);
                   
                   return (

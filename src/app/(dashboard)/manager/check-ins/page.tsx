@@ -39,7 +39,7 @@ export default async function ManagerCheckinsPage() {
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Team Check-in Reviews</h1>
-        <p className="text-slate-500">Provide feedback on your team's quarterly achievements</p>
+        <p className="text-slate-500">Provide feedback on your team&apos;s quarterly achievements</p>
       </div>
 
       {validCheckins.length === 0 ? (
@@ -51,7 +51,7 @@ export default async function ManagerCheckinsPage() {
           {validCheckins.map((checkin: any) => {
             const goal = checkin.goals;
             const profile = goal.profiles;
-            const score = calculateProgressScore(goal.uom_type, goal.target || 0, checkin.actual_achievement);
+            const score = calculateProgressScore(goal.uom_type, goal.target || 0, checkin.achievement);
 
             return (
               <Card key={checkin.id} className="overflow-hidden border-slate-200 dark:border-slate-800">
@@ -74,15 +74,15 @@ export default async function ManagerCheckinsPage() {
                       <div>
                         <h3 className="font-semibold text-lg">{goal.title}</h3>
                         <div className="flex gap-4 mt-2 text-sm text-slate-500">
-                          <span>Target: <strong className="text-slate-700 dark:text-slate-300">{goal.target}</strong></span>
-                          <span>Actual: <strong className="text-slate-900 dark:text-white">{checkin.actual_achievement}</strong></span>
+                           <span>Target: <strong className="text-slate-700 dark:text-slate-300">{goal.target}</strong></span>
+                           <span>Actual: <strong className="text-slate-900 dark:text-white">{checkin.achievement}</strong></span>
                         </div>
                       </div>
                       
-                      {checkin.employee_comment && (
+                      {checkin.comment && (
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border-l-2 border-indigo-300">
                           <p className="text-xs text-slate-500 mb-1 font-medium">Employee Note</p>
-                          <p className="text-sm italic text-slate-700 dark:text-slate-300">"{checkin.employee_comment}"</p>
+                          <p className="text-sm italic text-slate-700 dark:text-slate-300">&quot;{checkin.comment}&quot;</p>
                         </div>
                       )}
                     </div>

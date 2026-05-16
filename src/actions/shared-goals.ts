@@ -9,6 +9,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
+import { UomType } from '@/types';
 
 export async function createSharedGoal(formData: FormData): Promise<ActionResult<void>> {
   try {
@@ -21,7 +22,7 @@ export async function createSharedGoal(formData: FormData): Promise<ActionResult
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const thrust_area_id = formData.get('thrust_area_id') as string;
-    const uom_type = formData.get('uom_type') as string;
+    const uom_type = formData.get('uom_type') as UomType;
     const target = formData.get('target') ? Number(formData.get('target')) : null;
     const target_date = formData.get('target_date') as string | null;
     const weightage = Number(formData.get('weightage'));

@@ -21,7 +21,7 @@ export async function GET(req: Request) {
       const { data: goals } = await supabase
         .from('goals')
         .select('*')
-        .eq('employee_id', user.id);
+        .eq('profile_id', user.id);
         
       if (goals) {
         csvRows = goals.map(g => `${g.id},"${g.title}",${g.target},${g.weightage},${g.status}`).join('\n');

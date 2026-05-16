@@ -62,9 +62,9 @@ export function CheckinForm({ goals, quarter, cycleId, existingCheckins = [], re
         checkins: goals.map(g => ({
           goal_id: g.id,
           quarter: quarter,
-          actual_achievement: Number(checkins[g.id].achievement),
-          progress_status: checkins[g.id].status as any,
-          employee_comment: checkins[g.id].comment || undefined
+          achievement: Number(checkins[g.id].achievement),
+          status: checkins[g.id].status as any,
+          comment: checkins[g.id].comment || undefined
         }))
       };
 

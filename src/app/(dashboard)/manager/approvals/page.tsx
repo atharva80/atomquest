@@ -23,7 +23,7 @@ export default async function ApprovalsPage() {
   const teamIds = team.map(t => t.id);
 
   if (teamIds.length === 0) {
-    return <div>You don't have any team members assigned.</div>;
+    return <div>You don&apos;t have any team members assigned.</div>;
   }
 
   // Fetch submitted goals for the team

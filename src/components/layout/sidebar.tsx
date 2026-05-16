@@ -55,7 +55,7 @@ export function Sidebar({ role, collapsed: initialCollapsed = false }: SidebarPr
                   collapsed && "justify-center px-0 border-l-0"
                 )}>
                   {Icon && <Icon className={cn("h-5 w-5", !collapsed && "mr-3")} />}
-                  {!collapsed && <span>{item.label}</span>}
+                  {!collapsed && <span>{item.title}</span>}
                 </Link>
               </li>
             );

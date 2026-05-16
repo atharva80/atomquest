@@ -24,12 +24,12 @@ export const submitCheckinSchema = z.object({
   goal_id: z.string().uuid("Invalid Goal ID"),
   quarter: quarterEnum,
   // We use union to allow string date submissions for Timeline goals
-  actual_achievement: z.union([
+  achievement: z.union([
     z.number().min(0, "Achievement cannot be negative"),
     z.string()
   ]).nullable(),
-  progress_status: progressStatusEnum,
-  employee_comment: z.string().max(500, "Comment cannot exceed 500 characters").optional().nullable(),
+  status: progressStatusEnum,
+  comment: z.string().max(500, "Comment cannot exceed 500 characters").optional().nullable(),
 });
 
 export const batchCheckinSchema = z.object({

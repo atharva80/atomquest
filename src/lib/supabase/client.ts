@@ -6,11 +6,12 @@
  */
 
 import { createBrowserClient } from '@supabase/ssr';
-import { Database } from '@/types'; // Temporarily using Database from index.ts until supabase.ts is generated
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 
-export function createClient() {
-  return createBrowserClient<Database>(
+export function createClient(): SupabaseClient<Database> {
+  return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  ) as unknown as SupabaseClient<Database>;
 }

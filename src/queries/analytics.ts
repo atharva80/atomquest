@@ -11,7 +11,7 @@ import { AchievementTrend, CompletionHeatmapCell, GoalDistribution, ManagerEffec
 export async function getAchievementTrend(params: { managerId?: string, cycleId: string }): Promise<AchievementTrend[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc('get_team_achievement_trend', {
-    p_manager_id: params.managerId,
+    p_manager_id: params.managerId ?? null,
     p_cycle_id: params.cycleId
   });
 
@@ -38,7 +38,7 @@ export async function getCompletionHeatmap(cycleId: string): Promise<CompletionH
 export async function getGoalDistribution(params: { departmentId?: string, cycleId: string }): Promise<GoalDistribution[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.rpc('get_goal_distribution', {
-    p_department_id: params.departmentId,
+    p_department_id: params.departmentId ?? null,
     p_cycle_id: params.cycleId
   });
 

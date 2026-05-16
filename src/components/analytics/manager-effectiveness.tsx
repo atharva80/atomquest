@@ -13,7 +13,7 @@ interface ManagerEffectivenessTableProps {
 export function ManagerEffectivenessTable({ data }: ManagerEffectivenessTableProps) {
   
   // Sort by composite score (simplified: avg team score)
-  const sortedData = [...data].sort((a, b) => b.avgTeamScore - a.avgTeamScore);
+  const sortedData = [...data].sort((a, b) => b.avg_team_score - a.avg_team_score);
 
   return (
     <Card className="ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-sm overflow-hidden">
@@ -34,8 +34,8 @@ export function ManagerEffectivenessTable({ data }: ManagerEffectivenessTablePro
         <TableBody>
           {sortedData.map((item, index) => {
             const isTop = index === 0 && data.length > 1;
-            const completionPercent = Math.round(item.checkInCompletionRate * 100);
-            const scorePercent = Math.round(item.avgTeamScore * 100);
+            const completionPercent = Math.round(item.check_in_completion_rate * 100);
+            const scorePercent = Math.round(item.avg_team_score * 100);
             
             // Determine delta type for Tremor BadgeDelta
             let deltaType = "moderateDecrease";

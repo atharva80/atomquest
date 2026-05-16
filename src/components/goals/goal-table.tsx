@@ -3,12 +3,11 @@
 import { GoalWithCheckins } from '@/types';
 import { calculateProgressScore } from '@/lib/utils';
 import { STATUS_COLORS } from '@/lib/constants';
-import { DataTable } from '@/components/shared/data-table';
+import { DataTable, type ColumnDef } from '@/components/shared/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Info } from 'lucide-react';
-import { ColumnDef } from '@tanstack/react-table';
 
 interface GoalTableProps {
   goals: GoalWithCheckins[];
@@ -93,7 +92,7 @@ export function GoalTable({ goals, showEmployee = false, editable = false, onEdi
         if (!hasCheckins) return <span className="text-muted-foreground text-xs italic">N/A</span>;
         
         const latestCheckin = goal.quarterly_checkins[goal.quarterly_checkins.length - 1];
-        const score = calculateProgressScore(goal.uom_type, goal.target || 0, latestCheckin.actual_achievement);
+        const score = calculateProgressScore(goal.uom_type, goal.target || 0, latestCheckin.achievement);
         const percentage = Math.round(score * 100);
         
         let color = "text-red-600";

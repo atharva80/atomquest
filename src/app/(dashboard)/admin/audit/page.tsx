@@ -43,14 +43,14 @@ export default async function AuditPage() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="bg-slate-50 dark:bg-slate-800 font-mono text-xs">
-                      {log.action_type}
+                      {log.action}
                     </Badge>
                   </TableCell>
                   <TableCell className="max-w-[300px] truncate text-slate-500 text-sm">
-                    {JSON.stringify(log.new_values)}
+                    {log.reason || JSON.stringify(log.new_state)}
                   </TableCell>
                   <TableCell className="text-xs text-slate-400 font-mono">
-                    {log.ip_address || '—'}
+                    —
                   </TableCell>
                 </TableRow>
               ))}

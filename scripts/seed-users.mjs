@@ -52,11 +52,18 @@ async function main() {
   const createdUsers = {};
 
   for (const u of users) {
+    const [firstName, ...lastNameParts] = u.name.split(' ');
+    const lastName = lastNameParts.join(' ');
+
     const { data, error } = await supabase.auth.admin.createUser({
       email: u.email,
       password: u.password,
       email_confirm: true, // Auto-confirm email
-      user_metadata: { full_name: u.name }
+      user_metadata: { 
+        full_name: u.name,
+        first_name: firstName,
+        last_name: lastName
+      }
     });
 
     if (error) {
@@ -76,15 +83,20 @@ async function main() {
 
     const managerId = u.managerEmail ? createdUsers[u.managerEmail] : null;
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        role: u.role,
-        department_id: u.dept,
-        employee_code: u.empCode,
-        manager_id: managerId,
-        full_name: u.name,
-      })
+      const [firstName, ...lastNameParts] = u.name.split(' ');
+      const lastName = lastNameParts.join(' ');
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          role: u.role,
+          department_id: u.dept,
+          employee_code: u.empCode,
+          manager_id: managerId,
+          full_name: u.name,
+          first_name: firstName,
+          last_name: lastName,
+        })
       .eq('id', userId);
 
     if (error) {

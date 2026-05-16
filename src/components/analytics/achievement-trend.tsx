@@ -12,7 +12,7 @@ export function AchievementTrendChart({ data, title = "Achievement Trend (QoQ)" 
   // Format data for Tremor
   const chartData = data.map(d => ({
     Quarter: d.quarter,
-    "Average Score (%)": Math.round(d.avgScore * 100)
+    "Average Score (%)": Math.round(d.avg_score * 100)
   }));
 
   return (

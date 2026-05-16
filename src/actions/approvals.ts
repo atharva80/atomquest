@@ -12,20 +12,35 @@ import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
 import { VALIDATION } from '@/lib/constants';
 
-export async function approveOrReturnGoalSheet(formData: FormData): Promise<ActionResult<void>> {
+type ApprovalActionInput = FormData | {
+  employee_id: string;
+  cycle_id: string;
+  action: 'approved' | 'returned';
+  comment?: string;
+  goal_edits?: Array<{ goal_id: string; target?: number; weightage?: number }>;
+};
+
+function approvalInputToRaw(input: ApprovalActionInput) {
+  if (input instanceof FormData) {
+    return {
+      employee_id: input.get('employee_id'),
+      cycle_id: input.get('cycle_id'),
+      action: input.get('action'),
+      comment: input.get('comment'),
+      goal_edits: input.get('goal_edits') ? JSON.parse(input.get('goal_edits') as string) : undefined,
+    };
+  }
+
+  return input;
+}
+
+export async function approveOrReturnGoalSheet(formData: ApprovalActionInput): Promise<ActionResult<void>> {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    const rawData = {
-      employee_id: formData.get('employee_id'),
-      cycle_id: formData.get('cycle_id'),
-      action: formData.get('action'),
-      comment: formData.get('comment'),
-      // Assuming goal_edits is passed as a JSON string from the client form if there are inline edits
-      goal_edits: formData.get('goal_edits') ? JSON.parse(formData.get('goal_edits') as string) : undefined
-    };
+    const rawData = approvalInputToRaw(formData);
 
     const parsedData = approveGoalSheetSchema.parse(rawData);
 

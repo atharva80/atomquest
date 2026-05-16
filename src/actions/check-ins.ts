@@ -11,30 +11,71 @@ import { batchCheckinSchema, managerCommentSchema } from '@/schemas/check-in';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
 
-export async function submitCheckins(formData: FormData): Promise<ActionResult<void>> {
+type CheckinActionInput = FormData | {
+  cycle_id: string;
+  quarter: string;
+  checkins: Array<{
+    goal_id: string;
+    achievement: number | string | null;
+    status: string;
+    comment?: string | null;
+  }>;
+};
+
+type ManagerCommentActionInput = FormData | {
+  employee_id: string;
+  cycle_id: string;
+  quarter: string;
+  comment: string;
+  rating?: number;
+};
+
+function checkinInputToRaw(input: CheckinActionInput) {
+  if (input instanceof FormData) {
+    return {
+      cycle_id: input.get('cycle_id'),
+      quarter: input.get('quarter'),
+      checkins: input.get('checkins') ? JSON.parse(input.get('checkins') as string) : [],
+    };
+  }
+
+  return input;
+}
+
+function managerCommentInputToRaw(input: ManagerCommentActionInput) {
+  if (input instanceof FormData) {
+    return {
+      employee_id: input.get('employee_id'),
+      cycle_id: input.get('cycle_id'),
+      quarter: input.get('quarter'),
+      comment: input.get('comment'),
+      rating: input.get('rating') ? Number(input.get('rating')) : null,
+    };
+  }
+
+  return input;
+}
+
+export async function submitCheckins(formData: CheckinActionInput): Promise<ActionResult<void>> {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    const rawData = {
-      cycle_id: formData.get('cycle_id'),
-      quarter: formData.get('quarter'),
-      checkins: formData.get('checkins') ? JSON.parse(formData.get('checkins') as string) : []
-    };
+    const rawData = checkinInputToRaw(formData);
 
     const parsedData = batchCheckinSchema.parse(rawData);
 
     // Prepare upsert payload
     const upserts = parsedData.checkins.map(c => {
-      const isString = typeof c.actual_achievement === 'string';
+      const isString = typeof c.achievement === 'string';
       return {
         goal_id: c.goal_id,
         quarter: parsedData.quarter,
-        achievement: isString ? null : c.actual_achievement,
-        achievement_date: isString ? new Date(c.actual_achievement as string).toISOString() : null,
-        status: c.progress_status,
-        comment: c.employee_comment
+        achievement: isString || c.achievement === null ? null : Number(c.achievement),
+        achievement_date: isString ? new Date(c.achievement as string).toISOString() : null,
+        status: c.status,
+        comment: c.comment
       };
     });
 
@@ -53,19 +94,13 @@ export async function submitCheckins(formData: FormData): Promise<ActionResult<v
   }
 }
 
-export async function submitManagerComment(formData: FormData): Promise<ActionResult<void>> {
+export async function submitManagerComment(formData: ManagerCommentActionInput): Promise<ActionResult<void>> {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
-    const rawData = {
-      employee_id: formData.get('employee_id'),
-      cycle_id: formData.get('cycle_id'),
-      quarter: formData.get('quarter'),
-      comment: formData.get('comment'),
-      rating: formData.get('rating') ? Number(formData.get('rating')) : null,
-    };
+    const rawData = managerCommentInputToRaw(formData);
 
     const parsedData = managerCommentSchema.parse(rawData);
 

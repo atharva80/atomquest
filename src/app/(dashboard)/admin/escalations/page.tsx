@@ -12,7 +12,7 @@ export default async function EscalationsPage() {
   
   const { data: escalations } = await supabase
     .from('escalations')
-    .select('*, profiles:employee_id(full_name)')
+    .select('*, target_user:profiles!escalations_target_user_id_fkey(full_name)')
     .order('created_at', { ascending: false });
 
   return (
@@ -49,14 +49,14 @@ export default async function EscalationsPage() {
                     {new Date(esc.created_at).toLocaleDateString()}
                   </TableCell>
                   <TableCell className="font-medium">
-                    {(esc as any).profiles?.full_name || 'Unknown User'}
+                    {(esc as any).target_user?.full_name || 'Unknown User'}
                   </TableCell>
                   <TableCell className="capitalize">
-                    {esc.escalation_type.replace(/_/g, ' ')}
+                    {esc.type.replace(/_/g, ' ')}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={esc.escalation_level > 1 ? 'destructive' : 'secondary'}>
-                      Level {esc.escalation_level}
+                    <Badge variant="secondary">
+                      Level 1
                     </Badge>
                   </TableCell>
                   <TableCell>

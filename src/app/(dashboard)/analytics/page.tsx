@@ -15,35 +15,35 @@ export default async function AnalyticsPage() {
 
   // Mock data for analytics presentation layer
   const trendData = [
-    { quarter: 'Q1', avgScore: 0.85 },
-    { quarter: 'Q2', avgScore: 0.88 },
-    { quarter: 'Q3', avgScore: 0.92 },
-    { quarter: 'Q4', avgScore: 0.95 },
+    { quarter: 'Q1', avg_score: 0.85 },
+    { quarter: 'Q2', avg_score: 0.88 },
+    { quarter: 'Q3', avg_score: 0.92 },
+    { quarter: 'Q4', avg_score: 0.95 },
   ];
 
   const distributionData = [
-    { thrustArea: 'Revenue Growth', count: 45 },
-    { thrustArea: 'Operational Excellence', count: 32 },
-    { thrustArea: 'Customer Success', count: 28 },
-    { thrustArea: 'Product Innovation', count: 18 },
-    { thrustArea: 'Team Development', count: 12 },
+    { thrust_area: 'Revenue Growth', count: 45 },
+    { thrust_area: 'Operational Excellence', count: 32 },
+    { thrust_area: 'Customer Success', count: 28 },
+    { thrust_area: 'Product Innovation', count: 18 },
+    { thrust_area: 'Team Development', count: 12 },
   ];
 
   const heatmapData = [
-    { department: 'Engineering', quarter: 'Q1', completionRate: 0.95 },
-    { department: 'Engineering', quarter: 'Q2', completionRate: 0.88 },
-    { department: 'Sales', quarter: 'Q1', completionRate: 0.72 },
-    { department: 'Sales', quarter: 'Q2', completionRate: 0.45 },
-    { department: 'Marketing', quarter: 'Q1', completionRate: 1.0 },
-    { department: 'Marketing', quarter: 'Q2', completionRate: 0.92 },
-    { department: 'HR', quarter: 'Q1', completionRate: 0.85 },
-    { department: 'HR', quarter: 'Q2', completionRate: 0.85 },
+    { department: 'Engineering', quarter: 'Q1', completion_rate: 0.95 },
+    { department: 'Engineering', quarter: 'Q2', completion_rate: 0.88 },
+    { department: 'Sales', quarter: 'Q1', completion_rate: 0.72 },
+    { department: 'Sales', quarter: 'Q2', completion_rate: 0.45 },
+    { department: 'Marketing', quarter: 'Q1', completion_rate: 1.0 },
+    { department: 'Marketing', quarter: 'Q2', completion_rate: 0.92 },
+    { department: 'HR', quarter: 'Q1', completion_rate: 0.85 },
+    { department: 'HR', quarter: 'Q2', completion_rate: 0.85 },
   ];
 
   const managerData = [
-    { manager: { id: '1', first_name: 'Sarah', last_name: 'Connor' } as any, checkInCompletionRate: 0.95, avgTeamScore: 0.92, teamSize: 8 },
-    { manager: { id: '2', first_name: 'John', last_name: 'Smith' } as any, checkInCompletionRate: 0.75, avgTeamScore: 0.78, teamSize: 5 },
-    { manager: { id: '3', first_name: 'Alice', last_name: 'Johnson' } as any, checkInCompletionRate: 0.45, avgTeamScore: 0.65, teamSize: 12 },
+    { manager: { id: '1', first_name: 'Sarah', last_name: 'Connor' } as any, check_in_completion_rate: 0.95, avg_team_score: 0.92, teamSize: 8 },
+    { manager: { id: '2', first_name: 'John', last_name: 'Smith' } as any, check_in_completion_rate: 0.75, avg_team_score: 0.78, teamSize: 5 },
+    { manager: { id: '3', first_name: 'Alice', last_name: 'Johnson' } as any, check_in_completion_rate: 0.45, avg_team_score: 0.65, teamSize: 12 },
   ];
 
   return (

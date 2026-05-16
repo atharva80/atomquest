@@ -6,7 +6,7 @@
 
 import { z } from 'zod';
 
-export const createCycleSchema = z.object({
+const cycleSchemaBase = z.object({
   name: z.string().min(3, "Name must be at least 3 characters").max(100, "Name is too long"),
   start_date: z.string().datetime({ message: "Invalid cycle start date" }),
   end_date: z.string().datetime({ message: "Invalid cycle end date" }),
@@ -20,7 +20,9 @@ export const createCycleSchema = z.object({
   q4_start: z.string().datetime(),
   q4_end: z.string().datetime(),
   is_active: z.boolean().default(false),
-})
+});
+
+export const createCycleSchema = cycleSchemaBase
 .refine(c => new Date(c.end_date) > new Date(c.start_date), { 
   message: 'Cycle end date must be after start date',
   path: ['end_date']
@@ -39,4 +41,4 @@ export const createCycleSchema = z.object({
 .refine(c => new Date(c.q1_start) >= new Date(c.start_date), { message: 'Q1 cannot start before cycle start date', path: ['q1_start'] })
 .refine(c => new Date(c.q4_end) <= new Date(c.end_date), { message: 'Q4 cannot end after cycle end date', path: ['q4_end'] });
 
-export const updateCycleSchema = createCycleSchema.partial();
+export const updateCycleSchema = cycleSchemaBase.partial();

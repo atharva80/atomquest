@@ -204,7 +204,7 @@ export async function submitGoalSheet(cycleId: string): Promise<ActionResult<voi
     await supabase.from('approvals').insert({
       profile_id: user.id,
       manager_id: profile?.manager_id || null,
-      cycle_id,
+      cycle_id: cycleId,
       action: 'submitted'
     });
 
