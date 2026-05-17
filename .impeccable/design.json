@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-17T00:00:00Z",
+  "title": "Design System: Orbit",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Deep Blue", "canonical": "#378ADD" },
+      "emerald": { "role": "secondary", "displayName": "Emerald", "canonical": "#10b981" },
+      "amber": { "role": "secondary", "displayName": "Amber", "canonical": "#f59e0b" },
+      "destructive": { "role": "destructive", "displayName": "Red", "canonical": "oklch(0.577 0.245 27.325)" },
+      "background": { "role": "neutral", "displayName": "Background", "canonical": "oklch(1 0 0)" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page titles." },
+      "body": { "displayName": "Body", "purpose": "Standard readable text for desk distance." }
+    },
+    "shadows": [
+      { "name": "ambient-low", "value": "0 1px 3px rgba(0,0,0,0.1)", "purpose": "Standard panel separation." },
+      { "name": "ambient-high", "value": "0 4px 12px rgba(0,0,0,0.08)", "purpose": "Used when elements require tactile feedback." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-on-track",
+      "description": "Used to show semantic status on tables and cards.",
+      "html": "<span class=\"ds-badge-on-track\">On Track</span>",
+      "css": ".ds-badge-on-track { background: #ecfdf5; color: #047857; padding: 2px 10px; border: 1px solid #a7f3d0; border-radius: 9999px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Orbital Control Center",
+    "overview": "Orbit is sleek, professional, and easy for non-technical people. It provides a linear, precise, enterprise-grade experience. It explicitly avoids the generic purple-gradient SaaS tropes and consumer fintech warmth.",
+    "keyCharacteristics": ["Precise data display with tabular alignments.", "Confident, tactile inputs.", "Professional monochrome base."],
+    "rules": [{ "name": "The Tabular Rule", "body": "All numeric columns and data values must use tabular-nums so numbers align flawlessly in tables.", "section": "typography" }],
+    "dos": ["Do use tabular-nums for all numeric values and percentages.", "Do align tables and prioritize data density.", "Do use skeleton screens for loading states."],
+    "donts": ["Don't use generic purple-gradient SaaS backgrounds.", "Don't use consumer fintech warmth, rounded bubbly cards or pastel fills.", "Don't animate data values; motion is for transitions only.", "Don't use dark mode neon dashboards with glowing effects."]
+  }
+}
