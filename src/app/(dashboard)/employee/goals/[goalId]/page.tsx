@@ -1,5 +1,5 @@
 import { getGoalById } from '@/queries/goals';
-import { getActiveCycle } from '@/queries/cycles';
+import { getActiveCycle, getCurrentQuarter } from '@/queries/cycles';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +30,9 @@ export default async function GoalDetailPage({ params }: { params: { goalId: str
     const latest = goal.quarterly_checkins[goal.quarterly_checkins.length - 1];
     score = calculateProgressScore(goal.uom_type, goal.target || 0, latest.achievement);
   }
+
+  const cycle = await getActiveCycle();
+  const currentQuarter = cycle ? getCurrentQuarter(cycle) : 'Q1';
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -128,7 +131,7 @@ export default async function GoalDetailPage({ params }: { params: { goalId: str
                 <CheckinTimeline 
                   goal={goal} 
                   checkins={goal.quarterly_checkins || []} 
-                  currentQuarter="Q2" // For demo purposes
+                  currentQuarter={currentQuarter || 'Q1'}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-center border-2 border-dashed rounded-xl bg-slate-50/50 dark:bg-slate-900/20">

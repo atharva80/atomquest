@@ -2,8 +2,9 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, Metric, Text, Title, DonutChart } from '@tremor/react';
 import Link from 'next/link';
 import { Users, FileCheck, MessageSquare, ArrowRight } from 'lucide-react';
-import { getActiveCycle } from '@/queries/cycles';
+import { getActiveCycle, getCurrentQuarter } from '@/queries/cycles';
 import { getTeamMembers } from '@/queries/users';
+import { getManagerStats } from '@/queries/manager';
 import { ManagerStatusChart } from '@/components/dashboard/manager-chart';
 
 export const metadata = { title: 'Manager Dashboard — AtomQuest' };
@@ -16,9 +17,22 @@ export default async function ManagerDashboard() {
   const cycle = await getActiveCycle();
   const team = await getTeamMembers(user.id);
   
-  // For demo: Mock counts. In real implementation, these would come from specific queries like getPendingApprovalsCount()
-  const pendingApprovalsCount = 2;
-  const pendingReviewsCount = 3;
+  let pendingApprovalsCount = 0;
+  let pendingReviewsCount = 0;
+  let statusCounts = {
+    draft: 0,
+    submitted: 0,
+    approved: 0,
+    locked: 0
+  };
+
+  if (cycle) {
+    const currentQuarter = getCurrentQuarter(cycle);
+    const stats = await getManagerStats(user.id, cycle.id, currentQuarter);
+    pendingApprovalsCount = stats.pendingApprovalsCount;
+    pendingReviewsCount = stats.pendingReviewsCount;
+    statusCounts = stats.statusCounts;
+  }
 
   return (
     <div className="space-y-6">
@@ -77,10 +91,10 @@ export default async function ManagerDashboard() {
       {/* Simplified Team Status Chart */}
       <ManagerStatusChart 
         data={[
-          { name: 'Draft', value: 2 },
-          { name: 'Submitted', value: pendingApprovalsCount },
-          { name: 'Approved', value: 1 },
-          { name: 'Locked', value: Math.max(1, team.length - 3 - pendingApprovalsCount) }
+          { name: 'Draft', value: statusCounts.draft },
+          { name: 'Submitted', value: statusCounts.submitted },
+          { name: 'Approved', value: statusCounts.approved },
+          { name: 'Locked', value: statusCounts.locked }
         ]}
       />
     </div>

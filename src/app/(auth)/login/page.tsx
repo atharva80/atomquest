@@ -47,12 +47,14 @@ export default function LoginPage() {
           
         toast.success('Logged in successfully');
         
-        if (profile?.role) {
-          router.push(`/${profile.role}`);
-        } else {
-          router.push('/');
-        }
-        router.refresh();
+        // Small delay to ensure cookies are persisted
+        setTimeout(() => {
+          if (profile?.role) {
+            window.location.href = `/${profile.role}`;
+          } else {
+            window.location.href = '/';
+          }
+        }, 500);
       }
     } catch (err) {
       toast.error('An unexpected error occurred');
@@ -93,12 +95,14 @@ export default function LoginPage() {
           
         toast.success('Logged in successfully');
         
-        if (profile?.role) {
-          router.push(`/${profile.role}`);
-        } else {
-          router.push('/');
-        }
-        router.refresh();
+        // Small delay to ensure cookies are persisted
+        setTimeout(() => {
+          if (profile?.role) {
+            window.location.href = `/${profile.role}`;
+          } else {
+            window.location.href = '/';
+          }
+        }, 500);
       }
     } catch (err) {
       toast.error('An unexpected error occurred');

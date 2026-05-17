@@ -9,12 +9,17 @@ export default async function AdminDashboard() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Mocks for demo, in real life these would be COUNT() queries
+  // Fetch real stats from Supabase
+  const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+  const { count: activeCycles } = await supabase.from('cycles').select('*', { count: 'exact', head: true }).eq('is_active', true);
+  const { count: escalations } = await supabase.from('escalations').select('*', { count: 'exact', head: true }).is('resolved_at', null);
+  const { count: auditEvents } = await supabase.from('audit_logs').select('*', { count: 'exact', head: true });
+
   const stats = {
-    totalUsers: 24,
-    activeCycles: 1,
-    escalations: 3,
-    auditEvents: 142
+    totalUsers: totalUsers || 0,
+    activeCycles: activeCycles || 0,
+    escalations: escalations || 0,
+    auditEvents: auditEvents || 0
   };
 
   const quickLinks = [

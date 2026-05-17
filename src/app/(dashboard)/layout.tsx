@@ -27,6 +27,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     redirect('/login?error=Profile not found');
   }
 
+  // 3. Simple role-based path protection (extra layer for middleware)
+  // We don't have the path here easily in server component without headers, 
+  // but we can at least check if they are logged in.
+  // Actually, let's leave it to the middleware but make the middleware more robust.
+
   // 3. Fetch active cycle for the topbar
   const { data: activeCycle } = await supabase
     .from('cycles')
@@ -37,7 +42,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   return (
     <UserProvider initialProfile={profile as Profile} initialUser={session.user}>
       <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950">
-        <Sidebar role={profile.role} />
+        <Sidebar role={profile.role} className="hidden md:flex" />
         
         <div className="flex-1 flex flex-col overflow-hidden relative">
           <Topbar profile={profile as Profile} cycle={activeCycle || null} />

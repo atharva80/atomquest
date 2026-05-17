@@ -30,8 +30,8 @@ export function CompletionHeatmap({ data, departments, quarters }: CompletionHea
         <Text className="text-slate-500">Percentage of goals with completed quarterly check-ins by department</Text>
       </div>
       
-      <div className="overflow-x-auto pb-4">
-        <div className="min-w-[600px]">
+      <div className="overflow-x-auto pb-4 -mx-2 sm:mx-0">
+        <div className="min-w-[500px]">
           {/* Header row */}
           <div className="flex mb-2">
             <div className="w-48 flex-shrink-0"></div>

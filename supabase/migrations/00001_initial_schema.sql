@@ -179,9 +179,12 @@ CREATE INDEX idx_escalations_resolved_at ON escalations(resolved_at);
 -- 5. Row Level Security (RLS)
 
 -- Helper function to get current user's role from profile
+-- Marked as STABLE to avoid repeated lookups in a single query
 CREATE OR REPLACE FUNCTION get_my_role() RETURNS user_role AS $$
-  SELECT role FROM profiles WHERE id = auth.uid();
-$$ LANGUAGE sql SECURITY DEFINER;
+BEGIN
+  RETURN (SELECT role FROM profiles WHERE id = auth.uid());
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
 
 ALTER TABLE departments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "All authenticated can read departments" ON departments FOR SELECT TO authenticated USING (true);

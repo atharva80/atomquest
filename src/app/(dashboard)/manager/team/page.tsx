@@ -17,7 +17,7 @@ export default async function TeamOverviewPage() {
   if (!user) redirect('/login');
 
   const cycle = await getActiveCycle();
-  const team = await getTeamMembers(user.id);
+  const team = await getTeamMembers(user.id, cycle?.id);
 
   if (team.length === 0) {
     return (
@@ -58,9 +58,8 @@ export default async function TeamOverviewPage() {
                 
                 <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/50 flex justify-between items-center">
                   <div className="text-xs text-slate-500">
-                    <span className="font-medium text-slate-700 dark:text-slate-300 block">Status</span>
-                    {/* Mock status for UI demo since we didn't join goals in getTeamMembers */}
-                    Goal Sheet Status
+                    <span className="font-medium text-slate-700 dark:text-slate-300 block">Check-in Status</span>
+                    <span className="capitalize">{member.checkInStatus?.replace('_', ' ') || 'Not Started'}</span>
                   </div>
                   <Badge variant="outline" className="bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                     View Details
