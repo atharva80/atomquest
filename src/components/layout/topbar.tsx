@@ -1,13 +1,14 @@
 'use client';
 
-import { Bell } from 'lucide-react';
-import { Breadcrumbs } from './breadcrumbs';
-import { RoleSwitcher } from './role-switcher';
+import { useState } from 'react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { getInitials } from '@/lib/utils';
-import { MobileNav } from './mobile-nav';
+import { RoleSwitcher } from './role-switcher';
 import { Profile, Cycle } from '@/types';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 interface TopbarProps {
   profile: Profile;
@@ -15,57 +16,131 @@ interface TopbarProps {
 }
 
 export function Topbar({ profile, cycle }: TopbarProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      toast.success(`Searching for "${searchQuery}"...`);
+      setSearchQuery('');
+    }
+  };
+
+  const handleSignOut = async () => {
+    await fetch('/api/auth/signout', { method: 'POST' });
+    // Also clear supabase client state just in case
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  };
+
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 px-4 md:px-6 backdrop-blur-md dark:bg-slate-950/80 dark:border-slate-800">
-      <div className="flex items-center gap-2 md:gap-4">
-        <MobileNav role={profile.role} />
-        <Breadcrumbs />
+    <header className="h-[56px] bg-white border-b border-zinc-200 flex justify-between items-center px-6 w-full sticky top-0 z-50 flex-shrink-0">
+      <div className="flex items-center gap-6">
+        {/* Mobile Menu Button (hidden on md) */}
+        <button className="md:hidden text-zinc-500 hover:text-zinc-900 transition-colors">
+          <span className="material-symbols-outlined">menu</span>
+        </button>
+        <div className="text-[24px] leading-[32px] font-semibold text-zinc-900 tracking-tight md:hidden">Orbit</div>
+        
+        {/* Left: Breadcrumb / Cycle */}
+        <nav className="hidden md:flex text-zinc-900 font-medium text-[14px]">
+          {cycle && (
+            <span className="text-zinc-900 font-medium border-b-2 border-zinc-900 pb-0.5 mt-0.5">
+              {cycle.name}
+            </span>
+          )}
+        </nav>
       </div>
 
+      {/* Right: Actions & Profile */}
       <div className="flex items-center gap-4">
-        {cycle && (
-          <div className="hidden md:flex items-center px-3 py-1 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-full dark:bg-indigo-900/30 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800/30">
-            {cycle.name}
-          </div>
-        )}
+        <form onSubmit={handleSearch} className="relative hidden sm:block">
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-[18px]">search</span>
+          <input 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-9 pr-4 py-1.5 bg-zinc-50 border border-zinc-200 rounded-full focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 text-[14px] text-zinc-900 w-64 transition-all shadow-sm" 
+            placeholder="Search goals, users..." 
+            type="text"
+          />
+        </form>
+        
+        <div className="flex items-center gap-2">
+          {/* Notifications Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="p-1.5 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-colors opacity-80 relative focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-1">
+                <span className="material-symbols-outlined text-[20px]">notifications</span>
+                <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-red-500 ring-2 ring-white animate-pulse"></span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80 bg-white border border-zinc-200 rounded-xl shadow-lg p-2 mt-2">
+              <DropdownMenuLabel className="font-semibold text-zinc-900 mb-2 px-2">Notifications</DropdownMenuLabel>
+              <div className="flex flex-col gap-2">
+                <div className="p-3 bg-zinc-50 border border-zinc-100 rounded-lg text-sm cursor-pointer hover:bg-zinc-100 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-blue-500 text-[20px]">info</span>
+                    <div>
+                      <p className="font-medium text-zinc-900">Quarterly Check-ins due</p>
+                      <p className="text-zinc-500 mt-0.5">Please submit your Q3 check-ins by Friday to avoid delays.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-3 bg-zinc-50 border border-zinc-100 rounded-lg text-sm cursor-pointer hover:bg-zinc-100 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
+                    <div>
+                      <p className="font-medium text-zinc-900">Goal Approved</p>
+                      <p className="text-zinc-500 mt-0.5">Your manager approved the "Launch Mobile App" goal.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
-        <button className="relative p-2 text-slate-400 hover:text-slate-600 transition-colors dark:hover:text-slate-300">
-          <Bell className="h-5 w-5" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-slate-950"></span>
-        </button>
-
+          <button className="p-1.5 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-full transition-colors opacity-80 focus:outline-none">
+            <span className="material-symbols-outlined text-[20px]">settings</span>
+          </button>
+        </div>
+        
+        <div className="w-px h-5 bg-zinc-200 mx-1"></div>
+        
+        {/* User Profile Dropdown */}
         <DropdownMenu>
-          <DropdownMenuTrigger className="focus:outline-none">
-            <Avatar className="h-8 w-8 ring-2 ring-indigo-100 dark:ring-indigo-900/30 transition-all hover:ring-indigo-300">
-              <AvatarFallback className="bg-indigo-600 text-white text-xs font-semibold">
+          <DropdownMenuTrigger asChild className="focus:outline-none">
+            <button className="w-9 h-9 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-1 transition-all hover:border-zinc-400 cursor-pointer shadow-sm">
+              <span className="text-[13px] font-semibold text-zinc-700 tracking-wide">
                 {profile.full_name ? getInitials(profile.full_name) : getInitials(`${profile.first_name} ${profile.last_name}`)}
-              </AvatarFallback>
-            </Avatar>
+              </span>
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">
+          <DropdownMenuContent align="end" className="w-64 bg-white border border-zinc-200 rounded-xl shadow-lg mt-2 p-1">
+            <DropdownMenuLabel className="font-normal p-3">
+              <div className="flex flex-col space-y-1.5">
+                <p className="text-[15px] font-semibold leading-none text-zinc-900 tracking-tight">
                   {profile.full_name || `${profile.first_name} ${profile.last_name}`}
                 </p>
-                <p className="text-xs leading-none text-muted-foreground">{profile.email}</p>
-                <p className="text-xs font-semibold text-indigo-600 mt-1 capitalize">{profile.role}</p>
+                <p className="text-sm leading-none text-zinc-500">{profile.email}</p>
+                <p className="text-[10px] font-bold text-zinc-400 mt-2 uppercase tracking-widest">{profile.role}</p>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="bg-zinc-100 my-1" />
             <div className="p-2">
-              <p className="text-xs text-muted-foreground mb-2 px-2 font-medium">Demo Actions</p>
+              <p className="text-xs text-zinc-400 mb-2 px-2 font-semibold uppercase tracking-wider">Demo Access</p>
               <RoleSwitcher currentRole={profile.role} />
             </div>
-            <DropdownMenuSeparator />
-            {/* Use a real form POST so the route handler can set Set-Cookie headers to expire auth cookies */}
-            <DropdownMenuItem asChild className="text-red-600 cursor-pointer focus:bg-red-50 focus:text-red-600 p-0">
-              <form method="POST" action="/api/auth/signout">
-                <button type="submit" className="w-full text-left px-2 py-1.5 text-sm text-red-600">
+            <DropdownMenuSeparator className="bg-zinc-100 my-1" />
+            <div className="p-1">
+              <DropdownMenuItem asChild className="text-zinc-700 cursor-pointer focus:bg-zinc-100 p-0 rounded-lg">
+                <button onClick={handleSignOut} className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm text-zinc-700 font-medium hover:bg-zinc-50 hover:text-red-600 transition-colors rounded-lg">
+                  <span className="material-symbols-outlined text-[18px]">logout</span>
                   Sign Out
                 </button>
-              </form>
-            </DropdownMenuItem>
+              </DropdownMenuItem>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

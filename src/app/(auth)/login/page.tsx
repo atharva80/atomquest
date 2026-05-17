@@ -128,8 +128,8 @@ export default function LoginPage() {
           <div className="flex items-center">
             <img
               alt="Orbit Logo"
-              className="h-12 w-auto brightness-0 invert"
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAB4CAYAAADc36SXAAAQAElEQVR4AexdCZxbZbX/zk0mK9CBgthSlkILhQqlKj4E2VQUEJRFEFFcEHGBtjNtoRsPR7QzbbHNtPBAUER9ClIEFRcUeFahCOLCJmtrAaVlsdCWMpNtcr/3P5kkvUnuzWS5mUkyJ7/vzLef75z/zZxzv+XeGEo+goAgIAgIAoJAFQiIA6kCNOkiCAgCgoAgoJQ4EPkWCAIjhYCMKwg0OQLiQJr8Aor4goAgIAiMFALiQEYKeRlXEBAEBIEmR6CJHUiTIy/iCwKCgCDQ5AiIA2nyCyjiCwKCgCAwUgiIAxkp5GVcQaCJERDRBQFGQBwIoyAkCAgCgoAgUDEC4kAqhkw6CAKCgCAgCDAC4kAYheEmGU8QEAQEgRZAQBxIC1xEUUEQEAQEgZFAQBzISKAuYwoCgsBIISDjuoiAOBAXwRRWgoAgIAiMJgTEgYymqy26CgKCgCDgIgLiQFwEczSwEh0FAUFAEMgiIA4ki4TEgoAgIAgIAhUhIA6kIriksSAgCAgCI4VA440rDqTxrolIJAgIAoJAUyAgDqQpLpMIKQgIAoJA4yEgDqTxrolIVB8EhKsgIAi4jIA4EJcBFXaCgCAgCIwWBMSBjJYrLXoKAoKAIOAyAmU7EJfHFXaCgCAgCAgCTY6AOJAmv4AiviAgCAgCI4WAOJCRQl7GFQTKRkAaCgKNiUAzOJBdQqHQ+EAgsA9of7/ff6DP5zsYdGhbW9t0Jk6DDuY6bgPah/sA8l1AEgQBQUAQEATqgEAjOhCCnu1wAvvBOUyDI5iM/DjDMPYA7erxeHb2er0hkA/1BhOnQSGu4zagPbgP90X9NOaF/BgQ80YkQRAQBAQBQaBWBBrJgeyMGcQBMPiHw/AfACcwFmlvrQq2tbV5mRd4TgK/w+FM9gfPnUESBAFBQBAQBGpAoBEcSBCOYzIM/IGYQbTDyNdNJuYNZ7Irj4UxJwG3AEiCICAICAKCQBUI1M1YlyGLD7OB/WDMD4HjcNyrSCaTKdM03+jv738J9AJoPehp0BOgv2eI01zGddzmJfTZwn2d5MCYYzD2VJYBbXwgCYKAIOA2AsKvpREYCQfiDQaDe2M28A7MBsbaoTswMJCEA9gM57AeTuCxWCz2PNq9CnodtA3UD0qAdIY4zWVcx21eRZ8N3Jd5MC/mibZFgWWALFMh0wRUekASBAFBQBAQBMpAYLgdSIiNNRG9DXHRhnYqlXoLBv+5RCLxOBzAi5CfHQI7CSSrCtx3G/NinswbjqSvkBNkMSDTnj6fbyrqQiAJgoAgIAgIAkMgMJwOZGcY6oNARRvjMOqw7f3r4vH4s5B3O6heYTscyTMYbD3GjBYO4vV6IV7bQShvkE12SFJF8PtDpwYC4R8Gg6EHET8dDIZfAWnQG4FAaF0wGPpzMBhejfQXwH430IiGtrbQEVhKPL6Q2trCh9dJME/hWJY8H7Ko07DCVhBoLQSGy4HsBss8GZQ3Hox4HMZ8A4z604D1TdBwhW0Y8ymM/TzLYB2UZQTx0eERN6xWuYZOh8bDKawAvWoY9Esidb5SdCTiKUqpPUEcdiWiSUrRe5RSZyP9XbR/HY7kLhjQY1A2IsHrVdcTedYUksejrqqTQMHCsbJ5pQx2quUOS8DuAjTmY+OIJAgCowuBPINeJ9XHhUKhiTDKZOWPfYktMOJPomwLaKTCGywDls62WgVgWVlmlL0d1OghBCPWHQzSRgjaCXobqKIAR3ISDOh9wWDoF1jGY4dTUf/R2NjnCx8G3O8Ddjdi/8w/GjFodZ1Fv6ERqLcD2ROGeHyhGLjz34h9iQ0o5z0KRCMaNJbO/gkJNoHyAmTf... [truncated]"
+              className="h-16 w-auto brightness-0 invert"
+              src="/orbit-logo.png"
             />
           </div>
           {/* Mission Statement */}
@@ -158,8 +158,8 @@ export default function LoginPage() {
           <div className="flex lg:hidden items-center justify-center mb-12">
             <img
               alt="Orbit Logo"
-              className="h-10 w-auto"
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAB4CAYAAADc36SXAAAQAElEQVR4AexdCZxbZbX/zk0mK9CBgthSlkILhQqlKj4E2VQUEJRFEFFcEHGBtjNtoRsPR7QzbbHNtPBAUER9ClIEFRcUeFahCOLCJmtrAaVlsdCWMpNtcr/3P5kkvUnuzWS5mUkyJ7/vzLef75z/zZxzv+XeGEo+goAgIAgIAoJAFQiIA6kCNOkiCAgCgoAgoJQ4EPkWCAIjhYCMKwg0OQLiQJr8Aor4goAgIAiMFALiQEYKeRlXEBAEBIEmR6CJHUiTIy/iCwKCgCDQ5AiIA2nyCyjiCwKCgCAwUgiIAxkp5GVcQaCJERDRBQFGQBwIoyAkCAgCgoAgUDEC4kAqhkw6CAKCgCAgCDAC4kAYheEmGU8QEAQEgRZAQBxIC1xEUUEQEAQEgZFAQBzISKAuYwoCgsBIISDjuoiAOBAXwRRWgoAgIAiMJgTEgYymqy26CgKCgCDgIgLiQFwEczSwEh0FAUFAEMgiIA4ki4TEgoAgIAgIAhUhIA6kIriksSAgCAgCI4VA440rDqTxrolIJAgIAoJAUyAgDqQpLpMIKQgIAoJA4yEgDqTxrolIVB8EhKsgIAi4jIA4EJcBFXaCgCAgCIwWBMSBjJYrLXoKAoKAIOAyAmU7EJfHFXaCgCAgCAgCTY6AOJAmv4AiviAgCAgCI4WAOJCRQl7GFQTKRkAaCgKNiUAzOJBdQqHQ+EAgsA9of7/ff6DP5zsYdGhbW9t0Jk6DDuY6bgPah/sA8l1AEgQBQUAQEATqgEAjOhCCnu1wAvvBOUyDI5iM/DjDMPYA7erxeHb2er0hkA/1BhOnQSGu4zagPbgP90X9NOaF/BgQ80YkQRAQBAQBQaBWBBrJgeyMGcQBMPiHw/AfACcwFmlvrQq2tbV5mRd4TgK/w+FM9gfPnUESBAFBQBAQBGpAoBEcSBCOYzIM/IGYQbTDyNdNJuYNZ7Irj4UxJwG3AEiCICAICAKCQBUI1M1YlyGLD7OB/WDMD4HjcNyrSCaTKdM03+jv738J9AJoPehp0BOgv2eI01zGddzmJfTZwn2d5MCYYzD2VJYBbXwgCYKAIOA2AsKvpREYCQfiDQaDe2M28A7MBsbaoTswMJCEA9gM57AeTuCxWCz2PNq9CnodtA3UD0qAdIY4zWVcx21eRZ8N3Jd5MC/mibZFgWWALFMh0wRUekASBAFBQBAQBMpAYLgdSIiNNRG9DXHRhnYqlXoLBv+5RCLxOBzAi5CfHQI7CSSrCtx3G/NinswbjqSvkBNkMSDTnj6fbyrqQiAJgoAgIAgIAkMgMJwOZGcY6oNARRvjMOqw7f3r4vH4s5B3O6heYTscyTMYbD3GjBYO4vV6IV7bQShvkE12SFJF8PtDpwYC4R8Gg6EHET8dDIZfAWnQG4FAaF0wGPpzMBhejfQXwH430IiGtrbQEVhKPL6Q2trCh9dJME/hWJY8H7Ko07DCVhBoLQSGy4HsBss8GZQ3Hox4HMZ8A4z604D1TdBwhW0Y8ymM/TzLYB2UZQTx0eERN6xWuYZOh8bDKawAvWoY9Esidb5SdCTiKUqpPUEcdiWiSUrRe5RSZyP9XbR/HY7kLhjQY1A2IsHrVdcTedYUksejrqqTQMHCsbJ5pQx2quUOS8DuAjTmY+OIJAgCowuBPINeJ9XHhUKhiTDKZOWPfYktMOJPomwLaKTCGywDls62WgVgWVlmlL0d1OghBCPWHQzSRgjaCXobqKIAR3ISDOh9wWDoF1jGY4dTUf/R2NjnCx8G3O8Ddjdi/8w/GjFodZ1Fv6ERqLcD2ROGeHyhGLjz34h9iQ0o5z0KRCMaNJbO/... [truncated]"
+              className="h-14 w-auto"
+              src="/orbit-logo.png"
             />
           </div>
           {/* Login Card */}
@@ -176,10 +176,11 @@ export default function LoginPage() {
             <form className="space-y-6" onSubmit={handleLogin}>
               {/* Email Field */}
               <div className="flex flex-col gap-field-gap">
-                <label className="font-section-label text-section-label text-zinc-700 uppercase">
+                <label className="font-section-label text-section-label text-zinc-700 uppercase" htmlFor="email">
                   Email Address
                 </label>
                 <input
+                  id="email"
                   className="w-full px-3 py-2 border border-zinc-200 rounded bg-white text-zinc-900 font-body-sm text-body-sm focus:outline-none focus:border-zinc-900 focus:ring-0 transition-colors"
                   placeholder="name@atomberg.com"
                   type="email"
@@ -190,9 +191,10 @@ export default function LoginPage() {
               {/* Password Field */}
               <div className="flex flex-col gap-field-gap">
                 <div className="flex justify-between items-center">
-                  <label className="font-section-label text-section-label text-zinc-700 uppercase">Password</label>
+                  <label className="font-section-label text-section-label text-zinc-700 uppercase" htmlFor="password">Password</label>
                 </div>
                 <input
+                  id="password"
                   className="w-full px-3 py-2 border border-zinc-200 rounded bg-white text-zinc-900 font-body-sm text-body-sm focus:outline-none focus:border-zinc-900 focus:ring-0 transition-colors"
                   placeholder="••••••••"
                   type="password"

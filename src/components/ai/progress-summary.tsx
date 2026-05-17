@@ -1,10 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Sparkles, RefreshCw } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface ProgressSummaryProps {
   employeeId?: string;
@@ -54,66 +51,57 @@ export function ProgressSummary({ employeeId }: ProgressSummaryProps) {
 
   if (loading) {
     return (
-      <Card className="overflow-hidden border border-indigo-100 dark:border-indigo-950/40 bg-gradient-to-r from-indigo-50/40 to-violet-50/40 dark:from-indigo-950/10 dark:to-violet-950/10 backdrop-blur-md shadow-sm">
-        <CardContent className="p-5 flex items-start gap-4">
-          <div className="p-2 bg-indigo-100/60 dark:bg-indigo-900/40 rounded-lg animate-pulse">
-            <div className="w-5 h-5 bg-indigo-300 dark:bg-indigo-700 rounded-full" />
-          </div>
-          <div className="space-y-2 flex-1">
-            <div className="h-4 bg-indigo-100 dark:bg-indigo-950/80 rounded animate-pulse w-1/4" />
-            <div className="h-3 bg-indigo-100 dark:bg-indigo-950/80 rounded animate-pulse w-full" />
-            <div className="h-3 bg-indigo-100 dark:bg-indigo-950/80 rounded animate-pulse w-5/6" />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="bg-white border border-zinc-200 rounded-xl p-5 flex items-start gap-4">
+        <div className="p-2 bg-zinc-100 rounded-lg animate-pulse">
+          <div className="w-5 h-5 bg-zinc-200 rounded-full" />
+        </div>
+        <div className="space-y-2 flex-1 pt-1">
+          <div className="h-4 bg-zinc-100 rounded animate-pulse w-1/4" />
+          <div className="h-3 bg-zinc-100 rounded animate-pulse w-full" />
+          <div className="h-3 bg-zinc-100 rounded animate-pulse w-5/6" />
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="group relative overflow-hidden border border-indigo-100/80 dark:border-indigo-900/30 bg-gradient-to-br from-white/60 via-indigo-50/20 to-violet-50/30 dark:from-slate-900/80 dark:via-indigo-950/5 dark:to-violet-950/10 backdrop-blur-md shadow-sm hover:shadow-md hover:border-indigo-200/80 dark:hover:border-indigo-800/40 transition-all duration-300">
-      {/* Sparkle background elements */}
-      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-400/10 to-violet-500/15 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500" />
-      
-      <CardContent className="p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-start gap-4 flex-1">
-          <div className="p-2.5 bg-indigo-500/10 dark:bg-indigo-400/10 rounded-xl text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-500/20 dark:group-hover:bg-indigo-400/20 transition-colors duration-300">
-            <Sparkles className="w-5 h-5 animate-pulse" />
+    <div className="bg-white border border-zinc-200 rounded-xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-fade-in relative overflow-hidden group hover:border-zinc-300 transition-colors">
+      <div className="flex items-start gap-4 flex-1 z-10">
+        <div className="p-2 bg-zinc-100 rounded-lg text-zinc-700 group-hover:bg-zinc-200 transition-colors duration-300">
+          <span className="material-symbols-outlined text-[20px] animate-pulse-subtle">smart_toy</span>
+        </div>
+        
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h4 className="text-[14px] font-medium text-zinc-900 leading-[20px]">
+              AI Performance Insights
+            </h4>
+            <span 
+              className={cn(
+                "text-[10px] py-0.5 px-2 font-medium tracking-widest uppercase rounded border",
+                isSimulated 
+                  ? "bg-yellow-50 text-yellow-700 border-yellow-200" 
+                  : "bg-green-50 text-green-700 border-green-200"
+              )}
+            >
+              {isSimulated ? 'Simulated' : 'Live'}
+            </span>
           </div>
           
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h4 className="text-sm font-semibold text-indigo-950 dark:text-indigo-200 tracking-wide font-heading">
-                AI Performance Insights
-              </h4>
-              <Badge 
-                variant="outline" 
-                className={`text-[10px] py-0 px-2 h-4 font-medium tracking-wider uppercase border ${
-                  isSimulated 
-                    ? 'bg-amber-500/5 text-amber-600 border-amber-300/30 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20' 
-                    : 'bg-emerald-500/5 text-emerald-600 border-emerald-300/30 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                }`}
-              >
-                {isSimulated ? 'AI Simulated' : 'Live Insights'}
-              </Badge>
-            </div>
-            
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans font-medium">
-              {summary}
-            </p>
-          </div>
+          <p className="text-[14px] text-zinc-600 leading-[24px]">
+            {summary}
+          </p>
         </div>
+      </div>
 
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => fetchSummary(true)} 
-          disabled={isRefreshing}
-          className="h-8 w-8 md:h-9 md:w-auto md:px-3 rounded-full text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-100/50 dark:hover:bg-indigo-900/30 shrink-0 border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900/50 transition-all duration-300"
-        >
-          <RefreshCw className={`h-4 w-4 md:mr-1.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-          <span className="hidden md:inline text-xs font-semibold">Regenerate</span>
-        </Button>
-      </CardContent>
-    </Card>
+      <button 
+        onClick={() => fetchSummary(true)} 
+        disabled={isRefreshing}
+        className="px-3 py-1.5 rounded flex items-center gap-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-colors z-10 border border-transparent hover:border-zinc-200"
+      >
+        <span className={cn("material-symbols-outlined text-[16px]", isRefreshing && "animate-spin")}>sync</span>
+        <span className="text-[12px] font-medium hidden md:inline">Regenerate</span>
+      </button>
+    </div>
   );
 }

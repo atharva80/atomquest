@@ -24,7 +24,7 @@ interface GoalFormProps {
   onSuccess?: () => void;
 }
 
-export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleId, mode, onSuccess }: GoalFormProps) {
+export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleId, mode, onSuccess, existingGoals = [] }: GoalFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -147,114 +147,117 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
       {/* Column 1: Form */}
       <div className="w-full md:w-3/5 flex flex-col gap-6 animate-fade-in">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-semibold tracking-tight text-zinc-950 font-page-title">
+          <h2 className="text-[24px] font-semibold tracking-tight text-zinc-950 font-page-title leading-[32px]">
             {mode === 'create' ? 'Create New Goal' : 'Edit Goal'}
           </h2>
-          <p className="text-sm text-zinc-500 font-body-sm">
+          <p className="text-[14px] text-zinc-500 font-body-sm leading-[20px]">
             Define measurable metrics and alignment for the current cycle.
           </p>
         </div>
         <div className="flex flex-col gap-[24px]">
           <div className="flex flex-col gap-[6px]">
-            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Goal Title</label>
-            <Input
+            <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">Goal Title</label>
+            <input
               id="title"
               value={formData.title}
               onChange={(e) => handleChange('title', e.target.value)}
               placeholder="e.g. Optimize BLDC motor efficiency profiles"
-              className={errors.title ? 'border-red-500' : ''}
+              className={`w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors ${errors.title ? 'border-red-500' : ''}`}
             />
-            {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
+            {errors.title && <p className="text-[12px] text-red-500 mt-1">{errors.title}</p>}
           </div>
           <div className="flex flex-col gap-[6px]">
-            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Thrust Area</label>
-            <Select value={formData.thrust_area_id} onValueChange={(val) => handleChange('thrust_area_id', val)}>
-              <SelectTrigger className={errors.thrust_area_id ? 'border-red-500' : ''}>
-                <SelectValue placeholder="Select a thrust area" />
-              </SelectTrigger>
-              <SelectContent>
-                {thrustAreas.map((ta) => (
-                  <SelectItem key={ta.id} value={ta.id}>
-                    {ta.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.thrust_area_id && <p className="text-sm text-red-500">{errors.thrust_area_id}</p>}
+            <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">Thrust Area</label>
+            <select
+              value={formData.thrust_area_id}
+              onChange={(e) => handleChange('thrust_area_id', e.target.value)}
+              className={`w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors appearance-none ${errors.thrust_area_id ? 'border-red-500' : ''}`}
+            >
+              <option value="" disabled>Select a thrust area</option>
+              {thrustAreas.map((ta) => (
+                <option key={ta.id} value={ta.id}>{ta.name}</option>
+              ))}
+            </select>
+            {errors.thrust_area_id && <p className="text-[12px] text-red-500 mt-1">{errors.thrust_area_id}</p>}
           </div>
           <div className="flex flex-col gap-[6px]">
-            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">UOM Type</label>
-            <Select value={formData.uom_type} onValueChange={(val) => handleChange('uom_type', val)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select UoM" />
-              </SelectTrigger>
-              <SelectContent>
-                {UOM_TYPES.map((uom) => (
-                  <SelectItem key={uom.value} value={uom.value}>
-                    <div className="flex flex-col">
-                      <span>{uom.label}</span>
-                      <span className="text-[10px] text-muted-foreground">{uom.description}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">UOM Type</label>
+            <select
+              value={formData.uom_type}
+              onChange={(e) => handleChange('uom_type', e.target.value)}
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors appearance-none"
+            >
+              <option value="" disabled>Select UoM Type</option>
+              {UOM_TYPES.map((uom) => (
+                <option key={uom.value} value={uom.value}>{uom.label}</option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-[6px]">
-            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Target Value</label>
+            <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">Target Value</label>
             {isTimeline ? (
-              <Input
+              <input
                 id="target"
                 type="date"
                 value={formData.target}
                 onChange={(e) => handleChange('target', e.target.value)}
-                className={errors.target ? 'border-red-500' : ''}
+                className={`w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors tabular-nums ${errors.target ? 'border-red-500' : ''}`}
               />
             ) : (
               <div className="relative">
-                <Input
+                <input
                   id="target"
                   type="number"
                   step="0.01"
                   value={formData.target}
                   onChange={(e) => handleChange('target', e.target.value)}
                   disabled={isZeroBased}
-                  className={errors.target ? 'border-red-500' : ''}
+                  placeholder="e.g. 95"
+                  className={`w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors tabular-nums ${errors.target ? 'border-red-500' : ''}`}
                 />
                 {formData.uom_type.includes('percentage') && (
-                  <span className="absolute right-3 top-2.5 text-muted-foreground">%</span>
+                  <span className="absolute right-3 top-2.5 text-zinc-400 text-[14px]">%</span>
                 )}
               </div>
             )}
-            {errors.target && <p className="text-sm text-red-500">{errors.target}</p>}
+            {errors.target && <p className="text-[12px] text-red-500 mt-1">{errors.target}</p>}
           </div>
           <div className="flex flex-col gap-[6px]">
-            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Weightage (%)</label>
-            <Input
+            <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">Weightage (%)</label>
+            <input
               id="weightage"
               type="number"
               min="10"
               max={mode === 'create' ? remainingWeightage : 100}
               value={formData.weightage}
               onChange={(e) => handleChange('weightage', e.target.value)}
-              className={errors.weightage ? 'border-red-500' : ''}
+              className={`w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors tabular-nums ${errors.weightage ? 'border-red-500' : ''}`}
             />
-            {errors.weightage && <p className="text-sm text-red-500">{errors.weightage}</p>}
+            {errors.weightage && <p className="text-[12px] text-red-500 mt-1">{errors.weightage}</p>}
           </div>
           <div className="flex items-center gap-3 pt-2">
-            <Button type="button" variant="outline" onClick={() => router.back()} disabled={loading}>
+            <button 
+              type="button" 
+              onClick={() => router.back()} 
+              disabled={loading}
+              className="px-4 py-2 bg-white border border-zinc-200 text-zinc-900 font-medium text-[14px] rounded hover:bg-zinc-50 transition-colors leading-[20px]"
+            >
               Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            </button>
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="px-4 py-2 bg-zinc-900 text-white font-medium text-[14px] rounded hover:bg-zinc-800 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 leading-[20px]"
+            >
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               {mode === 'create' ? 'Add Goal' : 'Save Changes'}
-            </Button>
+            </button>
           </div>
         </div>
       </div>
       {/* Column 2: Allocation Info */}
       <div className="w-full md:w-2/5 animate-slide-up stagger-1">
-        <div className="bg-white border border-zinc-200 rounded-xl p-card-padding flex flex-col gap-6">
+        <div className="bg-white border border-zinc-200 rounded-xl p-5 flex flex-col gap-6 sticky top-[80px]">
           {/* Ring */}
           <div className="flex items-center gap-4">
             <div className="relative w-[80px] h-[80px] shrink-0">
@@ -285,18 +288,29 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
                 <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Remaining</span>
               </div>
             </div>
-            <p className="text-xs text-zinc-500 font-body-sm leading-relaxed">
+            <p className="text-[12px] text-zinc-500 font-body-sm leading-relaxed">
               Total allocated: {100 - remainingWeightage}%. You must distribute exactly 100% before submission.
             </p>
           </div>
           <hr className="border-zinc-100" />
           {/* Checklist */}
           <div className="flex flex-col gap-3">
-            <h4 className="font-section-label text-xs text-zinc-400 tracking-widest uppercase">
+            <h4 className="font-section-label text-[12px] text-zinc-400 tracking-widest uppercase">
               Allocation Checklist
             </h4>
-            <ul className="flex flex-col gap-2 font-body-sm text-body-sm">
-              {/* This should be populated with existing goals */}
+            <ul className="flex flex-col gap-2 text-[14px]">
+              {existingGoals.map((g, i) => (
+                <li key={g.id} className="flex justify-between items-center text-zinc-700">
+                  <span className="truncate pr-4">Goal {i + 1}</span>
+                  <span className="tabular-nums font-medium text-zinc-900">{g.weightage}%</span>
+                </li>
+              ))}
+              {mode === 'create' && Number(formData.weightage) > 0 && (
+                <li className="flex justify-between items-center text-zinc-400 italic">
+                  <span className="truncate pr-4">New Goal</span>
+                  <span className="tabular-nums font-medium text-zinc-900">{formData.weightage}%</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>

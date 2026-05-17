@@ -23,12 +23,12 @@ test.describe('Multi-User Workflow & Backend Enforcement', () => {
       await expect(page).toHaveURL(/\/employee/, { timeout: 15000 });
       
       // Verify we are on the employee dashboard
-      await expect(page.locator('h1')).toContainText(/Welcome back|Dashboard/i);
+      await expect(page.locator('h1, h2').first()).toContainText(/Welcome back|Dashboard/i);
 
       // Verify that goals are specific to this employee
       await page.goto('/employee/goals');
       // No specific check here without DB-to-UI mapping, but we verify page loads
-      await expect(page.locator('h1')).toContainText('My Goals');
+      await expect(page.locator('h1, h2').first()).toContainText('My Goals');
 
       // Sign out via form POST
       await page.locator('form[action="/api/auth/signout"] button').click();
@@ -87,7 +87,7 @@ test.describe('Multi-User Workflow & Backend Enforcement', () => {
     await page.click('button:has(span:text-is("Manager"))');
     await page.goto('/manager/approvals');
 
-    const approvalCards = page.locator('.rounded-xl');
+    const approvalCards = page.locator('div.bg-white.border-zinc-200');
     if (await approvalCards.count() > 0) {
       const firstCard = approvalCards.first();
       const employeeName = await firstCard.locator('h3').first().textContent();
@@ -110,16 +110,16 @@ test.describe('Multi-User Workflow & Backend Enforcement', () => {
     await page.goto('/admin/audit');
 
     // Check if audit table exists and has headers at least
-    await expect(page.locator('table')).toBeVisible();
+    await expect(page.locator('text=Aggregate Score').first()).toBeVisible();
     
     // Give it a moment to load data
     await page.waitForTimeout(2000);
     
     // We expect at least one action if we've run previous tests
-    const rows = page.locator('table tbody tr');
+    const rows = page.locator('div.divide-y > div');
     const count = await rows.count();
     if (count > 0 && !(await rows.first().textContent())?.includes('No audit logs')) {
-      const firstRowAction = rows.first().locator('td:nth-child(2)');
+      const firstRowAction = rows.first();
       await expect(firstRowAction).toBeVisible({ timeout: 10000 });
       const actionText = await firstRowAction.textContent();
       console.log(`Latest audit action: ${actionText}`);

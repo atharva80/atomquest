@@ -12,56 +12,56 @@
 # Error details
 
 ```
-Error: expect(page).toHaveURL(expected) failed
+Error: expect(locator).toBeVisible() failed
 
-Expected pattern: /\/employee/
-Received string:  "http://localhost:3005/login"
+Locator: locator('text=AI Performance Insights').first()
+Expected: visible
 Timeout: 15000ms
+Error: element(s) not found
 
 Call log:
-  - Expect "toHaveURL" with timeout 15000ms
-    11 × unexpected value "http://localhost:3005/login"
-    - waiting for" http://localhost:3005/employee" navigation to finish...
+  - Expect "toBeVisible" with timeout 15000ms
+  - waiting for locator('text=AI Performance Insights').first()
 
 ```
 
 ```yaml
-- img
-- text: AtomQuest
-- heading "Goal Setting & Tracking for Modern Teams" [level=1]
-- paragraph: Align employee objectives with company goals, track quarterly progress, and foster a culture of high performance.
-- text: © 2026 Atomberg Technologies •
-- link "Privacy Policy":
-  - /url: "#"
-- text: •
-- link "Terms of Service":
-  - /url: "#"
-- text: Welcome back Sign in to your AtomQuest account Email
-- img
-- textbox "Email":
-  - /placeholder: name@atomberg.com
-  - text: dev1@atomberg.com
-- text: Password
-- link "Forgot password?":
-  - /url: "#"
-- img
-- textbox "Password": password123
-- button "Sign In"
-- text: Quick Demo Login
-- button "Employee":
+- complementary:
+  - img "Orbit Logo"
+  - navigation:
+    - link "dashboard Dashboard":
+      - /url: /employee
+    - link "target My Goals":
+      - /url: /employee/goals
+    - link "fact_check Check-ins":
+      - /url: /employee/check-ins
+  - link "add Create New Goal":
+    - /url: /employee/goals/new
+  - link "help Help Center":
+    - /url: "#"
+  - button "logout Sign Out"
+- banner:
+  - navigation: FY 2025-26
+  - text: search
+  - textbox "Search..."
+  - button "notifications"
+  - button "settings"
+  - button "DS"
+- main:
+  - heading "My Goals" [level=2]
+  - paragraph: FY 2025-26 — Define and track your operational targets.
+  - button "Submit for Approval" [disabled]
+  - link "add Add Goal":
+    - /url: /employee/goals/new
+  - text: target
+  - heading "No goals created yet" [level=3]
+  - paragraph: Start defining your objectives for this cycle. You can add up to 8 goals, and their combined weightage must equal exactly 100%.
+  - link "add Create Your First Goal":
+    - /url: /employee/goals/new
+- button:
   - img
-  - text: Employee
-- button "Manager":
   - img
-  - text: Manager
-- button "Admin":
-  - img
-  - text: Admin
-- region "Notifications alt+T":
-  - list:
-    - listitem:
-      - img
-      - text: Logged in successfully
+- region "Notifications alt+T"
 - alert
 ```
 
@@ -75,15 +75,15 @@ Call log:
   5  |     // 1. Login as Employee
   6  |     await page.goto('/login');
   7  |     await page.click('button:has-text("Employee")');
-> 8  |     await expect(page).toHaveURL(/\/employee/, { timeout: 15000 });
-     |                        ^ Error: expect(page).toHaveURL(expected) failed
+  8  |     await expect(page).toHaveURL(/\/employee/, { timeout: 15000 });
   9  | 
   10 |     // 2. Navigate to goals page to check Progress Summary
   11 |     await page.goto('/employee/goals');
   12 | 
   13 |     // Wait for the AI Performance Insights section to appear
   14 |     const aiSummaryTitle = page.locator('text=AI Performance Insights').first();
-  15 |     await expect(aiSummaryTitle).toBeVisible({ timeout: 15000 });
+> 15 |     await expect(aiSummaryTitle).toBeVisible({ timeout: 15000 });
+     |                                  ^ Error: expect(locator).toBeVisible() failed
   16 | 
   17 |     // Verify there is an AI dynamic summary text loaded
   18 |     const aiSummaryText = page.locator('p:has-text("progress")').or(page.locator('p:has-text("score")')).first();

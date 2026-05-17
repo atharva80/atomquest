@@ -65,14 +65,56 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      spacing: {
+        "sidebar-width": "240px",
+        "inline-gap": "0.5rem",
+        "page-margin": "1.5rem",
+        "header-height": "56px",
+        "card-padding": "1.25rem",
+        "field-gap": "0.375rem",
+        "component-padding": "1rem",
+        "section-gap": "1.5rem"
+      },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         heading: ["var(--font-heading)", "system-ui", "sans-serif"],
+        "body-relaxed": ["Inter", "sans-serif"],
+        "page-title": ["Inter", "sans-serif"],
+        "caption": ["Inter", "sans-serif"],
+        "data-value-lg": ["Inter", "sans-serif"],
+        "badge-label": ["Inter", "sans-serif"],
+        "table-cell-primary": ["Inter", "sans-serif"],
+        "section-label": ["Inter", "sans-serif"],
+        "section-heading": ["Inter", "sans-serif"],
+        "body-sm": ["Inter", "sans-serif"]
+      },
+      fontSize: {
+        "body-relaxed": ["14px", { lineHeight: "24px", fontWeight: "400" }],
+        "page-title": ["24px", { lineHeight: "32px", letterSpacing: "-0.02em", fontWeight: "600" }],
+        "caption": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+        "data-value-lg": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+        "badge-label": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+        "table-cell-primary": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+        "section-label": ["12px", { lineHeight: "16px", letterSpacing: "0.1em", fontWeight: "500" }],
+        "section-heading": ["16px", { lineHeight: "24px", fontWeight: "500" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }]
       },
       keyframes: {
-        "fade-in": {
+        "fade-in-up": {
           "0%": { opacity: "0", transform: "translateY(4px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        "zoom-in": {
+          "0%": { transform: "scale(1)" },
+          "100%": { transform: "scale(1.1)" },
+        },
+        "pulse-subtle": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: ".5" },
         },
         "slide-in": {
           "0%": { transform: "translateX(-100%)" },
@@ -80,7 +122,11 @@ const config: Config = {
         },
       },
       animation: {
-        "fade-in": "fade-in 0.3s ease-out",
+        "fade-in-up": "fade-in-up 0.6s ease-out forwards",
+        "fade-in-up-stagger": "fade-in-up 0.6s ease-out forwards",
+        "fade-in": "fade-in 0.8s ease-out forwards",
+        "zoom-in": "zoom-in 20s infinite alternate",
+        "pulse-subtle": "pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "slide-in": "slide-in 0.3s ease-out",
       },
     },

@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server';
-import { BarChart, Card, Metric, Text, Title } from '@tremor/react';
 import Link from 'next/link';
 import { getMyGoals } from '@/queries/goals';
 import { getActiveCycle } from '@/queries/cycles';
@@ -83,14 +82,25 @@ export default async function AuditPage() {
           <h3 className="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-6">
             CUMULATIVE PERFORMANCE HISTORY
           </h3>
-          <BarChart
-            className="h-64"
-            data={performanceHistory}
-            index="quarter"
-            categories={['score']}
-            colors={['zinc']}
-            yAxisWidth={30}
-          />
+          <div className="h-64 flex items-end gap-8 pb-8 pt-4 px-4 border-b border-zinc-200 relative">
+            {performanceHistory.map((item, i) => (
+              <div key={item.quarter} className="flex-1 flex flex-col justify-end items-center h-full group relative">
+                {/* Tooltip */}
+                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-zinc-900 text-white font-caption text-caption px-2 py-1 rounded transition-opacity">
+                  {item.score}%
+                </div>
+                {/* Bar */}
+                <div 
+                  className="w-16 bg-zinc-800 rounded-t-sm transition-all duration-500 group-hover:bg-zinc-900" 
+                  style={{ height: `${item.score}%` }}
+                ></div>
+                {/* Label */}
+                <div className="absolute -bottom-7 font-caption text-caption text-zinc-500">
+                  {item.quarter}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="space-y-6">
           <div className="bg-white border border-zinc-200 rounded-lg p-card-padding">

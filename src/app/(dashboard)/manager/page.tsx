@@ -1,13 +1,12 @@
 import { createClient } from '@/lib/supabase/server';
-import { Card, Metric, Text, Title, DonutChart } from '@tremor/react';
 import Link from 'next/link';
-import { Users, FileCheck, MessageSquare, ArrowRight } from 'lucide-react';
 import { getActiveCycle, getCurrentQuarter } from '@/queries/cycles';
 import { getTeamMembers } from '@/queries/users';
 import { getManagerStats } from '@/queries/manager';
 import { ManagerStatusChart } from '@/components/dashboard/manager-chart';
+import { StatCard } from '@/components/ui/stat-card';
 
-export const metadata = { title: 'Manager Dashboard — AtomQuest' };
+export const metadata = { title: 'Manager Dashboard — Orbit' };
 
 export default async function ManagerDashboard() {
   const supabase = await createClient();
@@ -35,68 +34,70 @@ export default async function ManagerDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6">
+      {/* Header */}
+      <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-[24px] font-semibold text-zinc-900 tracking-tight leading-[32px]">
             Manager Overview
-          </h1>
-          <p className="text-slate-500 mt-1">
+          </h2>
+          <p className="text-[14px] text-zinc-500 leading-[20px]">
             {cycle ? `Active cycle: ${cycle.name}` : 'No active cycle found'}
           </p>
         </div>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="h-5 w-5 text-indigo-500" />
-            <Text>Team Size</Text>
-          </div>
-          <Metric>{team.length}</Metric>
-          <div className="mt-4">
-            <Link href="/manager/team" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
-              View Directory <ArrowRight className="h-3 w-3 ml-1" />
-            </Link>
-          </div>
-        </Card>
-        
-        <Card className="ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <FileCheck className="h-5 w-5 text-orange-500" />
-            <Text>Pending Goal Approvals</Text>
-          </div>
-          <Metric>{pendingApprovalsCount}</Metric>
-          <div className="mt-4">
-            <Link href="/manager/approvals" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
-              Review Goals <ArrowRight className="h-3 w-3 ml-1" />
-            </Link>
-          </div>
-        </Card>
+      {/* Metrics */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard 
+          label="Team Size"
+          value={team.length.toString()}
+          icon="group"
+          delayMs={100}
+        >
+          <Link href="/manager/team" className="ml-auto mt-1 flex items-center text-[12px] text-zinc-500 hover:text-zinc-900 transition-colors">
+            View Directory <span className="material-symbols-outlined text-[14px] ml-0.5">arrow_forward</span>
+          </Link>
+        </StatCard>
 
-        <Card className="ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm">
-          <div className="flex items-center gap-2 mb-2">
-            <MessageSquare className="h-5 w-5 text-emerald-500" />
-            <Text>Check-ins to Review</Text>
-          </div>
-          <Metric>{pendingReviewsCount}</Metric>
-          <div className="mt-4">
-            <Link href="/manager/check-ins" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center">
-              Provide Feedback <ArrowRight className="h-3 w-3 ml-1" />
-            </Link>
-          </div>
-        </Card>
-      </div>
+        <StatCard 
+          label="Pending Approvals"
+          value={pendingApprovalsCount.toString()}
+          icon="fact_check"
+          trendText={pendingApprovalsCount > 0 ? "Requires action" : "All caught up"}
+          trendStatus={pendingApprovalsCount > 0 ? "bad" : "good"}
+          delayMs={200}
+        >
+          <Link href="/manager/approvals" className="ml-auto mt-1 flex items-center text-[12px] text-zinc-500 hover:text-zinc-900 transition-colors">
+            Review Goals <span className="material-symbols-outlined text-[14px] ml-0.5">arrow_forward</span>
+          </Link>
+        </StatCard>
 
-      {/* Simplified Team Status Chart */}
-      <ManagerStatusChart 
-        data={[
-          { name: 'Draft', value: statusCounts.draft },
-          { name: 'Submitted', value: statusCounts.submitted },
-          { name: 'Approved', value: statusCounts.approved },
-          { name: 'Locked', value: statusCounts.locked }
-        ]}
-      />
+        <StatCard 
+          label="Pending Reviews"
+          value={pendingReviewsCount.toString()}
+          icon="reviews"
+          trendText={pendingReviewsCount > 0 ? "Requires action" : "All caught up"}
+          trendStatus={pendingReviewsCount > 0 ? "bad" : "good"}
+          delayMs={300}
+        >
+          <Link href="/manager/check-ins" className="ml-auto mt-1 flex items-center text-[12px] text-zinc-500 hover:text-zinc-900 transition-colors">
+            Provide Feedback <span className="material-symbols-outlined text-[14px] ml-0.5">arrow_forward</span>
+          </Link>
+        </StatCard>
+      </section>
+
+      {/* Team Status Chart */}
+      <section className="animate-fade-in-up-stagger" style={{ animationDelay: '400ms' }}>
+        <ManagerStatusChart 
+          data={[
+            { name: 'Draft', value: statusCounts.draft },
+            { name: 'Submitted', value: statusCounts.submitted },
+            { name: 'Approved', value: statusCounts.approved },
+            { name: 'Locked', value: statusCounts.locked }
+          ]}
+        />
+      </section>
     </div>
   );
 }

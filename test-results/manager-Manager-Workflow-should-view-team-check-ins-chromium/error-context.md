@@ -1,0 +1,107 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: manager.spec.ts >> Manager Workflow >> should view team check-ins
+- Location: tests/manager.spec.ts:29:7
+
+# Error details
+
+```
+Error: expect(locator).toBeVisible() failed
+
+Locator: locator('.rounded-xl').first().locator('text=Status')
+Expected: visible
+Timeout: 15000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 15000ms
+  - waiting for locator('.rounded-xl').first().locator('text=Status')
+
+```
+
+```yaml
+- complementary:
+  - img "Orbit Logo"
+  - navigation:
+    - link "dashboard Dashboard":
+      - /url: /manager
+    - link "groups My Team":
+      - /url: /manager/team
+    - link "rule Approvals":
+      - /url: /manager/approvals
+    - link "fact_check Team Check-ins":
+      - /url: /manager/check-ins
+  - link "help Help Center":
+    - /url: "#"
+  - button "logout Sign Out"
+- banner:
+  - navigation: FY 2025-26
+  - text: search
+  - textbox "Search..."
+  - button "notifications"
+  - button "settings"
+  - button "MS"
+- main:
+  - heading "Team Check-in Reviews" [level=1]
+  - paragraph: Provide feedback on your team's quarterly achievements
+  - text: fact_check
+  - heading "No Check-ins Found" [level=3]
+  - paragraph: No check-ins submitted by your team for Q1 yet.
+- button:
+  - img
+  - img
+- region "Notifications alt+T"
+- alert
+```
+
+# Test source
+
+```ts
+  1  | import { test, expect } from '@playwright/test';
+  2  | 
+  3  | test.describe('Manager Workflow', () => {
+  4  |   test.beforeEach(async ({ page }) => {
+  5  |     await page.goto('/login');
+  6  |     await page.click('button:has-text("Manager")');
+  7  |     await expect(page).toHaveURL(/\/manager/);
+  8  |   });
+  9  | 
+  10 |   test('should view team dashboard', async ({ page }) => {
+  11 |     await expect(page.locator('h1, h2, h3').first()).toContainText(/Manager Overview|Team Dashboard/i);
+  12 |   });
+  13 | 
+  14 |   test('should review pending approvals', async ({ page }) => {
+  15 |     await page.goto('/manager/approvals');
+  16 |     
+  17 |     await expect(page.locator('h1, h2, h3').first()).toContainText(/Approvals/i);
+  18 |     
+  19 |     const approvalCards = page.locator('.rounded-xl'); // Assuming Card uses rounded-xl
+  20 |     const count = await approvalCards.count();
+  21 |     
+  22 |     if (count > 0) {
+  23 |       await expect(approvalCards.first()).toBeVisible();
+  24 |     } else {
+  25 |       await expect(page.locator('text=No pending')).toBeVisible();
+  26 |     }
+  27 |   });
+  28 | 
+  29 |   test('should view team check-ins', async ({ page }) => {
+  30 |     await page.goto('/manager/check-ins');
+  31 |     await expect(page.locator('h1, h2, h3').first()).toContainText(/Check-in/i);
+  32 |     
+  33 |     // Check if any check-ins are present
+  34 |     const checkinCards = page.locator('.rounded-xl');
+  35 |     if (await checkinCards.count() > 0) {
+> 36 |       await expect(checkinCards.first().locator('text=Status')).toBeVisible();
+     |                                                                 ^ Error: expect(locator).toBeVisible() failed
+  37 |     }
+  38 |   });
+  39 | });
+  40 | 
+```

@@ -135,7 +135,7 @@ test.describe('Business Logic & Edge Cases', () => {
 
     await page.goto('/manager/approvals');
 
-    const approvalCards = page.locator('main .border-indigo-100');
+    const approvalCards = page.locator('div.bg-white.border-zinc-200');
     if (await approvalCards.count() > 0) {
       const firstCard = approvalCards.first();
       // Expand the card first

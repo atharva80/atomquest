@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { NAV_ITEMS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
 import type { UserRole } from '@/types';
 
 interface SidebarProps {
@@ -16,61 +14,58 @@ interface SidebarProps {
 
 export function Sidebar({ role, collapsed: initialCollapsed = false, className }: SidebarProps) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(initialCollapsed);
-  
   const navItems = NAV_ITEMS[role] || [];
 
   return (
-    <div className={cn(
-      "flex flex-col h-screen bg-slate-950 text-slate-200 transition-all duration-300 border-r border-slate-800 shrink-0", 
-      collapsed ? "w-20" : "w-64",
-      className
-    )}>
-      <div className="flex h-16 items-center justify-between px-4 border-b border-slate-800">
-        {!collapsed && <span className="text-xl font-bold text-indigo-400">AtomQuest</span>}
-        {collapsed && <span className="text-xl font-bold text-indigo-400 mx-auto">AQ</span>}
-        <button onClick={() => setCollapsed(!collapsed)} className="p-1 hover:bg-slate-800 rounded-md hidden md:block">
-          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-        </button>
+    <aside className={cn("w-[240px] flex-shrink-0 bg-zinc-50 border-r border-zinc-200 flex flex-col h-full py-4 relative z-40 hidden md:flex", className)}>
+      {/* Header */}
+      <div className="px-4 mb-8">
+        <div className="flex items-center gap-3 mb-1 mt-2">
+          <img alt="Orbit Logo" className="w-auto h-12 flex-shrink-0" src="/orbit-logo.png" />
+        </div>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4">
-        <ul className="space-y-1 px-2">
-          {navItems.map((item, index) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-            
-            return (
-              <li key={index}>
-                <Link href={item.href} className={cn(
-                  "flex items-center rounded-md px-3 py-2 transition-colors",
-                  isActive ? "bg-indigo-900/50 text-indigo-300 border-l-2 border-indigo-500" : "hover:bg-slate-800 hover:text-white text-slate-400",
-                  collapsed && "justify-center px-0 border-l-0"
-                )}>
-                  {Icon && <Icon className={cn("h-5 w-5", !collapsed && "mr-3")} />}
-                  {!collapsed && <span>{item.title}</span>}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      {/* Main Navigation */}
+      <nav className="flex-1 px-2 space-y-1">
+        {navItems.map((item, index) => {
+          // If we are at the exact item.href, or we are within a sub-path (except for exactly matching the root like /employee which we need to be careful about)
+          const isActive = pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== `/${role}`);
+          
+          return (
+            <Link key={index} href={item.href} className={cn(
+              "flex items-center gap-3 px-3 py-2 transition-all duration-200 rounded-md animate-fade-in-down",
+              isActive 
+                ? "bg-zinc-100 text-zinc-900 border-r-2 border-zinc-900 translate-x-1"
+                : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
+            )}>
+              <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+              <span className="text-[14px] leading-[20px] font-medium">{item.title}</span>
+            </Link>
+          );
+        })}
       </nav>
 
-      {/* Use a real form POST so the route handler can set Set-Cookie headers to expire HttpOnly auth cookies */}
-      <div className="p-4 border-t border-slate-800">
-        <form method="POST" action="/api/auth/signout" className="w-full">
-          <button
-            type="submit"
-            className={cn(
-              "flex items-center w-full rounded-md px-3 py-2 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors",
-              collapsed && "justify-center px-0"
-            )}
-          >
-            <LogOut className={cn("h-5 w-5", !collapsed && "mr-3")} />
-            {!collapsed && <span>Sign Out</span>}
-          </button>
-        </form>
+      {/* Footer Actions */}
+      <div className="px-4 mt-auto pt-4 border-t border-zinc-200 flex flex-col gap-4">
+        {role === 'employee' && (
+          <Link href={`/${role}/goals/new`} className="w-full bg-zinc-900 text-white rounded-md px-4 py-2.5 text-[14px] leading-[20px] font-medium hover:bg-zinc-800 transition-colors flex justify-center items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            Create New Goal
+          </Link>
+        )}
+        <div className="flex flex-col gap-1 -mx-2">
+          <a className="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#">
+            <span className="material-symbols-outlined text-[20px]">help</span>
+            <span className="text-[14px] leading-[20px] font-medium">Help Center</span>
+          </a>
+          <form method="POST" action="/api/auth/signout" className="w-full">
+            <button type="submit" className="flex w-full items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md">
+              <span className="material-symbols-outlined text-[20px]">logout</span>
+              <span className="text-[14px] leading-[20px] font-medium">Sign Out</span>
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </aside>
   );
 }

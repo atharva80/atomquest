@@ -2,14 +2,11 @@ import { createClient } from '@/lib/supabase/server';
 import { getActiveCycle, getCurrentQuarter } from '@/queries/cycles';
 import { redirect } from 'next/navigation';
 import { ManagerComment } from '@/components/check-ins/manager-comment';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { getInitials } from '@/lib/utils';
 import { calculateProgressScore } from '@/lib/utils';
 import { ProgressBadge } from '@/components/goals/progress-badge';
 
-export const metadata = { title: 'Team Check-ins — AtomQuest' };
+export const metadata = { title: 'Team Check-ins — Orbit' };
 
 export default async function ManagerCheckinsPage() {
   const supabase = await createClient();
@@ -27,7 +24,7 @@ export default async function ManagerCheckinsPage() {
     .from('quarterly_checkins')
     .select(`
       *,
-      goals (*, profiles(id, full_name))
+      goals (*, profiles(id, first_name, last_name, department_id))
     `)
     .eq('quarter', currentQ || 'Q1');
 
@@ -36,74 +33,93 @@ export default async function ManagerCheckinsPage() {
   const validCheckins = teamCheckins || [];
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Team Check-in Reviews</h1>
-        <p className="text-slate-500">Provide feedback on your team&apos;s quarterly achievements</p>
+    <div className="max-w-5xl mx-auto flex flex-col gap-section-gap">
+      <div className="mb-section-gap">
+        <h1 className="font-page-title text-page-title text-zinc-900 mb-2">Team Check-in Reviews</h1>
+        <p className="font-body-sm text-body-sm text-zinc-500">Provide feedback on your team&apos;s quarterly achievements</p>
       </div>
 
       {validCheckins.length === 0 ? (
-        <div className="text-center p-12 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 text-slate-500">
-          No check-ins submitted by your team for {currentQ || 'Q1'} yet.
+        <div className="flex flex-col items-center justify-center p-12 bg-zinc-50 rounded-xl border border-dashed border-zinc-200">
+          <span className="material-symbols-outlined text-[48px] text-zinc-300 mb-4">fact_check</span>
+          <h3 className="text-[16px] font-medium text-zinc-900">No Check-ins Found</h3>
+          <p className="font-body-sm text-body-sm text-zinc-500 mt-1 text-center max-w-sm">
+            No check-ins submitted by your team for {currentQ || 'Q1'} yet.
+          </p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {validCheckins.map((checkin: any) => {
+        <div className="flex flex-col gap-4">
+          {validCheckins.map((checkin: any, index: number) => {
             const goal = checkin.goals;
             const profile = goal.profiles;
             const score = calculateProgressScore(goal.uom_type, goal.target || 0, checkin.achievement);
+            const fullName = `${profile.first_name} ${profile.last_name}`;
 
             return (
-              <Card key={checkin.id} className="overflow-hidden border-slate-200 dark:border-slate-800">
-                <CardHeader className="bg-slate-50 dark:bg-slate-900/50 p-4 border-b dark:border-slate-800">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-indigo-100 text-indigo-700 text-xs">
-                          {getInitials(profile.full_name)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium text-sm">{profile.full_name}</span>
+              <div 
+                key={checkin.id} 
+                className="bg-white border border-zinc-200 rounded-xl p-card-padding flex flex-col gap-4 animate-slide-up hover:border-zinc-300 transition-colors"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
+                  <div className="flex items-center gap-3">
+                    <img
+                      alt={fullName}
+                      className="w-10 h-10 rounded-full object-cover border border-zinc-200"
+                      src={`https://ui-avatars.com/api/?name=${profile.first_name}+${profile.last_name}`}
+                    />
+                    <div>
+                      <h3 className="font-table-cell-primary text-table-cell-primary text-zinc-900">
+                        {fullName}
+                      </h3>
+                      <p className="font-caption text-caption text-zinc-500">{profile.department_id}</p>
                     </div>
-                    <Badge variant="outline" className="bg-white dark:bg-slate-900">{checkin.quarter}</Badge>
                   </div>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div className="md:col-span-7 space-y-4">
-                      <div>
-                        <h3 className="font-semibold text-lg">{goal.title}</h3>
-                        <div className="flex gap-4 mt-2 text-sm text-slate-500">
-                           <span>Target: <strong className="text-slate-700 dark:text-slate-300">{goal.target}</strong></span>
-                           <span>Actual: <strong className="text-slate-900 dark:text-white">{checkin.achievement}</strong></span>
-                        </div>
+                  <div className="bg-zinc-100 border border-zinc-200 text-zinc-700 font-badge-label text-badge-label px-2 py-0.5 rounded uppercase">
+                    {checkin.quarter}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-2">
+                  <div className="md:col-span-7 flex flex-col gap-4">
+                    <div>
+                      <h4 className="font-semibold text-zinc-950 text-base">{goal.title}</h4>
+                      <div className="flex gap-6 mt-3">
+                         <div className="flex flex-col gap-1">
+                           <span className="font-section-label text-section-label text-zinc-500 uppercase tracking-widest">Target</span>
+                           <span className="font-body-sm text-body-sm text-zinc-900">{goal.target}</span>
+                         </div>
+                         <div className="flex flex-col gap-1">
+                           <span className="font-section-label text-section-label text-zinc-500 uppercase tracking-widest">Actual</span>
+                           <span className="font-body-sm text-body-sm text-zinc-900 font-medium">{checkin.achievement}</span>
+                         </div>
                       </div>
-                      
-                      {checkin.comment && (
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border-l-2 border-indigo-300">
-                          <p className="text-xs text-slate-500 mb-1 font-medium">Employee Note</p>
-                          <p className="text-sm italic text-slate-700 dark:text-slate-300">&quot;{checkin.comment}&quot;</p>
-                        </div>
-                      )}
                     </div>
                     
-                    <div className="md:col-span-5 flex flex-col justify-between">
-                      <div className="flex justify-end items-center gap-3 mb-4">
-                        <span className="text-sm font-medium text-slate-500">Q-Score:</span>
-                        <ProgressBadge score={score} size="md" />
+                    {checkin.comment && (
+                      <div className="bg-zinc-50 border border-zinc-200 rounded p-3">
+                        <p className="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-2">Employee Note</p>
+                        <p className="font-body-sm text-body-sm text-zinc-700 italic">&quot;{checkin.comment}&quot;</p>
                       </div>
-                      
-                      {/* Interactive Manager Comment Form */}
-                      <ManagerComment 
-                        employeeId={profile.id}
-                        cycleId={goal.cycle_id}
-                        quarter={checkin.quarter as any}
-                        // For hackathon, we assume manager_comment relation wasn't explicitly loaded in this query
-                      />
-                    </div>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  <div className="md:col-span-5 flex flex-col justify-between">
+                    <div className="flex justify-end items-center gap-3 mb-4">
+                      <span className="font-section-label text-section-label text-zinc-500 uppercase tracking-widest">Score</span>
+                      <ProgressBadge score={score} size="md" />
+                    </div>
+                    
+                    {/* Interactive Manager Comment Form */}
+                    <ManagerComment 
+                      employeeId={profile.id}
+                      cycleId={goal.cycle_id}
+                      quarter={checkin.quarter as any}
+                      // For hackathon, we assume manager_comment relation wasn't explicitly loaded in this query
+                    />
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>

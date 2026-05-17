@@ -64,8 +64,8 @@ test.describe('Employee Workflow', () => {
 
     // Wait for the detail page to load (navigates to /employee/goals/[id])
     await expect(page).toHaveURL(/\/employee\/goals\/[^/]+$/, { timeout: 15000 });
-    await expect(page.locator('h1')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('text=Goal Details')).toBeVisible();
+    await expect(page.locator('h1, h2, h3').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Goal Details').first()).toBeVisible();
     // Timeline might be empty for drafts, so we handle it gracefully
     const timeline = page.locator('text=Check-in Timeline').or(page.locator('text=Timeline Not Available'));
     await expect(timeline.first()).toBeVisible({ timeout: 15000 });

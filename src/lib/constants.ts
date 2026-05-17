@@ -35,23 +35,23 @@ export const QUARTER_MONTHS: Record<QuarterType, string> = {
 // as long as they aren't serialized in server actions. 
 export const NAV_ITEMS = {
   employee: [
-    { title: 'Dashboard', href: '/employee', icon: LayoutDashboard },
-    { title: 'My Goals', href: '/employee/goals', icon: Target },
-    { title: 'Check-ins', href: '/employee/check-ins', icon: ClipboardCheck },
+    { title: 'Dashboard', href: '/employee', icon: 'dashboard' },
+    { title: 'My Goals', href: '/employee/goals', icon: 'target' },
+    { title: 'Check-ins', href: '/employee/check-ins', icon: 'fact_check' },
   ],
   manager: [
-    { title: 'Dashboard', href: '/manager', icon: LayoutDashboard },
-    { title: 'My Team', href: '/manager/team', icon: Users },
-    { title: 'Approvals', href: '/manager/approvals', icon: GitPullRequest },
-    { title: 'Team Check-ins', href: '/manager/check-ins', icon: ClipboardCheck },
+    { title: 'Dashboard', href: '/manager', icon: 'dashboard' },
+    { title: 'My Team', href: '/manager/team', icon: 'groups' },
+    { title: 'Approvals', href: '/manager/approvals', icon: 'rule' },
+    { title: 'Team Check-ins', href: '/manager/check-ins', icon: 'fact_check' },
   ],
   admin: [
-    { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { title: 'Users & Roles', href: '/admin/users', icon: Users },
-    { title: 'Cycles & Quarters', href: '/admin/cycles', icon: CalendarRange },
-    { title: 'Escalations', href: '/admin/escalations', icon: AlertTriangle },
-    { title: 'Audit Trail', href: '/admin/audit', icon: ShieldAlert },
-    { title: 'Shared Goals', href: '/admin/shared-goals', icon: Network },
+    { title: 'Dashboard', href: '/admin', icon: 'dashboard' },
+    { title: 'Users & Roles', href: '/admin/users', icon: 'manage_accounts' },
+    { title: 'Cycles & Quarters', href: '/admin/cycles', icon: 'autorenew' },
+    { title: 'Escalations', href: '/admin/escalations', icon: 'error' },
+    { title: 'Audit Trail', href: '/admin/audit', icon: 'history' },
+    { title: 'Shared Goals', href: '/admin/shared-goals', icon: 'account_tree' },
   ],
 } as const;
 

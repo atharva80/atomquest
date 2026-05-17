@@ -55,26 +55,26 @@ export function ManagerComment({ existingComment, employeeId, cycleId, quarter, 
 
   if (existingComment && !isEditing) {
     return (
-      <div className="bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 rounded-lg p-4">
+      <div className="bg-zinc-50 border border-zinc-200 rounded-lg p-4">
         <div className="flex justify-between items-start mb-2">
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4 text-indigo-500" />
-            <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-300">Manager Feedback</h4>
+            <span className="material-symbols-outlined text-[16px] text-zinc-500">forum</span>
+            <h4 className="font-table-cell-primary text-table-cell-primary text-zinc-900">Manager Feedback</h4>
             {existingComment.rating && (
-              <div className="flex items-center ml-2 text-amber-500">
+              <div className="flex items-center ml-2 text-zinc-800">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-3 w-3 ${i < existingComment.rating! ? 'fill-current' : 'text-slate-300 dark:text-slate-700'}`} />
+                  <span key={i} className={`material-symbols-outlined text-[14px] ${i < existingComment.rating! ? 'data-[weight=fill]:true' : 'text-zinc-300'}`} data-weight={i < existingComment.rating! ? "fill" : ""}>star</span>
                 ))}
               </div>
             )}
           </div>
           {!readOnly && (
-            <Button variant="ghost" size="sm" className="h-6 text-xs text-indigo-600 hover:text-indigo-800" onClick={() => setIsEditing(true)}>
+            <button className="text-[12px] font-medium text-zinc-500 hover:text-zinc-900 transition-colors" onClick={() => setIsEditing(true)}>
               Edit
-            </Button>
+            </button>
           )}
         </div>
-        <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+        <p className="font-body-sm text-body-sm text-zinc-700 whitespace-pre-wrap">
           {existingComment.comment}
         </p>
       </div>
@@ -83,7 +83,7 @@ export function ManagerComment({ existingComment, employeeId, cycleId, quarter, 
 
   if (readOnly && !existingComment) {
     return (
-      <div className="flex items-center justify-center p-4 border border-dashed rounded-lg text-slate-500 text-sm italic">
+      <div className="flex items-center justify-center p-4 border border-dashed border-zinc-200 rounded-lg text-zinc-500 font-body-sm text-body-sm italic">
         Awaiting manager feedback...
       </div>
     );
@@ -91,52 +91,63 @@ export function ManagerComment({ existingComment, employeeId, cycleId, quarter, 
 
   if (!isEditing && !existingComment && !readOnly) {
     return (
-      <Button variant="outline" className="w-full border-dashed text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50" onClick={() => setIsEditing(true)}>
-        <MessageSquare className="mr-2 h-4 w-4" /> Add Check-in Feedback
-      </Button>
+      <button className="w-full py-2 border border-dashed border-zinc-300 rounded font-table-cell-primary text-table-cell-primary text-zinc-700 hover:bg-zinc-50 hover:text-zinc-900 transition-colors flex items-center justify-center gap-2" onClick={() => setIsEditing(true)}>
+        <span className="material-symbols-outlined text-[16px]">add_comment</span> Add Check-in Feedback
+      </button>
     );
   }
 
   return (
-    <div className="border border-indigo-200 dark:border-indigo-800 rounded-lg p-4 bg-white dark:bg-slate-900 shadow-sm">
+    <div className="border border-zinc-200 rounded-lg p-4 bg-white shadow-sm">
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
-          <label className="text-sm font-medium">Feedback Comment <span className="text-red-500">*</span></label>
+          <label className="font-medium text-[14px] text-zinc-900">Feedback Comment <span className="text-red-500">*</span></label>
           <div className="flex items-center gap-1 cursor-pointer" onMouseLeave={() => setHoverRating(0)}>
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star 
+              <span 
                 key={i} 
-                className={`h-5 w-5 transition-colors ${i < (hoverRating || rating) ? 'fill-amber-500 text-amber-500' : 'text-slate-300 dark:text-slate-700'}`}
+                className={`material-symbols-outlined text-[18px] transition-colors ${i < (hoverRating || rating) ? 'text-zinc-900' : 'text-zinc-300'}`}
+                data-weight={i < (hoverRating || rating) ? "fill" : ""}
                 onMouseEnter={() => setHoverRating(i + 1)}
                 onClick={() => setRating(i + 1)}
-              />
+              >
+                star
+              </span>
             ))}
           </div>
         </div>
-        <Textarea 
+        <textarea 
           placeholder="Provide constructive feedback on this quarter's achievement..."
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           rows={3}
-          className="resize-none focus-visible:ring-indigo-500"
+          className="w-full px-3 py-2 bg-white border border-zinc-200 rounded text-[14px] font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors resize-none"
         />
-        <p className="text-xs text-slate-500 mt-1 flex justify-between">
+        <p className="font-caption text-caption text-zinc-500 mt-1 flex justify-between">
           <span>Minimum 10 characters</span>
           <span>{comment.length} chars</span>
         </p>
       </div>
       <div className="flex justify-end gap-2">
-        <Button variant="ghost" size="sm" onClick={() => {
-          setIsEditing(false);
-          setComment(existingComment?.comment || '');
-          setRating(existingComment?.rating || 0);
-        }} disabled={loading}>
+        <button 
+          className="px-4 py-2 bg-white border border-zinc-200 text-zinc-900 font-medium text-[14px] rounded hover:bg-zinc-50 transition-colors leading-[20px]" 
+          onClick={() => {
+            setIsEditing(false);
+            setComment(existingComment?.comment || '');
+            setRating(existingComment?.rating || 0);
+          }} 
+          disabled={loading}
+        >
           Cancel
-        </Button>
-        <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={handleSubmit} disabled={loading || comment.length < 10}>
-          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+        </button>
+        <button 
+          className="px-4 py-2 bg-zinc-900 text-white font-medium text-[14px] rounded hover:bg-zinc-800 transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 leading-[20px]" 
+          onClick={handleSubmit} 
+          disabled={loading || comment.length < 10}
+        >
+          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Submit Feedback
-        </Button>
+        </button>
       </div>
     </div>
   );
