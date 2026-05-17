@@ -20,7 +20,7 @@ export function calculateProgressScore(
   target: number | string | null,
   achievement: number | string | null
 ): number {
-  if (achievement === null || achievement === undefined) return 0;
+  if (achievement === null || achievement === undefined || achievement === '') return 0;
   
   if (uomType === UomType.ZERO_BASED) {
     const ach = Number(achievement);

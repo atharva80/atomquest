@@ -1,115 +1,113 @@
-import { createClient } from '@/lib/supabase/server';
+'use client';
+
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import { getActiveCycle } from '@/queries/cycles';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { AchievementTrendChart } from '@/components/analytics/achievement-trend';
 import { CompletionHeatmap } from '@/components/analytics/completion-heatmap';
 import { GoalDistributionChart } from '@/components/analytics/goal-distribution';
 import { ManagerEffectivenessTable } from '@/components/analytics/manager-effectiveness';
 import { ExportButton } from '@/components/shared/export-button';
 
-export const metadata = { title: 'Enterprise Analytics — AtomQuest' };
-
-export default async function AnalyticsPage() {
-  const supabase = await createClient();
-  const cycle = await getActiveCycle();
+export default function AnalyticsPage() {
+  const [activeTab, setActiveTab] = useState('Overview');
 
   // Mock data for analytics presentation layer
   const trendData = [
-    { quarter: 'Q1', avg_score: 0.85 },
-    { quarter: 'Q2', avg_score: 0.88 },
-    { quarter: 'Q3', avg_score: 0.92 },
-    { quarter: 'Q4', avg_score: 0.95 },
+    { quarter: 'Q1' as const, avg_score: 0.62, count: 24 },
+    { quarter: 'Q2' as const, avg_score: 0.74, count: 28 },
+    { quarter: 'Q3' as const, avg_score: 0.88, count: 32 },
   ];
 
   const distributionData = [
-    { thrust_area: 'Revenue Growth', count: 45 },
-    { thrust_area: 'Operational Excellence', count: 32 },
-    { thrust_area: 'Customer Success', count: 28 },
-    { thrust_area: 'Product Innovation', count: 18 },
-    { thrust_area: 'Team Development', count: 12 },
+    { thrust_area: 'Revenue Growth', count: 45, percentage: 28.5 },
+    { thrust_area: 'Operational Excellence', count: 32, percentage: 20.3 },
+    { thrust_area: 'Customer Success', count: 28, percentage: 17.7 },
+    { thrust_area: 'Product Innovation', count: 18, percentage: 11.4 },
+    { thrust_area: 'Team Development', count: 12, percentage: 7.6 },
   ];
 
   const heatmapData = [
-    { department: 'Engineering', quarter: 'Q1', completion_rate: 0.95 },
-    { department: 'Engineering', quarter: 'Q2', completion_rate: 0.88 },
-    { department: 'Sales', quarter: 'Q1', completion_rate: 0.72 },
-    { department: 'Sales', quarter: 'Q2', completion_rate: 0.45 },
-    { department: 'Marketing', quarter: 'Q1', completion_rate: 1.0 },
-    { department: 'Marketing', quarter: 'Q2', completion_rate: 0.92 },
-    { department: 'HR', quarter: 'Q1', completion_rate: 0.85 },
-    { department: 'HR', quarter: 'Q2', completion_rate: 0.85 },
+    { department: 'Engineering', quarter: 'Q1' as const, completion_rate: 0.9 },
+    { department: 'Engineering', quarter: 'Q1' as const, completion_rate: 0.95 },
+    { department: 'Engineering', quarter: 'Q1' as const, completion_rate: 0.85 },
+    { department: 'Sales', quarter: 'Q1' as const, completion_rate: 0.4 },
+    { department: 'Sales', quarter: 'Q1' as const, completion_rate: 0.5 },
+    { department: 'Sales', quarter: 'Q1' as const, completion_rate: 0.7 },
+    { department: 'Product', quarter: 'Q1' as const, completion_rate: 0.7 },
+    { department: 'Product', quarter: 'Q1' as const, completion_rate: 0.8 },
+    { department: 'Product', quarter: 'Q1' as const, completion_rate: 0.9 },
+    { department: 'HR', quarter: 'Q1' as const, completion_rate: 0.2 },
+    { department: 'HR', quarter: 'Q1' as const, completion_rate: 0.3 },
+    { department: 'HR', quarter: 'Q1' as const, completion_rate: 0.4 },
+    { department: 'Finance', quarter: 'Q1' as const, completion_rate: 0.95 },
+    { department: 'Finance', quarter: 'Q1' as const, completion_rate: 0.9 },
+    { department: 'Finance', quarter: 'Q1' as const, completion_rate: 0.95 },
   ];
 
-  const managerData = [
-    { manager: { id: '1', first_name: 'Sarah', last_name: 'Connor' } as any, check_in_completion_rate: 0.95, avg_team_score: 0.92, teamSize: 8 },
-    { manager: { id: '2', first_name: 'John', last_name: 'Smith' } as any, check_in_completion_rate: 0.75, avg_team_score: 0.78, teamSize: 5 },
-    { manager: { id: '3', first_name: 'Alice', last_name: 'Johnson' } as any, check_in_completion_rate: 0.45, avg_team_score: 0.65, teamSize: 12 },
+  const managerData: any[] = [
+    { manager: { id: '1', first_name: 'Sarah', last_name: 'Connor', email: 'sarah@atomberg.com', role: 'manager', created_at: new Date().toISOString() }, check_in_completion_rate: 0.95, avg_team_score: 0.92 },
+    { manager: { id: '2', first_name: 'John', last_name: 'Smith', email: 'john@atomberg.com', role: 'manager', created_at: new Date().toISOString() }, check_in_completion_rate: 0.75, avg_team_score: 0.78 },
+    { manager: { id: '3', first_name: 'Alice', last_name: 'Johnson', email: 'alice@atomberg.com', role: 'manager', created_at: new Date().toISOString() }, check_in_completion_rate: 0.45, avg_team_score: 0.65 },
   ];
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'Overview':
+        return (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-white border border-zinc-200 rounded-lg p-5">
+              <h3 className="font-section-label text-section-label tracking-widest text-zinc-500 uppercase mb-4">
+                Quarterly Progress Trend
+              </h3>
+              <AchievementTrendChart data={trendData} />
+            </div>
+            <div className="bg-white border border-zinc-200 rounded-lg p-5">
+              <h3 className="font-section-label text-section-label tracking-widest text-zinc-500 uppercase mb-4">
+                Dept Completion Heatmap
+              </h3>
+              <CompletionHeatmap data={heatmapData} departments={['Engineering', 'Sales', 'Product', 'HR', 'Finance']} quarters={['Q1', 'Q2', 'Q3']} />
+            </div>
+          </div>
+        );
+      case 'Department Trends':
+        return <GoalDistributionChart data={distributionData} groupBy="thrust_area" />;
+      case 'Completion Heatmap':
+        return <CompletionHeatmap data={heatmapData} departments={['Engineering', 'Sales', 'Product', 'HR', 'Finance']} quarters={['Q1', 'Q2', 'Q3']} />;
+      case 'Manager Metrics':
+        return <ManagerEffectivenessTable data={managerData} />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Enterprise Analytics</h1>
-          <p className="text-slate-500 mt-1">
-            Data-driven insights for {cycle?.name || 'the current cycle'}
-          </p>
-        </div>
-        <ExportButton 
-          type="goals" 
-          cycleId={cycle?.id || ''}
-        />
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-semibold text-zinc-950 font-page-title">Corporate Performance Analytics</h2>
+        <p className="text-sm text-zinc-500 font-body-relaxed mt-1">
+          Assess org-wide completion rates, goal distribution, and manager effectiveness.
+        </p>
       </div>
-
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="mb-6 bg-white dark:bg-slate-900 border p-1 h-auto w-full sm:w-auto overflow-x-auto justify-start flex-nowrap shadow-sm">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700 px-6 py-2">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="distribution" className="data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700 px-6 py-2">
-            Distribution
-          </TabsTrigger>
-          <TabsTrigger value="compliance" className="data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700 px-6 py-2">
-            Compliance
-          </TabsTrigger>
-          <TabsTrigger value="managers" className="data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700 px-6 py-2">
-            Managers
-          </TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="overview" className="space-y-6 animate-in fade-in duration-500">
-          <AchievementTrendChart data={trendData as any} />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <GoalDistributionChart data={distributionData as any} groupBy="thrust_area" />
-            <CompletionHeatmap data={heatmapData as any} departments={['Engineering', 'Sales', 'Marketing', 'HR']} quarters={['Q1', 'Q2']} />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="distribution" className="animate-in fade-in duration-500">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <GoalDistributionChart data={distributionData as any} groupBy="thrust_area" />
-            <GoalDistributionChart 
-              data={[
-                { status: 'locked', count: 120 },
-                { status: 'approved', count: 15 },
-                { status: 'submitted', count: 34 },
-                { status: 'draft', count: 42 },
-                { status: 'returned', count: 8 },
-              ] as any} 
-              groupBy="status" 
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="compliance" className="animate-in fade-in duration-500">
-          <CompletionHeatmap data={heatmapData as any} departments={['Engineering', 'Sales', 'Marketing', 'HR']} quarters={['Q1', 'Q2', 'Q3', 'Q4']} />
-        </TabsContent>
-
-        <TabsContent value="managers" className="animate-in fade-in duration-500">
-          <ManagerEffectivenessTable data={managerData as any} />
-        </TabsContent>
-      </Tabs>
+      {/* Segment Tabs */}
+      <div className="flex items-center gap-1 border-b border-zinc-200">
+        {['Overview', 'Department Trends', 'Completion Heatmap', 'Manager Metrics'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 text-sm font-medium transition-colors font-body-sm ${
+              activeTab === tab
+                ? 'text-zinc-950 border-b-2 border-zinc-900'
+                : 'text-zinc-500 hover:text-zinc-900'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+      {/* Charts Grid */}
+      {renderContent()}
     </div>
   );
 }

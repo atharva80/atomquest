@@ -82,8 +82,8 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
       // 2. Validate
       createGoalSchema.parse(payload);
       
-      // 3. Weightage check (only for create)
-      if (mode === 'create' && payload.weightage > remainingWeightage) {
+      // 3. Weightage check
+      if (payload.weightage > remainingWeightage) {
         setErrors({ weightage: `Maximum available weightage is ${remainingWeightage}%` });
         setLoading(false);
         return;
@@ -143,67 +143,53 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
   const isZeroBased = formData.uom_type === 'zero_based';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        {/* Title */}
-        <div className="space-y-2">
-          <Label htmlFor="title">Goal Title <span className="text-red-500">*</span></Label>
-          <Input 
-            id="title" 
-            value={formData.title}
-            onChange={(e) => handleChange('title', e.target.value)}
-            placeholder="e.g. Achieve $1M in Q3 Sales"
-            className={errors.title ? "border-red-500" : ""}
-          />
-          {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
+    <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
+      {/* Column 1: Form */}
+      <div className="w-full md:w-3/5 flex flex-col gap-6 animate-fade-in">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-2xl font-semibold tracking-tight text-zinc-950 font-page-title">
+            {mode === 'create' ? 'Create New Goal' : 'Edit Goal'}
+          </h2>
+          <p className="text-sm text-zinc-500 font-body-sm">
+            Define measurable metrics and alignment for the current cycle.
+          </p>
         </div>
-
-        {/* Description */}
-        <div className="space-y-2">
-          <Label htmlFor="description">Description <span className="text-red-500">*</span></Label>
-          <Textarea 
-            id="description" 
-            value={formData.description}
-            onChange={(e) => handleChange('description', e.target.value)}
-            placeholder="Provide context on how this will be achieved..."
-            rows={3}
-            className={errors.description ? "border-red-500" : ""}
-          />
-          {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Thrust Area */}
-          <div className="space-y-2">
-            <Label>Thrust Area <span className="text-red-500">*</span></Label>
-            <Select 
-              value={formData.thrust_area_id} 
-              onValueChange={(val) => handleChange('thrust_area_id', val)}
-            >
-              <SelectTrigger className={errors.thrust_area_id ? "border-red-500" : ""}>
+        <div className="flex flex-col gap-[24px]">
+          <div className="flex flex-col gap-[6px]">
+            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Goal Title</label>
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => handleChange('title', e.target.value)}
+              placeholder="e.g. Optimize BLDC motor efficiency profiles"
+              className={errors.title ? 'border-red-500' : ''}
+            />
+            {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
+          </div>
+          <div className="flex flex-col gap-[6px]">
+            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Thrust Area</label>
+            <Select value={formData.thrust_area_id} onValueChange={(val) => handleChange('thrust_area_id', val)}>
+              <SelectTrigger className={errors.thrust_area_id ? 'border-red-500' : ''}>
                 <SelectValue placeholder="Select a thrust area" />
               </SelectTrigger>
               <SelectContent>
-                {thrustAreas.map(ta => (
-                  <SelectItem key={ta.id} value={ta.id}>{ta.name}</SelectItem>
+                {thrustAreas.map((ta) => (
+                  <SelectItem key={ta.id} value={ta.id}>
+                    {ta.name}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             {errors.thrust_area_id && <p className="text-sm text-red-500">{errors.thrust_area_id}</p>}
           </div>
-
-          {/* UoM Type */}
-          <div className="space-y-2">
-            <Label>Unit of Measurement <span className="text-red-500">*</span></Label>
-            <Select 
-              value={formData.uom_type} 
-              onValueChange={(val) => handleChange('uom_type', val)}
-            >
+          <div className="flex flex-col gap-[6px]">
+            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">UOM Type</label>
+            <Select value={formData.uom_type} onValueChange={(val) => handleChange('uom_type', val)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select UoM" />
               </SelectTrigger>
               <SelectContent>
-                {UOM_TYPES.map(uom => (
+                {UOM_TYPES.map((uom) => (
                   <SelectItem key={uom.value} value={uom.value}>
                     <div className="flex flex-col">
                       <span>{uom.label}</span>
@@ -214,30 +200,26 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
               </SelectContent>
             </Select>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Target */}
-          <div className="space-y-2">
-            <Label htmlFor="target">Target Value <span className="text-red-500">*</span></Label>
+          <div className="flex flex-col gap-[6px]">
+            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Target Value</label>
             {isTimeline ? (
-              <Input 
-                id="target" 
+              <Input
+                id="target"
                 type="date"
                 value={formData.target}
                 onChange={(e) => handleChange('target', e.target.value)}
-                className={errors.target ? "border-red-500" : ""}
+                className={errors.target ? 'border-red-500' : ''}
               />
             ) : (
               <div className="relative">
-                <Input 
-                  id="target" 
+                <Input
+                  id="target"
                   type="number"
                   step="0.01"
                   value={formData.target}
                   onChange={(e) => handleChange('target', e.target.value)}
                   disabled={isZeroBased}
-                  className={errors.target ? "border-red-500" : ""}
+                  className={errors.target ? 'border-red-500' : ''}
                 />
                 {formData.uom_type.includes('percentage') && (
                   <span className="absolute right-3 top-2.5 text-muted-foreground">%</span>
@@ -246,50 +228,78 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
             )}
             {errors.target && <p className="text-sm text-red-500">{errors.target}</p>}
           </div>
-
-          {/* Weightage */}
-          <div className="space-y-2">
-            <Label htmlFor="weightage">
-              Weightage <span className="text-red-500">*</span>
-              {mode === 'create' && (
-                <span className="text-xs font-normal text-muted-foreground ml-2">
-                  (Max {remainingWeightage}% available)
-                </span>
-              )}
-            </Label>
-            <div className="relative">
-              <Input 
-                id="weightage" 
-                type="number"
-                min="10"
-                max={mode === 'create' ? remainingWeightage : 100}
-                value={formData.weightage}
-                onChange={(e) => handleChange('weightage', e.target.value)}
-                className={errors.weightage ? "border-red-500" : ""}
-              />
-              <span className="absolute right-3 top-2.5 text-muted-foreground">%</span>
-            </div>
+          <div className="flex flex-col gap-[6px]">
+            <label className="font-table-cell-primary text-table-cell-primary text-zinc-900">Weightage (%)</label>
+            <Input
+              id="weightage"
+              type="number"
+              min="10"
+              max={mode === 'create' ? remainingWeightage : 100}
+              value={formData.weightage}
+              onChange={(e) => handleChange('weightage', e.target.value)}
+              className={errors.weightage ? 'border-red-500' : ''}
+            />
             {errors.weightage && <p className="text-sm text-red-500">{errors.weightage}</p>}
-            {!errors.weightage && (
-              <p className="text-xs text-muted-foreground">Must be between 10% and 100%</p>
-            )}
+          </div>
+          <div className="flex items-center gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={() => router.back()} disabled={loading}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {mode === 'create' ? 'Add Goal' : 'Save Changes'}
+            </Button>
           </div>
         </div>
       </div>
-
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={() => router.back()}
-          disabled={loading}
-        >
-          Cancel
-        </Button>
-        <Button type="submit" disabled={loading}>
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {mode === 'create' ? 'Create Goal' : 'Save Changes'}
-        </Button>
+      {/* Column 2: Allocation Info */}
+      <div className="w-full md:w-2/5 animate-slide-up stagger-1">
+        <div className="bg-white border border-zinc-200 rounded-xl p-card-padding flex flex-col gap-6">
+          {/* Ring */}
+          <div className="flex items-center gap-4">
+            <div className="relative w-[80px] h-[80px] shrink-0">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle
+                  className="text-zinc-200"
+                  cx="50"
+                  cy="50"
+                  fill="none"
+                  r="40"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                ></circle>
+                <circle
+                  className="text-zinc-900 transition-all duration-1000 ease-out"
+                  cx="50"
+                  cy="50"
+                  fill="none"
+                  r="40"
+                  stroke="currentColor"
+                  strokeDasharray="251.2"
+                  strokeDashoffset={251.2 - (251.2 * (100 - remainingWeightage)) / 100}
+                  strokeWidth="8"
+                ></circle>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="font-semibold text-lg text-zinc-900 tabular-nums">{remainingWeightage}%</span>
+                <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Remaining</span>
+              </div>
+            </div>
+            <p className="text-xs text-zinc-500 font-body-sm leading-relaxed">
+              Total allocated: {100 - remainingWeightage}%. You must distribute exactly 100% before submission.
+            </p>
+          </div>
+          <hr className="border-zinc-100" />
+          {/* Checklist */}
+          <div className="flex flex-col gap-3">
+            <h4 className="font-section-label text-xs text-zinc-400 tracking-widest uppercase">
+              Allocation Checklist
+            </h4>
+            <ul className="flex flex-col gap-2 font-body-sm text-body-sm">
+              {/* This should be populated with existing goals */}
+            </ul>
+          </div>
+        </div>
       </div>
     </form>
   );

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manager Approvals - Orbit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface": "#fbf8ff",
+                "secondary": "#5e5e65",
+                "zinc-400": "#a1a1aa",
+                "white": "#ffffff",
+                "surface-container-high": "#e8e7f1",
+                "secondary-fixed-dim": "#c7c5ce",
+                "surface-variant": "#e3e1ec",
+                "on-primary-container": "#858386",
+                "zinc-100": "#f4f4f5",
+                "tertiary-container": "#1f1a1a",
+                "on-surface": "#1a1b22",
+                "on-primary-fixed": "#1c1b1d",
+                "surface-container": "#eeedf7",
+                "outline": "#78767b",
+                "zinc-900": "#18181b",
+                "error-container": "#ffdad6",
+                "primary-fixed": "#e5e1e4",
+                "surface-bright": "#fbf8ff",
+                "status-not-started": "#d4d4d8",
+                "zinc-200": "#e4e4e7",
+                "on-tertiary-container": "#8a8282",
+                "on-surface-variant": "#47464a",
+                "secondary-fixed": "#e3e1ea",
+                "zinc-500": "#71717a",
+                "surface-container-highest": "#e3e1ec",
+                "progress-mid": "#eab308",
+                "on-secondary-container": "#64646b",
+                "on-primary-fixed-variant": "#474649",
+                "on-primary": "#ffffff",
+                "inverse-primary": "#c8c6c8",
+                "on-tertiary-fixed-variant": "#4c4545",
+                "zinc-50": "#fafafa",
+                "on-error": "#ffffff",
+                "status-overdue": "#dc2626",
+                "zinc-950": "#09090b",
+                "secondary-container": "#e3e1ea",
+                "tertiary-fixed": "#ebe0df",
+                "primary": "#000000",
+                "on-secondary-fixed-variant": "#46464d",
+                "surface-tint": "#5f5e60",
+                "on-tertiary": "#ffffff",
+                "error": "#ba1a1a",
+                "zinc-700": "#3f3f46",
+                "progress-low": "#ef4444",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#2f3038",
+                "tertiary": "#000000",
+                "outline-variant": "#c8c5ca",
+                "inverse-on-surface": "#f1effa",
+                "progress-high": "#16a34a",
+                "on-error-container": "#93000a",
+                "primary-container": "#1c1b1d",
+                "status-on-track": "#16a34a",
+                "on-secondary-fixed": "#1b1b21",
+                "on-tertiary-fixed": "#1f1a1a",
+                "on-background": "#1a1b22",
+                "primary-fixed-dim": "#c8c6c8",
+                "status-at-risk": "#ca8a04",
+                "background": "#fbf8ff",
+                "tertiary-fixed-dim": "#cec4c4",
+                "surface-dim": "#dad9e3",
+                "surface-container-low": "#f4f2fd"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "header-height": "56px",
+                "card-padding": "1.25rem",
+                "page-margin": "1.5rem",
+                "component-padding": "1rem",
+                "section-gap": "1.5rem",
+                "field-gap": "0.375rem",
+                "sidebar-width": "240px",
+                "inline-gap": "0.5rem"
+        },
+        "fontFamily": {
+                "page-title": [
+                        "Inter"
+                ],
+                "table-cell-primary": [
+                        "Inter"
+                ],
+                "section-heading": [
+                        "Inter"
+                ],
+                "data-value-lg": [
+                        "Inter"
+                ],
+                "body-relaxed": [
+                        "Inter"
+                ],
+                "badge-label": [
+                        "Inter"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "section-label": [
+                        "Inter"
+                ],
+                "caption": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "page-title": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "table-cell-primary": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "section-heading": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "data-value-lg": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-relaxed": [
+                        "14px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "badge-label": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "section-label": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.1em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "caption": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-slide-up { opacity: 0; animation: slideInUp 0.4s ease-out forwards; }
+.animate-slide-right { animation: slideInRight 0.5s ease-out forwards; }
+.animate-pulse-slow { animation: pulse 2s infinite ease-in-out; }</style>
+</head>
+<body class="bg-zinc-50 text-on-surface font-body-relaxed text-body-relaxed flex min-h-screen">
+<!-- SideNavBar -->
+<nav class="docked fixed left-0 top-0 h-screen w-sidebar-width border-r border-zinc-200 dark:border-zinc-800 flex flex-col h-full py-component-padding bg-zinc-50 dark:bg-zinc-950 z-40 hidden md:flex animate-fade-in">
+<div class="px-page-margin mb-8 mt-2">
+<img alt="Orbit Logo" class="h-12 w-auto" src="https://lh3.googleusercontent.com/aida/ADBb0ujf6lZmvk5RKQdw6jd6gTf2rcJelr-xHr0f4BM0HyzXAS4Ku5HvCACrGm1ybtJCQJxh2G8Tt1JQhExbIn6wa5cwzPHkZvv4qrNGpk7vaJeQYlfgG1PC0cMg-4HZFbUxwOUWNs6U4RyPbx-4vW47bQmd9wtO83MqgcsDyEoJ2K2r4oz0HL6UpccZ2kdZPXVB1C6wSE1C_iiYf_fMCM8QomTwqIo4DC-nV0B4ocOfLnncTp1px6IGxjNKyA"/>
+</div>
+<div class="px-page-margin mb-6">
+<button class="w-full bg-zinc-900 text-white rounded-md py-2 flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="font-table-cell-primary text-table-cell-primary">Create New Goal</span>
+</button>
+</div>
+<ul class="flex flex-col gap-1 px-4 flex-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-table-cell-primary text-table-cell-primary">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 border-r-2 border-zinc-900 dark:border-zinc-50 translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-table-cell-primary text-table-cell-primary">Team Goals</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">admin_panel_settings</span>
+<span class="font-table-cell-primary text-table-cell-primary">Admin Console</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-table-cell-primary text-table-cell-primary">Audit Trails</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-table-cell-primary text-table-cell-primary">Reports</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-table-cell-primary text-table-cell-primary">Settings</span>
+</a>
+</li>
+</ul>
+<div class="px-4 mt-auto border-t border-zinc-200 pt-4">
+<ul class="flex flex-col gap-1">
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-table-cell-primary text-table-cell-primary">Help Center</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-3 py-2 rounded-md text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-table-cell-primary text-table-cell-primary">Sign Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 md:ml-sidebar-width flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 h-header-height border-b border-zinc-200 dark:border-zinc-800 flat no shadows bg-white dark:bg-zinc-950 flex justify-between items-center px-page-margin w-full sticky top-0 z-50 animate-fade-in">
+<div class="flex items-center gap-6">
+<div class="md:hidden">
+<h1 class="font-page-title text-page-title text-zinc-900 dark:text-zinc-50 tracking-tight">Orbit</h1>
+</div>
+<nav class="hidden md:flex gap-6 h-full">
+<a class="text-zinc-900 dark:text-zinc-50 font-medium border-b-2 border-zinc-900 dark:border-zinc-50 flex items-center h-full opacity-80 transition-opacity" href="#">
+                        FY 2024-25 Q1
+                    </a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User profile" class="w-8 h-8 rounded-full object-cover border border-zinc-200" data-alt="A close-up portrait of a professional man in a modern office environment. The lighting is soft and natural, contributing to a clean, bright, high-tech aesthetic. The color palette emphasizes crisp whites, subtle grays, and muted tones, reflecting a serious, reliable brand identity. The mood is focused and efficient, suitable for a sophisticated management dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM6trq15DpIFrGcS6oCi3fZ1Z7XCW2jqJ3il-88BrYt4YAGTNsCL3qr_vGGLTNed9EBx4qry9u-w25PusfgiGCn8VKZqJJjYXFGVdyDkYOEpecjCe93VhocTy3yTTyobj196Td8euTS3_RCQS-IwwdtpxQ6pqfcU9yG2VqhH96t7tTE66OB_YJO_e3N2G4F8DPiK5gT1OqHFVanLJ1zKvjn0Za8Z2rArec-UZKJFWvdXIfRqeOCMAky14aVbGymQl6dcGwnoOVXdE"/>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-page-margin overflow-y-auto">
+<div class="max-w-5xl mx-auto">
+<div class="mb-section-gap">
+<h2 class="font-page-title text-page-title text-zinc-900 mb-2">Pending Approvals</h2>
+<p class="font-body-sm text-body-sm text-zinc-500">Review and approve team goal sheets for the current cycle.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-section-gap items-start">
+<!-- Approvals List -->
+<div class="lg:col-span-5 flex flex-col gap-4">
+<!-- Card 1: Selected State -->
+<div class="bg-white border-2 border-zinc-900 rounded-xl p-card-padding cursor-pointer animate-slide-up" style="animation-delay: 100ms;">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<img alt="Anjali Rao" class="w-10 h-10 rounded-full object-cover border border-zinc-200" data-alt="A portrait of a professional woman with a calm expression, set against a light gray background. The lighting is bright and even, highlighting her features clearly. The image maintains a minimalist, high-tech aesthetic with neutral tones and sharp details, perfectly suited for a modern enterprise application. The atmosphere is professional and precise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZFBNLh588lm6rofFUi9FBNSP0mNPhYRyzeIHX4VBSmBD6UopFSK8vnJLtU0iu-jqfXZdQ31X2vhmKiG1PdA-jZ-RkD4F13f3k4YcncIundEN1UT_qtluJ4ZXP5Fo81veQaBtTueCpkj61Zcivc_HwK4AWNPlfcGW1G-SVs4jI0SJVTjhyilucaAB8L0V-H08C-OlBUuKnrkGOAIsPG8PQfdlZgzG_rbqhHHKoO0cWqvMBJqVJeKLrSQOVE9AiqnNT8E7EvVJQ9l8"/>
+<div>
+<h3 class="font-table-cell-primary text-table-cell-primary text-zinc-900">Anjali Rao</h3>
+<p class="font-caption text-caption text-zinc-500">Senior Engineer</p>
+</div>
+</div>
+<span class="font-caption text-caption text-zinc-500">Oct 12</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-zinc-100">
+<div>
+<p class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Goals</p>
+<p class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">6</p>
+</div>
+<div>
+<p class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Weightage</p>
+<p class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">100%</p>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white border border-zinc-200 rounded-xl p-card-padding hover:border-zinc-400 transition-colors cursor-pointer animate-slide-up" style="animation-delay: 200ms;">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200">
+<span class="font-table-cell-primary text-table-cell-primary text-zinc-700">MK</span>
+</div>
+<div>
+<h3 class="font-table-cell-primary text-table-cell-primary text-zinc-900">Marcus Kim</h3>
+<p class="font-caption text-caption text-zinc-500">Product Designer</p>
+</div>
+</div>
+<span class="font-caption text-caption text-zinc-500">Oct 11</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-zinc-100">
+<div>
+<p class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Goals</p>
+<p class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">4</p>
+</div>
+<div>
+<p class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Weightage</p>
+<div class="flex items-center gap-2">
+<p class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">90%</p>
+<div class="w-1.5 h-1.5 rounded-full bg-status-at-risk animate-pulse-slow"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white border border-zinc-200 rounded-xl p-card-padding hover:border-zinc-400 transition-colors cursor-pointer animate-slide-up" style="animation-delay: 300ms;">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<img alt="David Chen" class="w-10 h-10 rounded-full object-cover border border-zinc-200" data-alt="A clean, sharp portrait of a professional man in a bright setting. The background is slightly out of focus, emphasizing the subject. The color grading is cool and neutral, avoiding overly warm tones, aligning with a technical, precise design system. The overall mood is focused, reliable, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGBPoPDzQSeFbxPQGZi1wVlLy10VZLjr8Y-Ghg1NfK9pPHGMGOL_pvfdkTtXu76hoPqiiVMIqd8XQyrEIT9026x1wIRPRMWM_RuZuXTvvfpIf4pokDbAM1Qx5L9c4eWiPzGIYKwzTZfcXqlV0C4ww69CX1qB3yUo5PpE7WM_YTkcNLtkDFZO4o6IbUy-P0DIclOy8VmAC2wKA2EUr6pFlhenPJYlIDqpmoj9WLWPvfp52SjuHtgm3NGya00wF44P_miZP4YGJ2LZk"/>
+<div>
+<h3 class="font-table-cell-primary text-table-cell-primary text-zinc-900">David Chen</h3>
+<p class="font-caption text-caption text-zinc-500">Data Scientist</p>
+</div>
+</div>
+<span class="font-caption text-caption text-zinc-500">Oct 10</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-zinc-100">
+<div>
+<p class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Goals</p>
+<p class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">5</p>
+</div>
+<div>
+<p class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Weightage</p>
+<p class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">100%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail View (Expanded) -->
+<div class="lg:col-span-7 bg-white border border-zinc-200 rounded-xl flex flex-col h-[calc(100vh-200px)] sticky top-24">
+<!-- Header -->
+<div class="p-6 border-b border-zinc-200 animate-slide-right">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-section-heading text-section-heading text-zinc-900">Goal Sheet Details</h3>
+<div class="bg-zinc-100 px-2 py-1 rounded-full flex items-center gap-1.5 border border-zinc-200">
+<div class="w-1.5 h-1.5 rounded-full bg-progress-mid animate-pulse-slow"></div>
+<span class="font-badge-label text-badge-label text-zinc-700">Pending Review</span>
+</div>
+</div>
+<div class="flex items-center gap-4 mb-4">
+<img alt="Anjali Rao" class="w-12 h-12 rounded-full object-cover border border-zinc-200" data-alt="A portrait of a professional woman with a calm expression, set against a light gray background. The lighting is bright and even, highlighting her features clearly. The image maintains a minimalist, high-tech aesthetic with neutral tones and sharp details, perfectly suited for a modern enterprise application. The atmosphere is professional and precise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMFx6j5hAXJEt-cEZoa2mZbpXJNiTlUrwUg3uMhVDk6ZUzaKFcCrct36G8WZB6e2bFKorLj5OHUOMKhKHIJc5_8wXQDDNF3P0NTknGLixYHY9AuJceSIh0j5S6cctQp2oEGRLHi-MyjOlC23G1saj-4UUtph5iLFf0Vne0jvNztk2A9iouXZ0uzhnAP2VIc_RjCKwguiLiEhQ1Vpp_kwEhSCtZEhZYlYDQumA1larLtRxTaBVMzjskA7uCXff1uPFWRcu2Y6o9k54"/>
+<div>
+<h2 class="font-page-title text-page-title text-zinc-900">Anjali Rao</h2>
+<p class="font-body-sm text-body-sm text-zinc-500">Submitted on October 12, 2024</p>
+</div>
+</div>
+</div>
+<!-- Scrollable Goals List -->
+<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6 bg-zinc-50/50 animate-slide-right">
+<!-- Goal Item 1 -->
+<div class="bg-white border border-zinc-200 rounded-md p-4">
+<div class="flex items-start justify-between mb-2">
+<h4 class="font-table-cell-primary text-table-cell-primary text-zinc-900 flex-1 pr-4">Migrate legacy authentication system to OAuth 2.0</h4>
+<span class="font-badge-label text-badge-label text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200 tabular-nums">30%</span>
+</div>
+<p class="font-body-sm text-body-sm text-zinc-500 mb-4">Complete the migration of all internal tools to the new OAuth 2.0 provider, ensuring zero downtime for critical services. Includes writing technical documentation and training the support team.</p>
+<div class="grid grid-cols-2 gap-4 border-t border-zinc-100 pt-3">
+<div>
+<p class="font-caption text-caption text-zinc-500 mb-1">Key Result 1</p>
+<p class="font-body-sm text-body-sm text-zinc-900">100% of internal apps migrated</p>
+</div>
+<div>
+<p class="font-caption text-caption text-zinc-500 mb-1">Due Date</p>
+<p class="font-body-sm text-body-sm text-zinc-900">Nov 15, 2024</p>
+</div>
+</div>
+</div>
+<!-- Goal Item 2 -->
+<div class="bg-white border border-zinc-200 rounded-md p-4">
+<div class="flex items-start justify-between mb-2">
+<h4 class="font-table-cell-primary text-table-cell-primary text-zinc-900 flex-1 pr-4">Reduce CI/CD pipeline execution time</h4>
+<span class="font-badge-label text-badge-label text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200 tabular-nums">25%</span>
+</div>
+<p class="font-body-sm text-body-sm text-zinc-500 mb-4">Optimize current GitHub Actions workflows to reduce average build and deploy times by at least 30%, improving developer velocity.</p>
+<div class="grid grid-cols-2 gap-4 border-t border-zinc-100 pt-3">
+<div>
+<p class="font-caption text-caption text-zinc-500 mb-1">Key Result 1</p>
+<p class="font-body-sm text-body-sm text-zinc-900">Pipeline time &lt; 10 mins</p>
+</div>
+<div>
+<p class="font-caption text-caption text-zinc-500 mb-1">Due Date</p>
+<p class="font-body-sm text-body-sm text-zinc-900">Dec 01, 2024</p>
+</div>
+</div>
+</div>
+<!-- Goal Item 3 -->
+<div class="bg-white border border-zinc-200 rounded-md p-4">
+<div class="flex items-start justify-between mb-2">
+<h4 class="font-table-cell-primary text-table-cell-primary text-zinc-900 flex-1 pr-4">Lead Q4 Security Audit Remediation</h4>
+<span class="font-badge-label text-badge-label text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200 tabular-nums">20%</span>
+</div>
+<p class="font-body-sm text-body-sm text-zinc-500">Address all high and critical vulnerabilities identified in the Q3 external penetration test before the end of the quarter.</p>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="p-4 border-t border-zinc-200 bg-zinc-50 flex items-center justify-end gap-3 rounded-b-xl animate-slide-right">
+<button class="px-4 py-2 border border-zinc-200 rounded-md bg-white text-error font-table-cell-primary text-table-cell-primary hover:bg-zinc-50 transition-colors">
+                                Return for Edits
+                            </button>
+<button class="px-4 py-2 bg-zinc-900 text-white rounded-md font-table-cell-primary text-table-cell-primary hover:bg-zinc-800 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check</span>
+                                Approve Goals
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

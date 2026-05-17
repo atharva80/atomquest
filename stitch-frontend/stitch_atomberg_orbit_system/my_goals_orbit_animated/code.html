@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Goals - Orbit</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface": "#fbf8ff",
+                "secondary": "#5e5e65",
+                "zinc-400": "#a1a1aa",
+                "white": "#ffffff",
+                "surface-container-high": "#e8e7f1",
+                "secondary-fixed-dim": "#c7c5ce",
+                "surface-variant": "#e3e1ec",
+                "on-primary-container": "#858386",
+                "zinc-100": "#f4f4f5",
+                "tertiary-container": "#1f1a1a",
+                "on-surface": "#1a1b22",
+                "on-primary-fixed": "#1c1b1d",
+                "surface-container": "#eeedf7",
+                "outline": "#78767b",
+                "zinc-900": "#18181b",
+                "error-container": "#ffdad6",
+                "primary-fixed": "#e5e1e4",
+                "surface-bright": "#fbf8ff",
+                "status-not-started": "#d4d4d8",
+                "zinc-200": "#e4e4e7",
+                "on-tertiary-container": "#8a8282",
+                "on-surface-variant": "#47464a",
+                "secondary-fixed": "#e3e1ea",
+                "zinc-500": "#71717a",
+                "surface-container-highest": "#e3e1ec",
+                "progress-mid": "#eab308",
+                "on-secondary-container": "#64646b",
+                "on-primary-fixed-variant": "#474649",
+                "on-primary": "#ffffff",
+                "inverse-primary": "#c8c6c8",
+                "on-tertiary-fixed-variant": "#4c4545",
+                "zinc-50": "#fafafa",
+                "on-error": "#ffffff",
+                "status-overdue": "#dc2626",
+                "zinc-950": "#09090b",
+                "secondary-container": "#e3e1ea",
+                "tertiary-fixed": "#ebe0df",
+                "primary": "#000000",
+                "on-secondary-fixed-variant": "#46464d",
+                "surface-tint": "#5f5e60",
+                "on-tertiary": "#ffffff",
+                "error": "#ba1a1a",
+                "zinc-700": "#3f3f46",
+                "progress-low": "#ef4444",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#2f3038",
+                "tertiary": "#000000",
+                "outline-variant": "#c8c5ca",
+                "inverse-on-surface": "#f1effa",
+                "progress-high": "#16a34a",
+                "on-error-container": "#93000a",
+                "primary-container": "#1c1b1d",
+                "status-on-track": "#16a34a",
+                "on-secondary-fixed": "#1b1b21",
+                "on-tertiary-fixed": "#1f1a1a",
+                "on-background": "#1a1b22",
+                "primary-fixed-dim": "#c8c6c8",
+                "status-at-risk": "#ca8a04",
+                "background": "#fbf8ff",
+                "tertiary-fixed-dim": "#cec4c4",
+                "surface-dim": "#dad9e3",
+                "surface-container-low": "#f4f2fd"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "header-height": "56px",
+                "card-padding": "1.25rem",
+                "page-margin": "1.5rem",
+                "component-padding": "1rem",
+                "section-gap": "1.5rem",
+                "field-gap": "0.375rem",
+                "sidebar-width": "240px",
+                "inline-gap": "0.5rem"
+        },
+        "fontFamily": {
+                "page-title": [
+                        "Inter"
+                ],
+                "table-cell-primary": [
+                        "Inter"
+                ],
+                "section-heading": [
+                        "Inter"
+                ],
+                "data-value-lg": [
+                        "Inter"
+                ],
+                "body-relaxed": [
+                        "Inter"
+                ],
+                "badge-label": [
+                        "Inter"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "section-label": [
+                        "Inter"
+                ],
+                "caption": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "page-title": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "table-cell-primary": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "section-heading": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "data-value-lg": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-relaxed": [
+                        "14px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "badge-label": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "section-label": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.1em",
+                                "fontWeight": "500"
+                        }
+                ],
+                "caption": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "400"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    @keyframes slideUpFade {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+    .animate-slide-up {
+        opacity: 0;
+        animation: slideUpFade 0.6s ease-out forwards;
+    }
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+
+    /* Smooth Progress Bar Fill */
+    .progress-fill-transition {
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+</style></head>
+<body class="bg-zinc-50 text-zinc-900 font-body-sm text-body-sm antialiased h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="bg-zinc-50 border-r border-zinc-200 fixed left-0 top-0 h-screen w-sidebar-width flex flex-col py-component-padding z-40 hidden md:flex">
+<div class="px-component-padding mb-8 flex items-center">
+<img alt="Orbit Logo" class="h-[48px] w-auto" src="https://lh3.googleusercontent.com/aida/ADBb0ujf6lZmvk5RKQdw6jd6gTf2rcJelr-xHr0f4BM0HyzXAS4Ku5HvCACrGm1ybtJCQJxh2G8Tt1JQhExbIn6wa5cwzPHkZvv4qrNGpk7vaJeQYlfgG1PC0cMg-4HZFbUxwOUWNs6U4RyPbx-4vW47bQmd9wtO83MqgcsDyEoJ2K2r4oz0HL6UpccZ2kdZPXVB1C6wSE1C_iiYf_fMCM8QomTwqIo4DC-nV0B4ocOfLnncTp1px6IGxjNKyA"/>
+</div>
+<div class="px-component-padding mb-6">
+<button class="w-full bg-zinc-900 text-white font-table-cell-primary text-table-cell-primary py-2 px-4 rounded hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                Create New Goal
+            </button>
+</div>
+<div class="flex-1 overflow-y-auto px-component-padding flex flex-col gap-1">
+<!-- Active Nav Item -->
+<a class="flex items-center gap-3 px-3 py-2 rounded bg-zinc-100 text-zinc-900 border-r-2 border-zinc-900 font-table-cell-primary text-table-cell-primary hover:bg-zinc-100 transition-all duration-200 translate-x-1" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="groups">groups</span>
+                Team Goals
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="admin_panel_settings">admin_panel_settings</span>
+                Admin Console
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history_edu">history_edu</span>
+                Audit Trails
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+                Reports
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary mt-auto" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                Settings
+            </a>
+</div>
+<div class="mt-auto px-component-padding pt-4 border-t border-zinc-200 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0 md:ml-[240px]">
+<!-- TopAppBar -->
+<header class="bg-white flex justify-between items-center px-6 w-full sticky top-0 z-50 h-header-height border-b border-zinc-200">
+<div class="flex items-center gap-6">
+<!-- Mobile Menu Trigger (hidden on desktop) -->
+<button class="md:hidden text-zinc-500 hover:text-zinc-900">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden md:flex items-center gap-4 text-body-sm font-body-sm">
+<a class="text-zinc-900 font-medium border-b-2 border-zinc-900 py-4 opacity-80 transition-opacity" href="#">FY 2024-25 Q1</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-[18px]">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded text-body-sm font-body-sm focus:outline-none focus:border-zinc-400 focus:ring-0 transition-colors" placeholder="Search goals..." type="text"/>
+</div>
+<button class="text-zinc-500 hover:bg-zinc-100 p-1.5 rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications">notifications</span>
+</button>
+<button class="text-zinc-500 hover:bg-zinc-100 p-1.5 rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-zinc-200 border border-zinc-300 overflow-hidden ml-2 cursor-pointer">
+<!-- Placeholder for User Profile Image -->
+<div class="w-full h-full bg-zinc-300 flex items-center justify-center text-zinc-500">
+<span class="material-symbols-outlined text-[16px]">person</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-y-auto p-6">
+<div class="max-w-6xl mx-auto flex flex-col gap-section-gap">
+<!-- Page Header & Actions -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 animate-fade-in">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-4">
+<h2 class="font-page-title text-page-title text-zinc-900 tracking-tight">My Goals</h2>
+<!-- Status Badge -->
+<div class="flex items-center gap-1.5 bg-zinc-100 px-2 py-1 rounded-full border border-zinc-200">
+<div class="w-1.5 h-1.5 rounded-full bg-green-600"></div>
+<span class="font-badge-label text-badge-label text-zinc-700 tracking-wide uppercase">Approved</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-zinc-500">FY 2024-25 Q1</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 bg-white border border-zinc-200 text-zinc-400 font-table-cell-primary text-table-cell-primary rounded cursor-not-allowed flex items-center gap-2" disabled="">
+                            Submit for Approval
+                        </button>
+<button class="px-4 py-2 bg-zinc-900 text-white font-table-cell-primary text-table-cell-primary rounded hover:bg-zinc-800 transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                            Add Goal
+                        </button>
+</div>
+</section>
+<!-- Weightage Progress Panel -->
+<section class="bg-white border border-zinc-200 rounded p-card-padding flex flex-col gap-4 animate-fade-in">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-zinc-400 text-[20px]">scale</span>
+<h3 class="font-section-heading text-section-heading text-zinc-900">Total Weightage Distribution</h3>
+</div>
+<span class="font-table-cell-primary text-table-cell-primary text-zinc-900 tabular-nums">100 / 100%</span>
+</div>
+<div class="w-full h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+<div class="h-full bg-green-600 rounded-full w-full progress-fill-transition"></div>
+</div>
+<p class="font-caption text-caption text-zinc-500">Your goals account for 100% of your available quarter capacity. No further allocation required.</p>
+</section>
+<!-- Goals Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Goal Card 1 -->
+<div class="bg-white border border-zinc-200 rounded p-card-padding flex flex-col gap-5 hover:border-zinc-300 transition-colors relative group animate-slide-up stagger-1">
+<!-- Top Row: Thrust Area & Menu -->
+<div class="flex justify-between items-start">
+<span class="font-section-label text-section-label text-zinc-500 tracking-widest uppercase">Product Innovation</span>
+<button class="text-zinc-400 hover:text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<!-- Title & Status -->
+<div class="flex flex-col gap-3 flex-1">
+<h4 class="font-section-heading text-section-heading text-zinc-900 leading-snug">Launch Modular Architecture Beta</h4>
+<div class="flex items-center gap-1.5 bg-zinc-100 px-2 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-green-600"></div>
+<span class="font-badge-label text-badge-label text-zinc-700">On Track</span>
+</div>
+</div>
+<hr class="border-zinc-100"/>
+<!-- Metrics Footer -->
+<div class="flex justify-between items-end pt-1">
+<div class="flex flex-col gap-1">
+<span class="font-caption text-caption text-zinc-500">Target Value</span>
+<span class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">100%</span>
+</div>
+<div class="flex flex-col gap-1 text-right">
+<span class="font-caption text-caption text-zinc-500">Weightage</span>
+<span class="font-table-cell-primary text-table-cell-primary text-zinc-900 tabular-nums">40%</span>
+</div>
+</div>
+</div>
+<!-- Goal Card 2 -->
+<div class="bg-white border border-zinc-200 rounded p-card-padding flex flex-col gap-5 hover:border-zinc-300 transition-colors relative group animate-slide-up stagger-2">
+<div class="flex justify-between items-start">
+<span class="font-section-label text-section-label text-zinc-500 tracking-widest uppercase">System Reliability</span>
+<button class="text-zinc-400 hover:text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="flex flex-col gap-3 flex-1">
+<h4 class="font-section-heading text-section-heading text-zinc-900 leading-snug">Reduce P99 Latency across core microservices</h4>
+<div class="flex items-center gap-1.5 bg-zinc-100 px-2 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+<span class="font-badge-label text-badge-label text-zinc-700">At Risk</span>
+</div>
+</div>
+<hr class="border-zinc-100"/>
+<div class="flex justify-between items-end pt-1">
+<div class="flex flex-col gap-1">
+<span class="font-caption text-caption text-zinc-500">Target Value</span>
+<span class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">&lt; 50ms</span>
+</div>
+<div class="flex flex-col gap-1 text-right">
+<span class="font-caption text-caption text-zinc-500">Weightage</span>
+<span class="font-table-cell-primary text-table-cell-primary text-zinc-900 tabular-nums">35%</span>
+</div>
+</div>
+</div>
+<!-- Goal Card 3 -->
+<div class="bg-white border border-zinc-200 rounded p-card-padding flex flex-col gap-5 hover:border-zinc-300 transition-colors relative group animate-slide-up stagger-3">
+<div class="flex justify-between items-start">
+<span class="font-section-label text-section-label text-zinc-500 tracking-widest uppercase">Team Development</span>
+<button class="text-zinc-400 hover:text-zinc-900 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="flex flex-col gap-3 flex-1">
+<h4 class="font-section-heading text-section-heading text-zinc-900 leading-snug">Complete Advanced Rust Certification</h4>
+<div class="flex items-center gap-1.5 bg-zinc-100 px-2 py-1 rounded-full w-fit">
+<div class="w-1.5 h-1.5 rounded-full bg-zinc-400"></div>
+<span class="font-badge-label text-badge-label text-zinc-700">Not Started</span>
+</div>
+</div>
+<hr class="border-zinc-100"/>
+<div class="flex justify-between items-end pt-1">
+<div class="flex flex-col gap-1">
+<span class="font-caption text-caption text-zinc-500">Target Value</span>
+<span class="font-data-value-lg text-data-value-lg text-zinc-900 tabular-nums">1 Cert</span>
+</div>
+<div class="flex flex-col gap-1 text-right">
+<span class="font-caption text-caption text-zinc-500">Weightage</span>
+<span class="font-table-cell-primary text-table-cell-primary text-zinc-900 tabular-nums">25%</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

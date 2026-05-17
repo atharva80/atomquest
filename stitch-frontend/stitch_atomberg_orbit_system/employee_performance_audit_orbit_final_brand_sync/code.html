@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Performance Audit - Atharva Gole | Orbit</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary-fixed-variant": "#4c4545",
+                "surface-bright": "#fbf8ff",
+                "background": "#fbf8ff",
+                "progress-mid": "#eab308",
+                "error": "#ba1a1a",
+                "zinc-700": "#3f3f46",
+                "zinc-400": "#a1a1aa",
+                "surface-container": "#eeedf7",
+                "on-primary-container": "#858386",
+                "surface-container-high": "#e8e7f1",
+                "status-on-track": "#16a34a",
+                "secondary-container": "#e3e1ea",
+                "outline-variant": "#c8c5ca",
+                "on-error": "#ffffff",
+                "zinc-200": "#e4e4e7",
+                "tertiary": "#000000",
+                "zinc-500": "#71717a",
+                "on-primary-fixed": "#1c1b1d",
+                "on-tertiary": "#ffffff",
+                "surface": "#fbf8ff",
+                "surface-variant": "#e3e1ec",
+                "status-at-risk": "#ca8a04",
+                "primary": "#000000",
+                "on-background": "#1a1b22",
+                "error-container": "#ffdad6",
+                "white": "#ffffff",
+                "on-primary": "#ffffff",
+                "primary-container": "#1c1b1d",
+                "zinc-100": "#f4f4f5",
+                "on-surface": "#1a1b22",
+                "on-tertiary-container": "#8a8282",
+                "outline": "#78767b",
+                "on-error-container": "#93000a",
+                "surface-container-low": "#f4f2fd",
+                "inverse-on-surface": "#f1effa",
+                "tertiary-fixed": "#ebe0df",
+                "surface-dim": "#dad9e3",
+                "secondary": "#5e5e65",
+                "secondary-fixed": "#e3e1ea",
+                "progress-high": "#16a34a",
+                "zinc-950": "#09090b",
+                "zinc-900": "#18181b",
+                "progress-low": "#ef4444",
+                "on-secondary": "#ffffff",
+                "zinc-50": "#fafafa",
+                "on-secondary-container": "#64646b",
+                "on-surface-variant": "#47464a",
+                "on-secondary-fixed-variant": "#46464d",
+                "primary-fixed": "#e5e1e4",
+                "primary-fixed-dim": "#c8c6c8",
+                "tertiary-container": "#1f1a1a",
+                "status-not-started": "#d4d4d8",
+                "status-overdue": "#dc2626",
+                "inverse-primary": "#c8c6c8",
+                "surface-tint": "#5f5e60",
+                "on-tertiary-fixed": "#1f1a1a",
+                "secondary-fixed-dim": "#c7c5ce",
+                "on-secondary-fixed": "#1b1b21",
+                "surface-container-lowest": "#ffffff",
+                "tertiary-fixed-dim": "#cec4c4",
+                "surface-container-highest": "#e3e1ec",
+                "inverse-surface": "#2f3038",
+                "on-primary-fixed-variant": "#474649"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "field-gap": "0.375rem",
+                "page-margin": "1.5rem",
+                "component-padding": "1rem",
+                "inline-gap": "0.5rem",
+                "section-gap": "1.5rem",
+                "sidebar-width": "240px",
+                "header-height": "56px",
+                "card-padding": "1.25rem"
+        },
+        "fontFamily": {
+                "section-label": ["Inter"],
+                "data-value-lg": ["Inter"],
+                "page-title": ["Inter"],
+                "caption": ["Inter"],
+                "section-heading": ["Inter"],
+                "body-sm": ["Inter"],
+                "body-relaxed": ["Inter"],
+                "table-cell-primary": ["Inter"],
+                "badge-label": ["Inter"]
+        },
+        "fontSize": {
+                "section-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                "data-value-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                "page-title": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                "section-heading": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+                "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                "body-relaxed": ["14px", { "lineHeight": "24px", "fontWeight": "400" }],
+                "table-cell-primary": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                "badge-label": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body {
+    background-color: #fafafa; /* zinc-50 */
+    color: #18181b; /* zinc-900 */
+    font-family: 'Inter', sans-serif;
+  }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+</head>
+<body class="flex min-h-screen bg-zinc-50">
+<!-- SideNavBar -->
+<aside class="w-[240px] h-full fixed left-0 top-0 bg-zinc-50 border-r border-zinc-200 flex flex-col py-page-margin px-inline-gap z-20">
+<div class="px-4 mb-8">
+<div class="flex items-center gap-3 mb-1">
+<img alt="Orbit Logo" class="w-auto h-8 flex-shrink-0" src="https://lh3.googleusercontent.com/aida/ADBb0ujf6lZmvk5RKQdw6jd6gTf2rcJelr-xHr0f4BM0HyzXAS4Ku5HvCACrGm1ybtJCQJxh2G8Tt1JQhExbIn6wa5cwzPHkZvv4qrNGpk7vaJeQYlfgG1PC0cMg-4HZFbUxwOUWNs6U4RyPbx-4vW47bQmd9wtO83MqgcsDyEoJ2K2r4oz0HL6UpccZ2kdZPXVB1C6wSE1C_iiYf_fMCM8QomTwqIo4DC-nV0B4ocOfLnncTp1px6IGxjNKyA"/>
+</div>
+<p class="font-caption text-caption text-zinc-500 ml-11">Goal Management</p>
+</div>
+<nav class="flex-1 space-y-1"><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Dashboard</span></a><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">groups</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Team Goals</span></a><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">admin_panel_settings</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Admin Console</span></a><a class="flex items-center gap-3 px-3 py-2 bg-zinc-100 text-zinc-950 border-r-2 border-zinc-900 transition-all duration-200 translate-x-1 font-medium" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Performance Reviews</span></a><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">notification_important</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Escalations</span></a><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">history_edu</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Audit Trails</span></a><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Reports</span></a><a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="font-table-cell-primary text-table-cell-primary text-sm">Settings</span></a></nav>
+<div class="px-4 mt-auto pt-4 border-t border-zinc-200 flex flex-col gap-4">
+<button class="w-full bg-zinc-900 text-white rounded-md px-4 py-2.5 font-table-cell-primary text-table-cell-primary hover:bg-zinc-800 transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Goal
+            </button>
+<div class="flex flex-col gap-1 -mx-2">
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-table-cell-primary text-table-cell-primary">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="font-table-cell-primary text-table-cell-primary">Sign Out</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="ml-[240px] flex-1 flex flex-col min-h-screen bg-zinc-50">
+<!-- TopNavBar -->
+<header class="h-[56px] w-full bg-white border-b border-zinc-200 flex items-center justify-between px-page-margin sticky top-0 z-10">
+<div class="flex items-center gap-4 h-full">
+<nav class="flex items-center h-full gap-6"><span class="text-zinc-900 font-medium border-b-2 border-zinc-900 pb-0.5 mt-0.5">Overview</span>
+<a class="h-full flex items-center text-zinc-500 hover:text-zinc-900 transition-colors font-body-sm text-body-sm px-1" href="#">History</a>
+<a class="h-full flex items-center text-zinc-500 hover:text-zinc-900 transition-colors font-body-sm text-body-sm px-1" href="#">Export</a></nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" style="font-size: 18px;">search</span>
+<input class="pl-9 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 w-64 placeholder-zinc-400" placeholder="Search..." type="text"/>
+</div>
+<button class="text-zinc-500 hover:text-zinc-900 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-500 hover:text-zinc-900 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 bg-zinc-200 rounded-full border border-zinc-300 overflow-hidden cursor-pointer">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxT1R7BWCVWw5hWswPGWNsslEvOjBDEDKGatsvXbnVmZFRStQkA8lZIrbGU-ykUG91k1LiYHg6UZC08xwV7gzCL50d7ZU_xf5KVhELKCaW0wX8-O-8Lxd5QNKJnrivALVxKa0BGrQuHbLRT0mrlfgC3k2OprI_gaXrql25lZc7jTjm7y1Zlw-w44YKBBg0puHQPXRq4_iNXIzIzEhTDq_MZ1lE4f8z2g5aOUjAEXk2aaOV7AjnnV3CMDYI3_AxUvG_kMcaTYdo2bk"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-page-margin max-w-5xl w-full mx-auto">
+<!-- Back Link -->
+<a class="inline-flex items-center gap-1 text-zinc-500 hover:text-zinc-900 transition-colors font-body-sm text-body-sm mb-6" href="#">
+<span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+        Back to My Team Directory
+      </a>
+<!-- Header Section -->
+<div class="flex items-end justify-between mb-8 pb-6 border-b border-zinc-200">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 bg-zinc-100 rounded-full border border-zinc-200 flex items-center justify-center">
+<span class="text-xl font-medium text-zinc-700 tracking-tight">AG</span>
+</div>
+<div>
+<h2 class="font-page-title text-page-title font-semibold text-zinc-900 mb-1">Atharva Gole</h2>
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-zinc-500">Senior Product Designer</span>
+<span class="w-1 h-1 bg-zinc-300 rounded-full"></span>
+<span class="font-body-sm text-body-sm text-zinc-500">Design Team</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">Q1 Aggregate Score</div>
+<div class="flex items-center justify-end gap-2">
+<span class="w-2 h-2 rounded-full bg-status-on-track"></span>
+<span class="font-data-value-lg text-data-value-lg tabular-nums text-zinc-900">97.6%</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Main Chart Card -->
+<div class="lg:col-span-2 bg-white border border-zinc-200 rounded-lg p-card-padding">
+<h3 class="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-6">CUMULATIVE PERFORMANCE HISTORY</h3>
+<div class="h-64 w-full relative">
+<!-- Y-Axis Labels -->
+<div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-zinc-400 tabular-nums">
+<span>100%</span>
+<span>75%</span>
+<span>50%</span>
+<span>25%</span>
+<span>0%</span>
+</div>
+<!-- Grid Lines -->
+<div class="absolute left-8 right-0 top-0 bottom-6 flex flex-col justify-between">
+<div class="w-full h-px bg-zinc-100"></div>
+<div class="w-full h-px bg-zinc-100"></div>
+<div class="w-full h-px bg-zinc-100"></div>
+<div class="w-full h-px bg-zinc-100"></div>
+<div class="w-full h-px bg-zinc-100"></div>
+</div>
+<!-- SVG Line Graph -->
+<svg class="absolute left-8 right-0 top-0 bottom-6 w-[calc(100%-2rem)] h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Q1 to Q2 to Q3 Data Points: roughly 85%, 92%, 97% mapped to Y coords -->
+<!-- Y is inverted, so 100% is 0, 85% is 15, 92% is 8, 97% is 3 -->
+<polyline fill="none" points="0,15 50,8 100,3" stroke="#18181b" stroke-width="2" vector-effect="non-scaling-stroke"></polyline>
+<!-- Data Points Dots -->
+<circle cx="0" cy="15" fill="#18181b" r="4" stroke="#ffffff" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
+<circle cx="50" cy="8" fill="#18181b" r="4" stroke="#ffffff" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
+<circle cx="100" cy="3" fill="#16a34a" r="4" stroke="#ffffff" stroke-width="2" vector-effect="non-scaling-stroke"></circle>
+</svg>
+<!-- X-Axis Labels -->
+<div class="absolute left-8 right-0 bottom-0 flex justify-between text-xs text-zinc-500 pt-2 font-medium">
+<span>Q1 '23</span>
+<span>Q2 '23</span>
+<span>Q3 '23 (Current)</span>
+</div>
+</div>
+</div>
+<!-- Secondary Info Cards -->
+<div class="space-y-6">
+<div class="bg-white border border-zinc-200 rounded-lg p-card-padding">
+<h3 class="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-4">Current Status</h3>
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-zinc-100 border border-zinc-200">
+<span class="w-1.5 h-1.5 rounded-full bg-status-on-track"></span>
+<span class="font-badge-label text-badge-label text-zinc-700">Exceeding Expectations</span>
+</div>
+<p class="mt-4 font-body-sm text-body-sm text-zinc-600">Consistently delivering above target metrics across primary OKRs for the past 3 quarters.</p>
+</div>
+<div class="bg-white border border-zinc-200 rounded-lg p-card-padding">
+<h3 class="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-4">Key Strengths</h3>
+<ul class="space-y-3">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-zinc-400" style="font-size: 16px; margin-top: 2px;">check</span>
+<span class="font-body-sm text-body-sm text-zinc-700">Cross-functional collaboration</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-zinc-400" style="font-size: 16px; margin-top: 2px;">check</span>
+<span class="font-body-sm text-body-sm text-zinc-700">System design documentation</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-zinc-400" style="font-size: 16px; margin-top: 2px;">check</span>
+<span class="font-body-sm text-body-sm text-zinc-700">Mentoring junior staff</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Goals List -->
+<div class="mt-6 bg-white border border-zinc-200 rounded-lg overflow-hidden">
+<div class="px-card-padding py-4 border-b border-zinc-200 bg-zinc-50/50 flex justify-between items-center">
+<h3 class="font-section-heading text-section-heading font-medium text-zinc-900">Q3 Active Goals</h3>
+<button class="text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors">View All</button>
+</div>
+<div class="divide-y divide-zinc-200">
+<!-- Goal Item 1 -->
+<div class="p-card-padding hover:bg-zinc-50/50 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-table-cell-primary text-table-cell-primary text-zinc-900">Design System Audit &amp; Refactor</h4>
+<p class="font-caption text-caption text-zinc-500 mt-1">Complete comprehensive audit of core UI components.</p>
+</div>
+<div class="text-right">
+<div class="font-table-cell-primary text-table-cell-primary tabular-nums text-zinc-900">100%</div>
+<div class="font-caption text-caption text-zinc-400">Completed (Components)</div>
+</div>
+</div>
+<div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-status-on-track h-full rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+<!-- Goal Item 2 -->
+<div class="p-card-padding hover:bg-zinc-50/50 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-table-cell-primary text-table-cell-primary text-zinc-900">User Research Interviews - Q3 Feature Flag</h4>
+<p class="font-caption text-caption text-zinc-500 mt-1">Conduct and synthesize 15 user interviews.</p>
+</div>
+<div class="text-right">
+<div class="font-table-cell-primary text-table-cell-primary tabular-nums text-zinc-900">80%</div>
+<div class="font-caption text-caption text-zinc-400">12 / 15 Interviews</div>
+</div>
+</div>
+<div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-zinc-900 h-full rounded-full" style="width: 80%;"></div>
+</div>
+</div>
+<!-- Goal Item 3 -->
+<div class="p-card-padding hover:bg-zinc-50/50 transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="font-table-cell-primary text-table-cell-primary text-zinc-900">Accessibility Guidelines Implementation</h4>
+<p class="font-caption text-caption text-zinc-500 mt-1">Ensure all tier-1 flows meet WCAG AA standards.</p>
+</div>
+<div class="text-right">
+<div class="font-table-cell-primary text-table-cell-primary tabular-nums text-zinc-900">45%</div>
+<div class="font-caption text-caption text-zinc-400">Pages Compliant</div>
+</div>
+</div>
+<div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-zinc-900 h-full rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

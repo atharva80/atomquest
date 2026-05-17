@@ -71,7 +71,7 @@ test.describe('Multi-User Workflow & Backend Enforcement', () => {
         const submitBtn = page.locator('button:has-text("Submit Sheet"), button:has-text("Submit for Approval")').first();
         if (await submitBtn.isVisible() && !(await submitBtn.isDisabled())) {
           await submitBtn.click();
-          await page.click('button:has-text("Confirm Submission"), button:has-text("Confirm")').first();
+          await page.locator('button:has-text("Confirm Submission"), button:has-text("Confirm")').first().click();
 
           // Backend validation or UI toast should catch this
           await expect(page.locator('[data-sonner-toast]')).toContainText(/100%/);

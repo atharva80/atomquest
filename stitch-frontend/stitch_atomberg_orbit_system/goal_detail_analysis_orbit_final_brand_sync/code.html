@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Orbit - Goal Detail Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "progress-mid": "#eab308",
+                        "on-secondary-container": "#64646b",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c8c6c8",
+                        "secondary-fixed": "#e3e1ea",
+                        "on-secondary": "#ffffff",
+                        "outline": "#78767b",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#f4f2fd",
+                        "surface-dim": "#dad9e3",
+                        "surface-bright": "#fbf8ff",
+                        "status-on-track": "#16a34a",
+                        "surface-container-highest": "#e3e1ec",
+                        "surface-container-high": "#e8e7f1",
+                        "on-primary-fixed-variant": "#474649",
+                        "status-at-risk": "#ca8a04",
+                        "zinc-50": "#fafafa",
+                        "zinc-900": "#18181b",
+                        "zinc-200": "#e4e4e7",
+                        "zinc-400": "#a1a1aa",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#fbf8ff",
+                        "surface-variant": "#e3e1ec",
+                        "secondary-container": "#e3e1ea",
+                        "on-tertiary-container": "#8a8282",
+                        "primary-container": "#1c1b1d",
+                        "on-surface-variant": "#47464a",
+                        "status-overdue": "#dc2626",
+                        "secondary-fixed-dim": "#c7c5ce",
+                        "tertiary-container": "#1f1a1a",
+                        "primary": "#000000",
+                        "on-background": "#1a1b22",
+                        "on-tertiary-fixed-variant": "#4c4545",
+                        "secondary": "#5e5e65",
+                        "status-not-started": "#d4d4d8",
+                        "on-surface": "#1a1b22",
+                        "on-primary-fixed": "#1c1b1d",
+                        "error-container": "#ffdad6",
+                        "zinc-700": "#3f3f46",
+                        "inverse-on-surface": "#f1effa",
+                        "tertiary": "#000000",
+                        "primary-fixed": "#e5e1e4",
+                        "surface": "#fbf8ff",
+                        "surface-tint": "#5f5e60",
+                        "zinc-500": "#71717a",
+                        "white": "#ffffff",
+                        "zinc-100": "#f4f4f5",
+                        "on-secondary-fixed-variant": "#46464d",
+                        "zinc-950": "#09090b",
+                        "tertiary-fixed-dim": "#cec4c4",
+                        "surface-container": "#eeedf7",
+                        "tertiary-fixed": "#ebe0df",
+                        "on-secondary-fixed": "#1b1b21",
+                        "outline-variant": "#c8c5ca",
+                        "inverse-primary": "#c8c6c8",
+                        "on-tertiary-fixed": "#1f1a1a",
+                        "on-tertiary": "#ffffff",
+                        "progress-low": "#ef4444",
+                        "inverse-surface": "#2f3038",
+                        "progress-high": "#16a34a",
+                        "on-primary-container": "#858386",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "240px",
+                        "header-height": "56px",
+                        "card-padding": "1.25rem",
+                        "section-gap": "1.5rem",
+                        "page-margin": "1.5rem",
+                        "component-padding": "1rem",
+                        "inline-gap": "0.5rem",
+                        "field-gap": "0.375rem"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "table-cell-primary": ["Inter"],
+                        "data-value-lg": ["Inter"],
+                        "page-title": ["Inter"],
+                        "body-relaxed": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "badge-label": ["Inter"],
+                        "section-label": ["Inter"],
+                        "section-heading": ["Inter"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "table-cell-primary": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "data-value-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "page-title": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-relaxed": ["14px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "badge-label": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "section-label": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500" }],
+                        "section-heading": ["16px", { "lineHeight": "24px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zinc-50 text-zinc-900 font-sans antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="bg-zinc-50 border-r border-zinc-200 fixed left-0 top-0 h-screen w-sidebar-width flex flex-col py-component-padding z-40">
+<div class="px-component-padding mb-8 flex items-center"><img alt="Orbit Logo" class="h-[48px] w-auto" src="https://lh3.googleusercontent.com/aida/ADBb0ujf6lZmvk5RKQdw6jd6gTf2rcJelr-xHr0f4BM0HyzXAS4Ku5HvCACrGm1ybtJCQJxh2G8Tt1JQhExbIn6wa5cwzPHkZvv4qrNGpk7vaJeQYlfgG1PC0cMg-4HZFbUxwOUWNs6U4RyPbx-4vW47bQmd9wtO83MqgcsDyEoJ2K2r4oz0HL6UpccZ2kdZPXVB1C6wSE1C_iiYf_fMCM8QomTwqIo4DC-nV0B4ocOfLnncTp1px6IGxjNKyA"/></div>
+<div class="px-component-padding mb-6">
+<button class="w-full bg-zinc-900 text-white font-table-cell-primary text-table-cell-primary py-2 px-4 rounded hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[18px]">add</span>
+                Create New Goal</button>
+</div>
+<div class="flex-1 overflow-y-auto px-component-padding flex flex-col gap-1"><a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded bg-zinc-100 text-zinc-900 border-r-2 border-zinc-900 font-table-cell-primary text-table-cell-primary hover:bg-zinc-100 transition-all duration-200 translate-x-1" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history_edu">history_edu</span>
+                Audit Trails
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="groups">groups</span>
+                Team Goals
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="admin_panel_settings">admin_panel_settings</span>
+                Admin Console
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="analytics">analytics</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary mt-auto" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+                Settings
+            </a></div>
+<div class="mt-auto px-component-padding pt-4 border-t border-zinc-200 flex flex-col gap-1"><a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+                Help Center
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 font-table-cell-primary text-table-cell-primary" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="logout">logout</span>
+                Sign Out
+            </a></div>
+</nav>
+<!-- TopNavBar -->
+<header class="h-[56px] w-[calc(100%-240px)] fixed top-0 right-0 z-10 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-page-margin">
+<div class="flex items-center gap-6">
+<nav class="flex items-center gap-6">
+<a class="font-body-sm text-body-sm text-zinc-500 hover:text-zinc-900 transition-colors" href="#">Overview</a>
+<a class="font-body-sm text-body-sm text-zinc-500 hover:text-zinc-900 transition-colors" href="#">History</a>
+<a class="font-body-sm text-body-sm text-zinc-500 hover:text-zinc-900 transition-colors" href="#">Export</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-500 hover:text-zinc-900 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-zinc-200 overflow-hidden border border-zinc-300 ml-2">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgUkxcm4-XT1PmwYlsNA7wLlkbhRcIJxfYN-Zhg78emCYyfqJmK8Pe7YvabzOe5ky_-u0BwUty_wmrmkcCkMhAMuKYKsfNbgB-kQ8m35zzJLvudvYBJdaxrjTysHth0910O5dS9jLe7sIuvmwLiZuvRGNriBkuzVQw5Z2qbee3ubR9MLAe-KhdJGn2PHnbe0I_MeNetyFN5ZDfw75LnCxOOB93wRnNHR3eSbDjUd7Uo4GVBmlUA59HxHWvZjbkCbOEdTZr53S3LqM"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-[240px] mt-[56px] p-page-margin">
+<!-- Page Header -->
+<div class="mb-section-gap">
+<a class="inline-flex items-center gap-1 text-zinc-500 hover:text-zinc-900 font-body-sm text-body-sm mb-4 transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                Back to Goals
+            </a>
+<h1 class="font-page-title text-page-title text-zinc-950 mb-3">Optimize Q1 BLDC Motor Efficiency Profiles</h1>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5 px-2 py-1 bg-zinc-100 rounded-sm">
+<span class="w-[6px] h-[6px] rounded-full bg-status-on-track"></span>
+<span class="font-badge-label text-badge-label text-zinc-700">Approved OKR</span>
+</div>
+<div class="font-body-sm text-body-sm text-zinc-500 tabular-nums">25% Weightage</div>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Column 1 (2/3) -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Check-ins Card -->
+<div class="bg-white border border-zinc-200 p-card-padding">
+<h2 class="font-section-label text-section-label tracking-widest text-zinc-500 uppercase mb-6">Quarterly Progress Histogram</h2>
+<div class="space-y-0">
+<!-- Q1 Check-in -->
+<div class="flex items-start justify-between py-4 border-b border-zinc-100">
+<div>
+<div class="font-table-cell-primary text-table-cell-primary text-zinc-900 mb-1">Q1 Check-in <span class="text-zinc-500 font-normal ml-2">(Sep 10, 2026)</span></div>
+<div class="font-body-relaxed text-body-relaxed text-zinc-600">Achieved 96.5% vs planned target 95.0%</div>
+</div>
+<div class="text-right">
+<div class="font-data-value-lg text-data-value-lg tabular-nums text-zinc-900">100%</div>
+<div class="font-caption text-caption text-status-on-track flex items-center justify-end gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Score
+                                </div>
+</div>
+</div>
+<!-- Q2 Check-in -->
+<div class="flex items-start justify-between py-4 border-b border-zinc-100">
+<div>
+<div class="font-table-cell-primary text-table-cell-primary text-zinc-900 mb-1">Q2 Check-in <span class="text-zinc-500 font-normal ml-2">(Scheduled Dec 15)</span></div>
+<div class="font-body-relaxed text-body-relaxed text-zinc-400">Not Started</div>
+</div>
+<div class="text-right">
+<div class="font-data-value-lg text-data-value-lg tabular-nums text-zinc-300">--</div>
+<div class="font-caption text-caption text-zinc-400 flex items-center justify-end gap-1 mt-1">
+                                    Score
+                                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 2 (1/3) -->
+<div class="lg:col-span-1 space-y-6">
+<!-- Alignment Comments Card -->
+<div class="bg-white border border-zinc-200 p-card-padding">
+<h2 class="font-section-label text-section-label tracking-widest text-zinc-500 uppercase mb-4 flex items-center justify-between">
+                        Manager Alignment Comments
+                        <span class="material-symbols-outlined text-[16px] text-zinc-400">forum</span>
+</h2>
+<div class="bg-zinc-50 p-4 border border-zinc-200 rounded">
+<p class="font-body-sm text-body-sm text-zinc-700 italic mb-3">"Excellent optimization curve, Atharva. Let's carry this baseline over into Q2 stress validations."</p>
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-zinc-200 overflow-hidden">
+<img alt="Manager Avatar" class="w-full h-full object-cover" data-alt="A small, square user profile avatar featuring the initials NK on a minimalist light gray background. Monochromatic, professional style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcJWXy-QTgaOvysjCoUHUGfmtBiN5A77QO43wDebo2gwcdE9rBwKys_uCGFgjRCcbTs0wqWjRJSAIei9qGGrggJFxNlbiPZbJGjaMhhAbrNQHzMEpLzHBKyb3cXFqIv4DXkzcAv2wu5rykPoTdu2nA78QGXHGTGVokiC40efod-jrWgrCm4tykeiETiXeM1S0YaHDl9RLPqMWtDzZQtlmf9NOtqHwOFXJe0ZdSoQ5hx1Syz2w5hxT7eu1VBrwbYOzvedkEquOOjTo"/>
+</div>
+<div class="font-caption text-caption text-zinc-600 font-medium">— Manager Neha Kulkarni</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
