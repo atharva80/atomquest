@@ -1,0 +1,128 @@
+
+<style>
+  .section { margin-bottom: 2rem; }
+  .section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; cursor: pointer; transition: border-color 0.15s; }
+  .card:hover { border-color: var(--color-border-secondary); }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 100px; }
+  .badge-ai { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-ux { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-wow { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .badge-judge { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .card-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .icon { font-size: 18px; color: var(--color-text-secondary); }
+</style>
+
+<div style="padding: 1rem 0">
+  <div class="section">
+    <div class="section-title">AI features</div>
+    <div class="cards">
+      <div class="card" onclick="sendPrompt('How do I build the AI goal coach chatbot for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-robot icon" aria-hidden="true"></i><span class="badge badge-ai">AI</span></div>
+        <div class="card-title">Goal coach chatbot</div>
+        <div class="card-desc">Answers "why is my score low?", explains formulas, gives tips based on actual progress data</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build AI progress summaries for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-sparkles icon" aria-hidden="true"></i><span class="badge badge-ai">AI</span></div>
+        <div class="card-title">Progress summaries</div>
+        <div class="card-desc">Auto-generates "John is 70% on track, 2 goals at risk" for manager dashboard</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build AI-drafted check-in comments for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-pencil icon" aria-hidden="true"></i><span class="badge badge-ai">AI</span></div>
+        <div class="card-title">Auto check-in drafts</div>
+        <div class="card-desc">AI pre-fills manager's check-in comment from goal data — manager edits & submits</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build AI goal suggestions for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-bulb icon" aria-hidden="true"></i><span class="badge badge-ai">AI</span></div>
+        <div class="card-title">Goal suggestions</div>
+        <div class="card-desc">Suggests relevant goals based on thrust area + employee's past year achievements</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build anomaly detection for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-alert-triangle icon" aria-hidden="true"></i><span class="badge badge-ai">AI</span></div>
+        <div class="card-title">Anomaly alerts</div>
+        <div class="card-desc">Flags suspicious entries — "achievement 3× higher than target, verify data"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">UX polish (highest judge impact)</div>
+    <div class="cards">
+      <div class="card" onclick="sendPrompt('How do I build a command palette for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-command icon" aria-hidden="true"></i><span class="badge badge-ux">UX</span></div>
+        <div class="card-title">Command palette</div>
+        <div class="card-desc">⌘K opens a search — navigate to any goal, employee, or page instantly</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build optimistic UI updates for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-bolt icon" aria-hidden="true"></i><span class="badge badge-ux">UX</span></div>
+        <div class="card-title">Optimistic UI</div>
+        <div class="card-desc">Actions feel instant — update fires before server confirms, rollback on error</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build inline goal editing for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-table-options icon" aria-hidden="true"></i><span class="badge badge-ux">UX</span></div>
+        <div class="card-title">Inline editing</div>
+        <div class="card-desc">Click any cell to edit targets or weightage without opening a new page</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build a live weightage validator for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-chart-pie icon" aria-hidden="true"></i><span class="badge badge-ux">UX</span></div>
+        <div class="card-title">Live weightage ring</div>
+        <div class="card-desc">Animated donut shows remaining % as user adds goals — turns red below 100%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Wow features (bonus score)</div>
+    <div class="cards">
+      <div class="card" onclick="sendPrompt('How do I build a PDF goal report export for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-file-type-pdf icon" aria-hidden="true"></i><span class="badge badge-wow">Wow</span></div>
+        <div class="card-title">PDF report export</div>
+        <div class="card-desc">One-click branded PDF of any employee's quarterly review, ready for HR</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build a demo mode for AtomQuest judges?')">
+        <div class="card-header"><i class="ti ti-player-play icon" aria-hidden="true"></i><span class="badge badge-wow">Wow</span></div>
+        <div class="card-title">Demo mode</div>
+        <div class="card-desc">Button that walks judges through a complete Q2 review cycle with narrated steps</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build achievement history sparklines for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-chart-line icon" aria-hidden="true"></i><span class="badge badge-wow">Wow</span></div>
+        <div class="card-title">Sparkline history</div>
+        <div class="card-desc">Tiny inline chart per goal showing Q1→Q4 progress trend without leaving the table</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build a goal alignment tree for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-sitemap icon" aria-hidden="true"></i><span class="badge badge-wow">Wow</span></div>
+        <div class="card-title">Alignment tree</div>
+        <div class="card-desc">Visual org tree showing how each employee goal connects up to a dept KPI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Judge-targeted details</div>
+    <div class="cards">
+      <div class="card" onclick="sendPrompt('How do I add toast notifications for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-bell icon" aria-hidden="true"></i><span class="badge badge-judge">Judge</span></div>
+        <div class="card-title">Toast notifications</div>
+        <div class="card-desc">Every action shows a success/error toast — "Goal approved" / "Submission failed"</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I add skeleton loading states for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-layout icon" aria-hidden="true"></i><span class="badge badge-judge">Judge</span></div>
+        <div class="card-title">Skeleton screens</div>
+        <div class="card-desc">Pulsing placeholders while data loads — never show a blank page or spinner</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I add empty states for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-inbox icon" aria-hidden="true"></i><span class="badge badge-judge">Judge</span></div>
+        <div class="card-title">Empty states</div>
+        <div class="card-desc">Each empty view has an icon + message + CTA: "No goals yet — create your first"</div>
+      </div>
+      <div class="card" onclick="sendPrompt('How do I build keyboard navigation for AtomQuest?')">
+        <div class="card-header"><i class="ti ti-keyboard icon" aria-hidden="true"></i><span class="badge badge-judge">Judge</span></div>
+        <div class="card-title">Keyboard nav</div>
+        <div class="card-desc">Tab through goals, Enter to open, Escape to cancel — feels polished and accessible</div>
+      </div>
+    </div>
+  </div>
+</div>

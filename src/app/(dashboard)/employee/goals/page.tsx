@@ -9,6 +9,7 @@ import { PlusCircle, Send, AlertTriangle, Target } from 'lucide-react';
 import Link from 'next/link';
 import { submitGoalSheet } from '@/actions/goals';
 import { STATUS_COLORS } from '@/lib/constants';
+import { ProgressSummary } from '@/components/ai/progress-summary';
 
 export const metadata = { title: 'My Goals — AtomQuest' };
 
@@ -75,6 +76,8 @@ export default async function GoalsPage() {
 
       {goals.length > 0 ? (
         <>
+          <ProgressSummary />
+          
           <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border shadow-sm">
             <WeightageBar current={totalWeightage} max={100} goals={weightageBreakdown} />
           </div>

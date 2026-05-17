@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/sidebar';
 import { Topbar } from '@/components/layout/topbar';
 import { UserProvider } from '@/hooks/use-user';
 import { Profile } from '@/types';
+import { GoalChatbot } from '@/components/ai/goal-chatbot';
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const supabase = await createClient();
@@ -52,6 +53,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               {children}
             </div>
           </main>
+          
+          <GoalChatbot />
         </div>
       </div>
     </UserProvider>

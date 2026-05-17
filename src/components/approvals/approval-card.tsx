@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronDown, ChevronUp, User } from 'lucide-react';
 import { ApprovalActions } from './approval-actions';
 import { InlineEditRow } from './inline-edit-row';
+import { ProgressSummary } from '@/components/ai/progress-summary';
 
 interface ApprovalCardProps {
   employee: Profile;
@@ -81,6 +82,10 @@ export function ApprovalCard({ employee, goals, submittedAt, cycleId }: Approval
       
       {isExpanded && (
         <CardContent className="p-0 border-t">
+          <div className="p-4 border-b bg-slate-50/20 dark:bg-slate-900/10">
+            <ProgressSummary employeeId={employee.id} />
+          </div>
+          
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-slate-50 text-slate-500 dark:bg-slate-900/50">
