@@ -11,6 +11,7 @@ import { approveGoalSheetSchema, unlockGoalSheetSchema } from '@/schemas/approva
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
 import { VALIDATION } from '@/lib/constants';
+import { sendGoalApprovedEmail, sendGoalReturnedEmail } from '@/emails/send';
 
 type ApprovalActionInput = FormData | {
   employee_id: string;
@@ -107,6 +108,27 @@ export async function approveOrReturnGoalSheet(formData: ApprovalActionInput): P
         action: 'locked'
       });
 
+      // Send approval email to employee
+      const { data: employeeProfile } = await supabase
+        .from('profiles')
+        .select('email, first_name, last_name')
+        .eq('id', parsedData.employee_id)
+        .single();
+
+      const { data: cycle } = await supabase
+        .from('cycles')
+        .select('name')
+        .eq('id', parsedData.cycle_id)
+        .single();
+
+      if (employeeProfile?.email && cycle) {
+        await sendGoalApprovedEmail({
+          to: employeeProfile.email,
+          employeeName: `${employeeProfile.first_name} ${employeeProfile.last_name}`,
+          cycleName: cycle.name,
+        });
+      }
+
     } else if (parsedData.action === 'returned') {
       // Update status to returned
       await supabase.from('goals').update({ status: 'returned' })
@@ -121,6 +143,28 @@ export async function approveOrReturnGoalSheet(formData: ApprovalActionInput): P
         action: parsedData.action,
         comment: parsedData.comment
       });
+
+      // Send return email to employee
+      const { data: employeeProfile } = await supabase
+        .from('profiles')
+        .select('email, first_name, last_name')
+        .eq('id', parsedData.employee_id)
+        .single();
+
+      const { data: cycle } = await supabase
+        .from('cycles')
+        .select('name')
+        .eq('id', parsedData.cycle_id)
+        .single();
+
+      if (employeeProfile?.email && cycle) {
+        await sendGoalReturnedEmail({
+          to: employeeProfile.email,
+          employeeName: `${employeeProfile.first_name} ${employeeProfile.last_name}`,
+          cycleName: cycle.name,
+          managerComment: parsedData.comment || 'Please revise your goals.',
+        });
+      }
     }
 
     revalidatePath('/manager/approvals');

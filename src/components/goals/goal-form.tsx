@@ -73,7 +73,7 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
 
       const payload = {
         title: formData.title,
-        description: formData.description,
+        description: formData.description || undefined,
         thrust_area_id: formData.thrust_area_id,
         uom_type: formData.uom_type,
         target: targetValue,
@@ -93,7 +93,9 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
       // 4. Server Action
       const formPayload = new FormData();
       Object.entries(payload).forEach(([key, val]) => {
-        formPayload.append(key, val.toString());
+        if (val !== undefined && val !== null) {
+          formPayload.append(key, val.toString());
+        }
       });
       if (cycleId) {
         formPayload.append('cycle_id', cycleId);

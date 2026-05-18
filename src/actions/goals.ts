@@ -13,7 +13,7 @@ import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
 import { Goal, GoalStatus } from '@/types';
 import { VALIDATION } from '@/lib/constants';
-// import { sendGoalSubmittedEmail } from '@/emails/send'; // Stubbed for now
+import { sendGoalSubmittedEmail } from '@/emails/send';
 
 export async function createGoal(formData: FormData): Promise<ActionResult<Goal>> {
   try {
@@ -29,7 +29,7 @@ export async function createGoal(formData: FormData): Promise<ActionResult<Goal>
 
     const rawData = {
       title: formData.get('title'),
-      description: formData.get('description'),
+      description: formData.get('description') || null,
       thrust_area_id: formData.get('thrust_area_id'),
       uom_type: formData.get('uom_type'),
       target: formData.get('target') ? formData.get('target') : null,
@@ -107,7 +107,7 @@ export async function updateGoal(goalId: string, formData: FormData): Promise<Ac
 
     const rawData = {
       title: formData.get('title'),
-      description: formData.get('description'),
+      description: formData.get('description') || null,
       thrust_area_id: formData.get('thrust_area_id'),
       uom_type: formData.get('uom_type'),
       target: formData.get('target'),
@@ -209,8 +209,36 @@ export async function submitGoalSheet(cycleId: string): Promise<ActionResult<voi
       action: 'submitted'
     });
 
-    // TODO: Send email
-    // await sendGoalSubmittedEmail(user.id, profile?.manager_id);
+    // Send email to manager
+    if (profile?.manager_id) {
+      const { data: employeeProfile } = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', user.id)
+        .single();
+
+      const { data: managerProfile } = await supabase
+        .from('profiles')
+        .select('email, first_name, last_name')
+        .eq('id', profile.manager_id)
+        .single();
+
+      const { data: cycle } = await supabase
+        .from('cycles')
+        .select('name')
+        .eq('id', cycleId)
+        .single();
+
+      if (managerProfile?.email && employeeProfile && cycle) {
+        await sendGoalSubmittedEmail({
+          to: managerProfile.email,
+          managerName: `${managerProfile.first_name} ${managerProfile.last_name}`,
+          employeeName: `${employeeProfile.first_name} ${employeeProfile.last_name}`,
+          goalCount: goals.length,
+          cycleName: cycle.name,
+        });
+      }
+    }
 
     revalidatePath('/employee/goals');
     return { success: true, data: undefined };
