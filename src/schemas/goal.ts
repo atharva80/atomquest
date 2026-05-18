@@ -21,7 +21,7 @@ const uomTypeEnum = z.enum([
 const baseGoalSchema = z
   .object({
     title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title is too long"),
-    description: z.string().min(10, "Description must be at least 10 characters").max(1000, "Description is too long").optional().nullable(),
+    description: z.string().min(0).max(1000, "Description is too long").optional().nullable(),
     thrust_area_id: z.string().uuid("Invalid Thrust Area"),
     uom_type: uomTypeEnum,
     // We accept union of number or string to accommodate dates for TIMELINE

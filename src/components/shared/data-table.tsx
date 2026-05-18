@@ -46,6 +46,23 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
+function HighlightText({ text, highlight }: { text: string; highlight: string }) {
+  if (!highlight.trim()) return <>{text}</>;
+  
+  const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+  return (
+    <>
+      {parts.map((part, i) => 
+        part.toLowerCase() === highlight.toLowerCase() ? (
+          <mark key={i} className="bg-yellow-200 text-zinc-900 rounded px-0.5">{part}</mark>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </>
+  );
+}
+
 export type ColumnDef<T> = {
   id?: string;
   accessorKey?: keyof T | string;
@@ -75,12 +92,15 @@ export function DataTable<T extends Record<string, unknown>>({
   return (
     <div className="space-y-3">
       {searchKey ? (
-        <Input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search..."
-          className="max-w-sm"
-        />
+        <div className="flex items-center gap-2">
+          <span className="material-symbols-outlined text-zinc-400 text-[18px]">search</span>
+          <Input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search by title..."
+            className="max-w-sm"
+          />
+        </div>
       ) : null}
       <div className="rounded-md border">
         <Table>
@@ -99,11 +119,20 @@ export function DataTable<T extends Record<string, unknown>>({
                 <TableRow key={rowIndex}>
                   {columns.map((column) => {
                     const key = String(column.id ?? column.accessorKey ?? column.header);
+                    const searchKeyStr = String(searchKey);
+                    const isSearchColumn = column.accessorKey === searchKeyStr;
+                    const rowValue = row[searchKeyStr];
+                    const rowValueStr = typeof rowValue === 'string' ? rowValue : '';
+                    
                     return (
                       <TableCell key={key}>
-                        {column.cell
-                          ? column.cell({ row: { original: row } })
-                          : String(row[String(column.accessorKey)] ?? '')}
+                        {isSearchColumn && search && rowValueStr ? (
+                          <HighlightText text={rowValueStr} highlight={search} />
+                        ) : (
+                          column.cell
+                            ? column.cell({ row: { original: row } })
+                            : String(row[key] ?? '')
+                        )}
                       </TableCell>
                     );
                   })}

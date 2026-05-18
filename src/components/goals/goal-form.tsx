@@ -23,9 +23,10 @@ interface GoalFormProps {
   mode: 'create' | 'edit';
   onSuccess?: () => void;
   existingGoals?: any[];
+  isSharedGoal?: boolean;
 }
 
-export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleId, mode, onSuccess, existingGoals = [] }: GoalFormProps) {
+export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleId, mode, onSuccess, existingGoals = [], isSharedGoal = false }: GoalFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -151,13 +152,16 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
       <div className="w-full md:w-3/5 flex flex-col gap-6 animate-fade-in">
         <div className="flex flex-col gap-1">
           <h2 className="text-[24px] font-semibold tracking-tight text-zinc-950 font-page-title leading-[32px]">
-            {mode === 'create' ? 'Create New Goal' : 'Edit Goal'}
+            {isSharedGoal ? 'Adjust Weightage' : (mode === 'create' ? 'Create New Goal' : 'Edit Goal')}
           </h2>
           <p className="text-[14px] text-zinc-500 font-body-sm leading-[20px]">
-            Define measurable metrics and alignment for the current cycle.
+            {isSharedGoal ? 'This is a shared goal assigned by your admin. Only weightage can be adjusted.' : 'Define measurable metrics and alignment for the current cycle.'}
           </p>
         </div>
         <div className="flex flex-col gap-[24px]">
+          {/* Non-shared: show all fields */}
+          {!isSharedGoal && (
+            <>
           <div className="flex flex-col gap-[6px]">
             <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">Goal Title</label>
             <input
@@ -225,6 +229,9 @@ export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleI
             )}
             {errors.target && <p className="text-[12px] text-red-500 mt-1">{errors.target}</p>}
           </div>
+            </>
+          )}
+          {/* Weightage — always shown, only editable field for shared goals */}
           <div className="flex flex-col gap-[6px]">
             <label className="font-medium text-[14px] text-zinc-900 leading-[20px]">Weightage (%)</label>
             <input

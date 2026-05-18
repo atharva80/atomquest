@@ -11,16 +11,17 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 const FROM = process.env.EMAIL_FROM || 'AtomQuest <notifications@atomquest.demo>';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
-async function send(to: string, subject: string, html: string) {
+async function send(to: string | string[], subject: string, html: string) {
   // DEV OVERRIDE: Force all emails to the verified Resend testing address
-  to = 'scrollwithme80@gmail.com';
+  const target = 'scrollwithme80@gmail.com';
 
   if (!resend) {
-    console.log(`[Email Stub] TO: ${to} | SUBJECT: ${subject}`);
+    console.log(`[Email Stub] TO: ${target} | SUBJECT: ${subject}`);
     return;
   }
+  const recipients = Array.isArray(to) ? to : [to];
   try {
-    await resend.emails.send({ from: FROM, to, subject, html });
+    await resend.emails.send({ from: FROM, to: target, subject, html });
   } catch (err) {
     console.error('[Email] Send failed:', err);
   }
@@ -124,5 +125,32 @@ export async function sendEscalationResolvedEmail(params: {
       appUrl={APP_URL}
     />
   );
+  await send(params.to, subject, html);
+}
+
+export async function sendGoalDeletedNotification(params: {
+  to: string[];
+  employeeName: string;
+  goalTitle: string;
+  cycleId: string;
+}) {
+  const subject = `⚠️ Goal Deleted by ${params.employeeName}`;
+  const html = `
+    <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <h2 style="color: #18181b; font-size: 20px; margin-bottom: 16px;">Goal Deleted</h2>
+      <p style="color: #3f3f46; font-size: 14px; line-height: 20px;">
+        <strong>${params.employeeName}</strong> has deleted their goal:
+      </p>
+      <div style="background: #f4f4f5; border-radius: 8px; padding: 16px; margin: 16px 0;">
+        <p style="color: #18181b; font-size: 16px; font-weight: 600; margin: 0;">${params.goalTitle}</p>
+      </div>
+      <p style="color: #71717a; font-size: 12px;">
+        This goal was in draft status and has been removed from their goal sheet.
+      </p>
+      <a href="${APP_URL}/admin" style="display: inline-block; margin-top: 16px; color: #18181b; font-size: 14px;">
+        View Admin Dashboard →
+      </a>
+    </div>
+  `;
   await send(params.to, subject, html);
 }

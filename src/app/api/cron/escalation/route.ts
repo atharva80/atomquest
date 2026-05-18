@@ -176,23 +176,32 @@ export async function POST(req: Request) {
           if (!profiles) continue;
 
           for (const profile of profiles) {
-            const { data: existingGoals } = await supabase
+            // Get all goals for this employee in this cycle
+            const { data: allGoals } = await supabase
               .from('goals')
               .select('id')
               .eq('profile_id', profile.id)
               .eq('cycle_id', cycle.id)
-              .in('status', ['draft', 'submitted', 'approved', 'returned'])
-              .limit(1);
+              .in('status', ['draft', 'submitted', 'approved', 'returned']);
 
-            if (!existingGoals || existingGoals.length === 0) {
-              const result = await checkAndCreateEscalation(
-                supabase,
-                rule.type,
-                profile.id,
-                cycle.id,
-                daysThreshold
-              );
-              if (result.created) totalCreated++;
+            if (!allGoals || allGoals.length === 0) {
+              // Check if they have shared goals - if so, they have goals to work on
+              const { data: sharedGoalsForEmployee } = await supabase
+                .from('shared_goals')
+                .select('id')
+                .eq('recipient_profile_id', profile.id);
+
+              // Only escalate if they have NO goals at all (not even shared)
+              if (!sharedGoalsForEmployee || sharedGoalsForEmployee.length === 0) {
+                const result = await checkAndCreateEscalation(
+                  supabase,
+                  rule.type,
+                  profile.id,
+                  cycle.id,
+                  daysThreshold
+                );
+                if (result.created) totalCreated++;
+              }
             }
           }
         }
@@ -202,7 +211,7 @@ export async function POST(req: Request) {
         for (const cycle of activeCycles) {
           const { data: submittedGoals } = await supabase
             .from('goals')
-            .select('profile_id, created_at')
+            .select('profile_id, created_at, id')
             .eq('cycle_id', cycle.id)
             .eq('status', 'submitted')
             .lt('created_at', thresholdDate.toISOString());
@@ -212,6 +221,16 @@ export async function POST(req: Request) {
           const processedProfiles = new Set<string>();
           for (const goal of submittedGoals) {
             if (processedProfiles.has(goal.profile_id)) continue;
+            
+            // Skip if this is a shared goal (recipient's copy)
+            const { data: isSharedGoal } = await supabase
+              .from('shared_goals')
+              .select('id')
+              .eq('primary_goal_id', goal.id)
+              .single();
+            
+            if (isSharedGoal) continue;
+            
             processedProfiles.add(goal.profile_id);
 
             const result = await checkAndCreateEscalation(

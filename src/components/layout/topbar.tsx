@@ -29,7 +29,7 @@ export function Topbar({ profile, cycle }: TopbarProps) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      toast.success(`Searching for "${searchQuery}"...`);
+      // Clear search - individual pages have their own search functionality
       setSearchQuery('');
     }
   };

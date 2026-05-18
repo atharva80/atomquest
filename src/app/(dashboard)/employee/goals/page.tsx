@@ -17,8 +17,10 @@ export default async function GoalsPage() {
   const totalWeightage = goals.reduce((sum, g) => sum + g.weightage, 0);
   const goalCount = goals.length;
   
-  const sheetStatus = goals.length > 0 ? goals[0].status : 'draft';
-  const isLocked = sheetStatus === 'locked' || sheetStatus === 'approved' || sheetStatus === 'submitted';
+  // Determine sheet status from non-shared goals (shared goals have 'locked' status but shouldn't lock the sheet)
+  const nonSharedGoals = goals.filter(g => g.status !== 'locked');
+  const sheetStatus = nonSharedGoals.length > 0 ? nonSharedGoals[0].status : (goals.length > 0 ? 'draft' : 'draft');
+  const isLocked = sheetStatus === 'approved' || sheetStatus === 'submitted';
   
   const weightageBreakdown = goals.map(g => ({ title: g.title, weightage: g.weightage }));
 

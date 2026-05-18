@@ -17,7 +17,13 @@ export default async function NewGoalPage() {
   const goals = await getMyGoals(cycle.id);
   
   // Guard: Max 8 goals or sheet locked
-  if (goals.length >= 8 || (goals.length > 0 && goals[0].status !== 'draft' && goals[0].status !== 'returned')) {
+  // Allow adding goals if: no goals yet, OR status is draft/returned/locked (locked = shared assigned goals)
+  const canAddGoal = goals.length === 0 || 
+    goals[0].status === 'draft' || 
+    goals[0].status === 'returned' || 
+    goals[0].status === 'locked';
+  
+  if (goals.length >= 8 || !canAddGoal) {
     redirect('/employee/goals?error=Cannot add more goals');
   }
 

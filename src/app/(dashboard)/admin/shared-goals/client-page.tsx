@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { createSharedGoal } from '@/actions/shared-goals';
+import { createSharedGoal, createAndAssignSharedGoal, deleteSharedGoal } from '@/actions/shared-goals';
 import { useRouter } from 'next/navigation';
-import { Loader2, X } from 'lucide-react';
+import { Loader2, X, Trash2, Users } from 'lucide-react';
 import { UOM_TYPES } from '@/lib/constants';
 
 interface SharedGoalsClientPageProps {
@@ -36,7 +36,7 @@ export default function SharedGoalsClientPage({
   const [weightage, setWeightage] = useState('10');
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent, assign: boolean = false) => {
     e.preventDefault();
     if (!title || !cycleId || !thrustAreaId || selectedEmployees.length === 0) {
       toast.error('Please fill out all required fields and select at least one employee');
@@ -56,12 +56,16 @@ export default function SharedGoalsClientPage({
       formData.append('weightage', weightage);
       formData.append('employee_ids', JSON.stringify(selectedEmployees));
 
-      const res = await createSharedGoal(formData);
+      const res = assign 
+        ? await createAndAssignSharedGoal(formData)
+        : await createSharedGoal(formData);
 
       if (!res.success) {
         toast.error(res.error || 'Failed to cascade shared goal');
       } else {
-        toast.success('Cascaded shared goal successfully to all chosen employees!');
+        toast.success(assign 
+          ? 'Goal assigned to all employees!' 
+          : 'Cascaded shared goal successfully!');
         setIsCreating(false);
         setTitle('');
         setDescription('');
@@ -69,17 +73,6 @@ export default function SharedGoalsClientPage({
         setTargetDate('');
         setSelectedEmployees([]);
         router.refresh();
-        // Simple mock push to state for immediate feedback
-        const primaryGoalTitle = title;
-        const newItems = selectedEmployees.map(empId => {
-          const emp = employees.find(e => e.id === empId);
-          return {
-            id: Math.random().toString(),
-            goals: { title: primaryGoalTitle },
-            shared_with: emp
-          };
-        });
-        setSharedGoals([...newItems, ...sharedGoals]);
       }
     } catch (err) {
       toast.error('An unexpected error occurred');
@@ -96,73 +89,142 @@ export default function SharedGoalsClientPage({
     }
   };
 
+  const handleDelete = async (primaryGoalId: string) => {
+    if (!confirm('Are you sure you want to delete this shared goal? This will remove it from all recipients.')) {
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const res = await deleteSharedGoal(primaryGoalId);
+      if (!res.success) {
+        toast.error(res.error || 'Failed to delete shared goal');
+      } else {
+        toast.success('Shared goal deleted');
+        setSharedGoals(sharedGoals.filter((sg: any) => sg.primary_goal_id !== primaryGoalId));
+        router.refresh();
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto flex flex-col gap-section-gap p-6 relative">
+    <div className="max-w-6xl mx-auto flex flex-col gap-6 p-6 relative">
       <div className="flex justify-between items-end mb-2">
         <div className="flex flex-col gap-1">
-          <h1 className="font-page-title text-page-title font-semibold text-zinc-900">Shared Goals Directory</h1>
-          <p className="font-body-sm text-body-sm text-zinc-500">Manage cascading and cross-functional organizational goals</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-950">Shared Goals</h1>
+          <p className="text-sm text-zinc-500">Manage cascading and cross-functional organizational goals</p>
         </div>
         <button 
           onClick={() => setIsCreating(true)}
-          className="bg-zinc-900 text-white hover:bg-zinc-800 px-4 py-2 rounded-md font-table-cell-primary text-table-cell-primary transition-colors flex items-center space-x-2"
+          className="bg-zinc-900 text-white hover:bg-zinc-700 px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2"
         >
-          <span className="material-symbols-outlined text-[18px]">share</span>
+          <Users className="h-4 w-4" />
           <span>Create Shared Goal</span>
         </button>
       </div>
 
-      <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden animate-fade-in-up-stagger">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-zinc-50 border-b border-zinc-200">
-                <th className="px-4 py-3 font-section-label text-section-label text-zinc-500 tracking-widest uppercase">Cascade Status</th>
-                <th className="px-4 py-3 font-section-label text-section-label text-zinc-500 tracking-widest uppercase">Goal Title</th>
-                <th className="px-4 py-3 font-section-label text-section-label text-zinc-500 tracking-widest uppercase">Shared With</th>
-                <th className="px-4 py-3 font-section-label text-section-label text-zinc-500 tracking-widest uppercase">Sync Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {sharedGoals.map((sg: any) => {
-                const sharedWithName = sg.shared_with 
-                  ? `${sg.shared_with.first_name || ''} ${sg.shared_with.last_name || ''}`.trim() || sg.shared_with.email 
-                  : 'Unknown';
-                
-                return (
-                  <tr key={sg.id} className="hover:bg-zinc-50/50 transition-colors group">
-                    <td className="px-4 py-3">
-                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium border uppercase tracking-wider bg-zinc-900 text-white border-zinc-900">
-                        CASCADED
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="font-body-sm text-body-sm text-zinc-900 font-medium max-w-sm truncate">{sg.goals?.title || 'Organization Goal'}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="font-table-cell-primary text-table-cell-primary text-zinc-700">{sharedWithName}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-status-on-track"></div>
-                        <span className="font-table-cell-primary text-table-cell-primary text-zinc-700">Synced</span>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              
-              {sharedGoals.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="text-center py-12 text-zinc-500 font-body-sm">
-                    No shared goals configured yet. Click &quot;Create Shared Goal&quot; to cascade.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+      {/* Card Grid */}
+      {sharedGoals.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center bg-white border border-zinc-200 rounded-xl">
+          <div className="h-8 w-8 text-zinc-300 mb-4">
+            <Users className="h-8 w-8" />
+          </div>
+          <p className="text-sm font-medium text-zinc-900 mb-1">No shared goals yet</p>
+          <p className="text-sm text-zinc-500 mb-4 max-w-xs">Create a shared goal to cascade organizational goals across multiple employees.</p>
+          <button 
+            onClick={() => setIsCreating(true)}
+            className="bg-zinc-900 text-white hover:bg-zinc-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+          >
+            Create Shared Goal
+          </button>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {sharedGoals.map((sg: any, index: number) => (
+            <div 
+              key={sg.primary_goal_id} 
+              className="bg-white border border-zinc-200 rounded-xl p-5 hover:border-zinc-300 transition-colors animate-slide-up"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-medium text-zinc-500 uppercase tracking-widest">
+                      {sg.goal?.thrust_area || 'Thrust Area'}
+                    </span>
+                    <span className="text-xs text-zinc-300">•</span>
+                    <span className="text-xs text-zinc-500">
+                      {sg.goal?.cycle_name || 'Cycle'}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-medium text-zinc-900 truncate">{sg.goal?.title}</h3>
+                </div>
+                <button
+                  onClick={() => handleDelete(sg.primary_goal_id)}
+                  className="text-zinc-400 hover:text-red-600 p-1 rounded transition-colors"
+                  title="Delete shared goal"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Metrics */}
+              <div className="flex gap-4 mb-4">
+                {sg.goal?.target && (
+                  <div>
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-0.5">Target</p>
+                    <p className="text-sm font-medium text-zinc-900 tabular-nums">
+                      {sg.goal.target}{sg.goal.uom_type === 'percentage' ? '%' : ''}
+                    </p>
+                  </div>
+                )}
+                {sg.goal?.weightage && (
+                  <div>
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-0.5">Weightage</p>
+                    <p className="text-sm font-medium text-zinc-900 tabular-nums">{sg.goal.weightage}%</p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-xs text-zinc-500 uppercase tracking-widest mb-0.5">Status</p>
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-1.5 h-1.5 rounded-full ${sg.goal?.status === 'assigned' ? 'bg-green-600' : 'bg-zinc-300'}`}></div>
+                    <span className="text-xs font-medium text-zinc-700 capitalize">
+                      {sg.goal?.status === 'assigned' ? 'Assigned' : 'Draft'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recipients */}
+              <div className="pt-4 border-t border-zinc-100">
+                <p className="text-xs font-medium text-zinc-500 uppercase tracking-widest mb-2">Shared with {sg.recipients?.length || 0} employee{(sg.recipients?.length || 0) !== 1 ? 's' : ''}</p>
+                <div className="flex flex-wrap gap-2">
+                  {sg.recipients?.map((emp: any) => (
+                    <div 
+                      key={emp.id} 
+                      className="inline-flex items-center gap-2 bg-zinc-50 border border-zinc-200 rounded-md px-2.5 py-1.5"
+                    >
+                      <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center">
+                        <span className="text-xs font-medium text-zinc-600">
+                          {emp.first_name?.[0] || ''}{emp.last_name?.[0] || ''}
+                        </span>
+                      </div>
+                      <span className="text-sm text-zinc-700">
+                        {emp.first_name} {emp.last_name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Create Shared Goal Modal */}
       {isCreating && (
@@ -304,14 +366,26 @@ export default function SharedGoalsClientPage({
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit"
-                  disabled={loading}
-                  className="bg-zinc-900 text-white hover:bg-zinc-800 px-4 py-2 rounded-md font-body-sm text-body-sm transition-colors flex items-center gap-2 disabled:opacity-50"
-                >
-                  {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  Cascade Goal
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    type="button"
+                    onClick={(e) => handleCreate(e as any, false)}
+                    disabled={loading}
+                    className="px-4 py-2 border border-zinc-200 rounded-md hover:bg-zinc-50 font-body-sm text-body-sm transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Save as Draft
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={(e) => handleCreate(e as any, true)}
+                    disabled={loading}
+                    className="bg-zinc-900 text-white hover:bg-zinc-800 px-4 py-2 rounded-md font-body-sm text-body-sm transition-colors flex items-center gap-2 disabled:opacity-50"
+                  >
+                    {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Assign Now
+                  </button>
+                </div>
               </div>
             </form>
           </div>

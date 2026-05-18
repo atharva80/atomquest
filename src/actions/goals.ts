@@ -101,9 +101,30 @@ export async function updateGoal(goalId: string, formData: FormData): Promise<Ac
     if (fetchError || !existingGoal) throw new Error('Goal not found');
     
     // We assume RLS handles the permission check (owner or manager)
-    if (existingGoal.status !== 'draft' && existingGoal.status !== 'returned') {
-      throw new Error('Can only update goals in draft or returned status');
+    // Allow 'locked' for shared goals where employees can still adjust weightage
+    if (existingGoal.status !== 'draft' && existingGoal.status !== 'returned' && existingGoal.status !== 'locked') {
+      throw new Error('Can only update goals in draft, returned, or locked (shared) status');
     }
+
+    // Check if this is a shared goal - only allow updating weightage
+    const { data: isSharedGoal } = await supabase
+      .from('shared_goals')
+      .select('id')
+      .eq('primary_goal_id', existingGoal.id)
+      .single();
+
+    // Check if recipient copy by matching title + cycle_id
+    const { data: recipientSharedGoals } = await supabase
+      .from('shared_goals')
+      .select('primary_goal:goals(title, cycle_id)')
+      .eq('recipient_profile_id', user.id);
+    
+    const isRecipientCopy = recipientSharedGoals?.some((sg: any) => 
+      sg.primary_goal?.title === existingGoal.title && 
+      sg.primary_goal?.cycle_id === existingGoal.cycle_id
+    ) || false;
+
+    const isShared = !!isSharedGoal || isRecipientCopy;
 
     const rawData = {
       title: formData.get('title'),
@@ -113,6 +134,17 @@ export async function updateGoal(goalId: string, formData: FormData): Promise<Ac
       target: formData.get('target'),
       weightage: Number(formData.get('weightage')),
     };
+
+    // For shared goals, only allow weightage to be updated
+    if (isShared) {
+      if (rawData.title !== existingGoal.title || 
+          rawData.description !== (existingGoal.description || null) ||
+          rawData.thrust_area_id !== existingGoal.thrust_area_id ||
+          rawData.uom_type !== existingGoal.uom_type ||
+          rawData.target != existingGoal.target) {
+        throw new Error('Cannot modify shared goal details. Only weightage can be updated.');
+      }
+    }
 
     const parsedData = updateGoalSchema.parse(rawData);
 
@@ -150,14 +182,77 @@ export async function updateGoal(goalId: string, formData: FormData): Promise<Ac
 export async function deleteGoal(goalId: string): Promise<ActionResult<void>> {
   try {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
     
-    // Check status
-    const { data: goal } = await supabase.from('goals').select('status').eq('id', goalId).single();
-    if (!goal) throw new Error('Goal not found');
-    if (goal.status !== 'draft') throw new Error('Only draft goals can be deleted');
+    // Get goal details before deleting
+    const { data: goal, error: fetchError } = await supabase
+      .from('goals')
+      .select('*, profiles(first_name, last_name, email)')
+      .eq('id', goalId)
+      .single();
+    
+    if (fetchError || !goal) throw new Error('Goal not found');
+    if (goal.status !== 'draft' && goal.status !== 'locked') throw new Error('Only draft or assigned goals can be deleted');
 
     const { error } = await supabase.from('goals').delete().eq('id', goalId);
     if (error) throw error;
+
+    // Notify admins about goal deletion
+    const { data: admins } = await supabase
+      .from('profiles')
+      .select('email, first_name')
+      .eq('role', 'admin');
+
+    if (admins && admins.length > 0) {
+      const adminEmails = admins.map(a => a.email).filter(Boolean);
+      if (adminEmails.length > 0) {
+        const employeeName = `${goal.profiles?.first_name || ''} ${goal.profiles?.last_name || ''}`.trim() || goal.profiles?.email || 'An employee';
+        // Send notification (async, don't wait)
+        import('@/emails/send').then(({ sendGoalDeletedNotification }) => {
+          sendGoalDeletedNotification({
+            to: adminEmails,
+            employeeName,
+            goalTitle: goal.title,
+            cycleId: goal.cycle_id,
+          }).catch(console.error);
+        });
+      }
+    }
+
+    revalidatePath('/employee/goals');
+    return { success: true, data: undefined };
+  } catch (error) {
+    return handleActionError(error);
+  }
+}
+
+export async function updateGoalWeightage(goalId: string, weightage: number): Promise<ActionResult<void>> {
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data: goal, error: fetchError } = await supabase
+      .from('goals')
+      .select('status, profile_id')
+      .eq('id', goalId)
+      .single();
+
+    if (fetchError || !goal) throw new Error('Goal not found');
+    if (goal.profile_id !== user.id) throw new Error('Unauthorized');
+
+    // Allow updating weightage for draft, returned, or locked (shared) goals
+    if (goal.status !== 'draft' && goal.status !== 'returned' && goal.status !== 'locked') {
+      throw new Error('Cannot update weightage for this goal');
+    }
+
+    const { error: updateError } = await supabase
+      .from('goals')
+      .update({ weightage })
+      .eq('id', goalId);
+
+    if (updateError) throw updateError;
 
     revalidatePath('/employee/goals');
     return { success: true, data: undefined };

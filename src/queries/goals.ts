@@ -17,11 +17,64 @@ export async function getMyGoals(cycleId: string): Promise<GoalWithCheckins[]> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
+  // Get shared goal IDs where user is a recipient OR creator
+  // 1. Get goals user created (these could be primary of shared goals)
+  const { data: userCreatedGoals } = await supabase
+    .from('goals')
+    .select('id')
+    .eq('profile_id', user.id)
+    .eq('cycle_id', cycleId);
+
+  const userGoalIds = (userCreatedGoals || []).map(g => g.id);
+
+  // 2. Get shared goals where user is recipient
+  const { data: recipientSharedGoals } = await supabase
+    .from('shared_goals')
+    .select('primary_goal_id')
+    .eq('recipient_profile_id', user.id);
+
+  // 3. Get shared goals where user is the creator (primary goal)
+  const { data: creatorSharedGoals } = userGoalIds.length > 0 
+    ? await supabase
+        .from('shared_goals')
+        .select('primary_goal_id')
+        .in('primary_goal_id', userGoalIds)
+    : { data: [] };
+
+  // Combine both: goals user created as primary AND goals user received as recipient
+  const primaryGoalIds = [
+    ...(recipientSharedGoals || []).map(sg => sg.primary_goal_id),
+    ...(creatorSharedGoals || []).map(sg => sg.primary_goal_id)
+  ];
+  
+  // Get the primary goals separately
+  let primaryGoals: any[] = [];
+  if (primaryGoalIds.length > 0) {
+    const { data: goalsData } = await supabase
+      .from('goals')
+      .select('id, title, cycle_id, thrust_area_id, target, uom_type, description')
+      .in('id', primaryGoalIds);
+    primaryGoals = goalsData || [];
+  }
+
+  // Extract primary goal identifiers for matching
+  const sharedGoalInfo = primaryGoals.map((pg: any) => ({
+    primaryId: pg.id,
+    title: pg.title,
+    cycleId: pg.cycle_id,
+    thrustAreaId: pg.thrust_area_id,
+    target: pg.target,
+    uomType: pg.uom_type,
+    description: pg.description
+  }));
+
   const { data, error } = await supabase
     .from('goals')
     .select(`
       *,
-      quarterly_checkins (*)
+      quarterly_checkins (*),
+      shared_goals (*),
+      thrust_areas (id, name, description)
     `)
     .eq('profile_id', user.id)
     .eq('cycle_id', cycleId)
@@ -32,7 +85,23 @@ export async function getMyGoals(cycleId: string): Promise<GoalWithCheckins[]> {
     return [];
   }
 
-  return data as GoalWithCheckins[];
+  // Mark goals that are recipient copies of shared goals
+  // A goal is a shared recipient if: same title + same cycle + user is recipient of that shared goal
+  const goalsWithSharedFlag = (data || []).map((goal: any) => {
+    // Use case-insensitive comparison and trim whitespace
+    const isSharedRecipient = sharedGoalInfo.some(sg => 
+      sg.title?.trim().toLowerCase() === goal.title?.trim().toLowerCase() && 
+      sg.cycleId === goal.cycle_id
+    );
+    return {
+      ...goal,
+      isSharedRecipient,
+      // Also add shared goal primary info for reference
+      sharedGoalPrimary: sharedGoalInfo.find(sg => sg.title?.trim().toLowerCase() === goal.title?.trim().toLowerCase() && sg.cycleId === goal.cycle_id)
+    };
+  });
+
+  return goalsWithSharedFlag as GoalWithCheckins[];
 }
 
 export async function getGoalById(goalId: string): Promise<GoalWithCheckins | null> {
@@ -42,7 +111,9 @@ export async function getGoalById(goalId: string): Promise<GoalWithCheckins | nu
     .from('goals')
     .select(`
       *,
-      quarterly_checkins (*)
+      quarterly_checkins (*),
+      shared_goals (*),
+      thrust_areas (id, name, description)
     `)
     .eq('id', goalId)
     .single();
@@ -75,7 +146,8 @@ export async function getGoalSheet(employeeId: string, cycleId: string): Promise
     .from('goals')
     .select(`
       *,
-      quarterly_checkins (*)
+      quarterly_checkins (*),
+      thrust_areas (id, name, description)
     `)
     .eq('profile_id', employeeId)
     .eq('cycle_id', cycleId)
