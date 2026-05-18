@@ -38,12 +38,14 @@ export const NAV_ITEMS = {
     { title: 'Dashboard', href: '/employee', icon: 'dashboard' },
     { title: 'My Goals', href: '/employee/goals', icon: 'target' },
     { title: 'Check-ins', href: '/employee/check-ins', icon: 'fact_check' },
+    { title: 'Analytics', href: '/analytics', icon: 'analytics' },
   ],
   manager: [
     { title: 'Dashboard', href: '/manager', icon: 'dashboard' },
     { title: 'My Team', href: '/manager/team', icon: 'groups' },
     { title: 'Approvals', href: '/manager/approvals', icon: 'rule' },
     { title: 'Team Check-ins', href: '/manager/check-ins', icon: 'fact_check' },
+    { title: 'Analytics', href: '/analytics', icon: 'analytics' },
   ],
   admin: [
     { title: 'Dashboard', href: '/admin', icon: 'dashboard' },
@@ -52,6 +54,7 @@ export const NAV_ITEMS = {
     { title: 'Escalations', href: '/admin/escalations', icon: 'error' },
     { title: 'Audit Trail', href: '/admin/audit', icon: 'history' },
     { title: 'Shared Goals', href: '/admin/shared-goals', icon: 'account_tree' },
+    { title: 'Analytics', href: '/analytics', icon: 'analytics' },
   ],
 } as const;
 

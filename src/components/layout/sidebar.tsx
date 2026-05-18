@@ -21,6 +21,7 @@ export function Sidebar({ role, collapsed: initialCollapsed = false, className }
   const handleSignOut = async () => {
     try {
       await signOut();
+      window.location.href = '/login';
     } catch (e) {
       const { createClient } = await import('@/lib/supabase/client');
       const supabase = createClient();

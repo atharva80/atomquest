@@ -13,7 +13,7 @@ interface ManagerEffectivenessTableProps {
 export function ManagerEffectivenessTable({ data }: ManagerEffectivenessTableProps) {
   
   // Sort by composite score (simplified: avg team score)
-  const sortedData = [...data].sort((a, b) => b.avg_team_score - a.avg_team_score);
+  const sortedData = [...data].sort((a, b) => (b.avg_team_score || 0) - (a.avg_team_score || 0));
 
   return (
     <Card className="ring-1 ring-slate-200 dark:ring-slate-800 rounded-xl shadow-sm overflow-hidden">
@@ -34,8 +34,13 @@ export function ManagerEffectivenessTable({ data }: ManagerEffectivenessTablePro
         <TableBody>
           {sortedData.map((item, index) => {
             const isTop = index === 0 && data.length > 1;
-            const completionPercent = Math.round(item.check_in_completion_rate * 100);
-            const scorePercent = Math.round(item.avg_team_score * 100);
+            const completionPercent = Math.round((item.check_in_completion_rate || 0) * 100);
+            const scorePercent = Math.round((item.avg_team_score || 0) * 100);
+            
+            // Handle both nested (mock) and flat (real RPC) data formats
+            const firstName = item.manager?.first_name || item.first_name || '';
+            const lastName = item.manager?.last_name || item.last_name || '';
+            const managerId = item.manager?.id || item.manager_id || '';
             
             // Determine delta type for Tremor BadgeDelta
             let deltaType = "moderateDecrease";
@@ -45,7 +50,7 @@ export function ManagerEffectivenessTable({ data }: ManagerEffectivenessTablePro
             else deltaType = "decrease";
 
             return (
-              <TableRow key={item.manager.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
+              <TableRow key={managerId} className="hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors">
                 <TableCell>
                   <div className="flex items-center gap-3">
                     {isTop ? (
@@ -59,10 +64,10 @@ export function ManagerEffectivenessTable({ data }: ManagerEffectivenessTablePro
                     )}
                     <Avatar className="h-8 w-8 ring-1 ring-slate-200 dark:ring-slate-800">
                       <AvatarFallback className="bg-indigo-100 text-indigo-700 text-xs">
-                        {getInitials(`${item.manager.first_name} ${item.manager.last_name}`)}
+                        {getInitials(`${firstName} ${lastName}`)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="font-medium text-slate-900 dark:text-slate-200">{item.manager.first_name} {item.manager.last_name}</span>
+                    <span className="font-medium text-slate-900 dark:text-slate-200">{firstName} {lastName}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-right">

@@ -168,7 +168,7 @@ export default async function AdminDashboard() {
               </div>
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
-                <span className="font-caption text-caption text-zinc-500">Today's activity</span>
+                <span className="font-caption text-caption text-zinc-500">Today&apos;s activity</span>
               </div>
             </div>
             {/* Goals Not Submitted */}

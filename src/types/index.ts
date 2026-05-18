@@ -139,7 +139,11 @@ export type GoalDistribution = {
 };
 
 export type ManagerEffectiveness = {
-  manager: Profile;
+  manager?: Profile;
+  first_name?: string;
+  last_name?: string;
+  manager_id?: string;
   check_in_completion_rate: number;
-  avg_team_score: number;
+  avg_team_score?: number;
+  teamSize?: number;
 };
