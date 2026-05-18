@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
+import { sendEscalationResolvedEmail } from '@/emails/send';
 
 export async function updateEscalationRule(ruleId: string, formData: FormData): Promise<ActionResult<void>> {
   try {
@@ -40,12 +41,40 @@ export async function resolveEscalation(escalationId: string): Promise<ActionRes
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Not authenticated');
 
+    // Get escalation details first
+    const { data: escalation } = await supabase
+      .from('escalations')
+      .select('*, target_user:profiles!escalations_target_user_id_fkey(first_name, last_name), escalated_to:profiles!escalations_escalated_to_id_fkey(first_name, last_name, email)')
+      .eq('id', escalationId)
+      .single();
+
     const { error } = await supabase
       .from('escalations')
       .update({ resolved_at: new Date().toISOString() })
       .eq('id', escalationId);
 
     if (error) throw error;
+
+    // Send resolution email to the escalated person
+    if (escalation?.escalated_to?.email) {
+      const adminProfile = await supabase
+        .from('profiles')
+        .select('first_name, last_name')
+        .eq('id', user.id)
+        .single();
+
+      await sendEscalationResolvedEmail({
+        to: escalation.escalated_to.email,
+        recipientName: `${escalation.escalated_to.first_name} ${escalation.escalated_to.last_name}`,
+        escalationType: escalation.type,
+        targetEmployee: escalation.target_user 
+          ? `${escalation.target_user.first_name} ${escalation.target_user.last_name}`
+          : 'Employee',
+        resolvedBy: adminProfile?.data 
+          ? `${adminProfile.data.first_name} ${adminProfile.data.last_name}` 
+          : 'Admin',
+      });
+    }
 
     revalidatePath('/admin/escalations');
     revalidatePath('/manager');
@@ -57,18 +86,20 @@ export async function resolveEscalation(escalationId: string): Promise<ActionRes
 
 export async function triggerEscalationCheck(): Promise<ActionResult<{ created: number }>> {
   try {
-    // Requires Admin client (bypasses RLS) because this will be run by a cron job or admin
-    const supabaseAdmin = createAdminClient();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/cron/escalation`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.CRON_SECRET}`,
+      },
+    });
+
+    const result = await response.json();
     
-    // In a real system, we would:
-    // 1. Fetch active cycles and rules
-    // 2. Run complex Postgres queries to find violations
-    // 3. Insert escalations
-    // 4. Send emails via Resend
-    
-    // For this demo mock-up, we return 0.
-    
-    return { success: true, data: { created: 0 } };
+    if (result.success) {
+      return { success: true, data: { created: result.created || 0 } };
+    } else {
+      throw new Error(result.error || 'Cron failed');
+    }
   } catch (error) {
     return handleActionError(error);
   }

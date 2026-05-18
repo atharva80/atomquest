@@ -15,11 +15,34 @@ export default async function AdminDashboard() {
   const { count: escalations } = await supabase.from('escalations').select('*', { count: 'exact', head: true }).is('resolved_at', null);
   const { count: auditEvents } = await supabase.from('audit_logs').select('*', { count: 'exact', head: true });
 
+  // Escalation stats
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayStr = today.toISOString();
+
+  const { count: resolvedToday } = await supabase
+    .from('escalations')
+    .select('*', { count: 'exact', head: true })
+    .gte('resolved_at', todayStr);
+
+  const { data: escalationsByType } = await supabase
+    .from('escalations')
+    .select('type')
+    .is('resolved_at', null);
+
+  const goalNotSubmitted = escalationsByType?.filter(e => e.type === 'goal_not_submitted').length || 0;
+  const goalNotApproved = escalationsByType?.filter(e => e.type === 'goal_not_approved').length || 0;
+  const checkinNotCompleted = escalationsByType?.filter(e => e.type === 'checkin_not_completed').length || 0;
+
   const stats = {
     totalUsers: totalUsers || 0,
     activeCycles: activeCycles || 0,
     escalations: escalations || 0,
-    auditEvents: auditEvents || 0
+    auditEvents: auditEvents || 0,
+    resolvedToday: resolvedToday || 0,
+    goalNotSubmitted,
+    goalNotApproved,
+    checkinNotCompleted
   };
 
   const quickLinks = [
@@ -119,6 +142,86 @@ export default async function AdminDashboard() {
           </div>
         </div>
       </div>
+      {/* Escalation Breakdown */}
+      {stats.escalations > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-section-heading text-section-heading text-zinc-900">Escalation Breakdown</h3>
+            <Link 
+              href="/admin/escalations" 
+              className="text-sm text-zinc-600 hover:text-zinc-900 flex items-center gap-1"
+            >
+              View all <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Resolved Today */}
+            <div className="bg-white border border-zinc-200 rounded-xl p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="font-section-label text-section-label uppercase tracking-widest text-zinc-500">
+                  Resolved Today
+                </span>
+                <span className="material-symbols-outlined text-zinc-400 text-[16px]">check_circle</span>
+              </div>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-semibold tabular-nums text-zinc-950">{stats.resolvedToday}</span>
+              </div>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                <span className="font-caption text-caption text-zinc-500">Today's activity</span>
+              </div>
+            </div>
+            {/* Goals Not Submitted */}
+            <div className="bg-white border border-zinc-200 rounded-xl p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="font-section-label text-section-label uppercase tracking-widest text-zinc-500">
+                  Goal Not Submitted
+                </span>
+                <span className="material-symbols-outlined text-zinc-400 text-[16px]">flag</span>
+              </div>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-semibold tabular-nums text-zinc-950">{stats.goalNotSubmitted}</span>
+              </div>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
+                <span className="font-caption text-caption text-zinc-500">Pending submission</span>
+              </div>
+            </div>
+            {/* Goals Not Approved */}
+            <div className="bg-white border border-zinc-200 rounded-xl p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="font-section-label text-section-label uppercase tracking-widest text-zinc-500">
+                  Goal Not Approved
+                </span>
+                <span className="material-symbols-outlined text-zinc-400 text-[16px]">rule</span>
+              </div>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-semibold tabular-nums text-zinc-950">{stats.goalNotApproved}</span>
+              </div>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                <span className="font-caption text-caption text-zinc-500">Awaiting manager</span>
+              </div>
+            </div>
+            {/* Check-in Not Completed */}
+            <div className="bg-white border border-zinc-200 rounded-xl p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <span className="font-section-label text-section-label uppercase tracking-widest text-zinc-500">
+                  Check-in Pending
+                </span>
+                <span className="material-symbols-outlined text-zinc-400 text-[16px]">fact_check</span>
+              </div>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-2xl font-semibold tabular-nums text-zinc-950">{stats.checkinNotCompleted}</span>
+              </div>
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>
+                <span className="font-caption text-caption text-zinc-500">Quarterly check-in</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Quick Links / Modules Grid */}
       <div className="mb-8">
         <h3 className="font-section-heading text-section-heading text-zinc-900 mb-4">Management Modules</h3>

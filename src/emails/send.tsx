@@ -4,6 +4,8 @@ import { GoalSubmittedEmail } from './templates/goal-submitted';
 import { GoalApprovedEmail } from './templates/goal-approved';
 import { GoalReturnedEmail } from './templates/goal-returned';
 import { CheckinReminderEmail } from './templates/checkin-reminder';
+import { EscalationAlertEmail } from './templates/escalation-alert';
+import { EscalationResolvedEmail } from './templates/escalation-resolved';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM = process.env.EMAIL_FROM || 'AtomQuest <notifications@atomquest.demo>';
@@ -90,11 +92,37 @@ export async function sendCheckinReminderEmail(params: {
 
 export async function sendEscalationAlertEmail(params: {
   to: string;
+  recipientName: string;
   escalationType: string;
   targetEmployee: string;
   daysPending: number;
+  cycleName?: string;
+  escalationLevel: number;
+  actionLink: string;
 }) {
-  const subject = `Escalation: ${params.escalationType.replace(/_/g, ' ')} for ${params.targetEmployee}`;
-  const message = `[Email Stub] TO: ${params.to} | SUBJECT: ${subject} — ${params.targetEmployee} has ${params.daysPending} days pending`;
-  console.log(message);
+  const subject = `⚠️ Escalation Alert: ${params.escalationType.replace(/_/g, ' ')} - ${params.targetEmployee}`;
+  const html = await render(
+    <EscalationAlertEmail
+      {...params}
+      appUrl={APP_URL}
+    />
+  );
+  await send(params.to, subject, html);
+}
+
+export async function sendEscalationResolvedEmail(params: {
+  to: string;
+  recipientName: string;
+  escalationType: string;
+  targetEmployee: string;
+  resolvedBy: string;
+}) {
+  const subject = `✅ Escalation Resolved: ${params.escalationType.replace(/_/g, ' ')}`;
+  const html = await render(
+    <EscalationResolvedEmail
+      {...params}
+      appUrl={APP_URL}
+    />
+  );
+  await send(params.to, subject, html);
 }
