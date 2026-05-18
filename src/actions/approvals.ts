@@ -85,21 +85,43 @@ export async function approveOrReturnGoalSheet(formData: ApprovalActionInput): P
         .eq('profile_id', parsedData.employee_id)
         .eq('cycle_id', parsedData.cycle_id);
 
+      // Insert approved record
+      await supabase.from('approvals').insert({
+        profile_id: parsedData.employee_id,
+        manager_id: user.id,
+        cycle_id: parsedData.cycle_id,
+        action: 'approved',
+        comment: parsedData.comment
+      });
+
+      // 3. Auto-lock approved goals
+      await supabase.from('goals').update({ status: 'locked' })
+        .eq('profile_id', parsedData.employee_id)
+        .eq('cycle_id', parsedData.cycle_id);
+
+      // Insert locked record
+      await supabase.from('approvals').insert({
+        profile_id: parsedData.employee_id,
+        manager_id: user.id,
+        cycle_id: parsedData.cycle_id,
+        action: 'locked'
+      });
+
     } else if (parsedData.action === 'returned') {
       // Update status to returned
       await supabase.from('goals').update({ status: 'returned' })
         .eq('profile_id', parsedData.employee_id)
         .eq('cycle_id', parsedData.cycle_id);
-    }
 
-    // Insert approval record
-    await supabase.from('approvals').insert({
-      profile_id: parsedData.employee_id,
-      manager_id: user.id,
-      cycle_id: parsedData.cycle_id,
-      action: parsedData.action,
-      comment: parsedData.comment
-    });
+      // Insert returned record
+      await supabase.from('approvals').insert({
+        profile_id: parsedData.employee_id,
+        manager_id: user.id,
+        cycle_id: parsedData.cycle_id,
+        action: parsedData.action,
+        comment: parsedData.comment
+      });
+    }
 
     revalidatePath('/manager/approvals');
     return { success: true, data: undefined };
