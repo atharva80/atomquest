@@ -6,6 +6,8 @@ import { NAV_ITEMS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import type { UserRole } from '@/types';
 
+import { signOut } from '@/actions/auth';
+
 interface SidebarProps {
   role: UserRole;
   collapsed?: boolean;
@@ -15,6 +17,17 @@ interface SidebarProps {
 export function Sidebar({ role, collapsed: initialCollapsed = false, className }: SidebarProps) {
   const pathname = usePathname();
   const navItems = NAV_ITEMS[role] || [];
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (e) {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      window.location.href = '/login';
+    }
+  };
 
   return (
     <aside className={cn("w-[240px] flex-shrink-0 bg-zinc-50 border-r border-zinc-200 flex flex-col h-full py-4 relative z-40 hidden md:flex", className)}>
@@ -58,12 +71,14 @@ export function Sidebar({ role, collapsed: initialCollapsed = false, className }
             <span className="material-symbols-outlined text-[20px]">help</span>
             <span className="text-[14px] leading-[20px] font-medium">Help Center</span>
           </a>
-          <form method="POST" action="/api/auth/signout" className="w-full">
-            <button type="submit" className="flex w-full items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md">
-              <span className="material-symbols-outlined text-[20px]">logout</span>
-              <span className="text-[14px] leading-[20px] font-medium">Sign Out</span>
-            </button>
-          </form>
+          <button 
+            type="button" 
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-3 px-3 py-2 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all duration-200 rounded-md text-left"
+          >
+            <span className="material-symbols-outlined text-[20px]">logout</span>
+            <span className="text-[14px] leading-[20px] font-medium">Sign Out</span>
+          </button>
         </div>
       </div>
     </aside>

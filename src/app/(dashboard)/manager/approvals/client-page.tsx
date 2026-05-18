@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { Goal, Profile } from '@/types';
 import { EmptyState } from '@/components/shared/empty-state';
-import { FileCheck } from 'lucide-react';
+import { FileCheck, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { approveOrReturnGoalSheet } from '@/actions/approvals';
+import { useRouter } from 'next/navigation';
 
 interface ApprovalRequest {
   profile: Profile;
@@ -17,6 +20,40 @@ interface ApprovalsClientPageProps {
 
 export default function ApprovalsClientPage({ approvalRequests }: ApprovalsClientPageProps) {
   const [selectedRequest, setSelectedRequest] = useState<ApprovalRequest | null>(approvalRequests.length > 0 ? approvalRequests[0] : null);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleAction = async (action: 'approved' | 'returned') => {
+    if (!selectedRequest) return;
+    const cycleId = selectedRequest.goals[0]?.cycle_id;
+    if (!cycleId) {
+      toast.error('Could not find cycle ID for goal sheet');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await approveOrReturnGoalSheet({
+        employee_id: selectedRequest.profile.id,
+        cycle_id: cycleId,
+        action,
+        comment: action === 'returned' ? 'Returned by manager for adjustments.' : 'Approved.',
+      });
+
+      if (!res.success) {
+        toast.error(res.error || `Failed to ${action} goal sheet`);
+      } else {
+        toast.success(`Goal sheet successfully ${action}`);
+        router.refresh();
+        const remaining = approvalRequests.filter(r => r.profile.id !== selectedRequest.profile.id);
+        setSelectedRequest(remaining.length > 0 ? remaining[0] : null);
+      }
+    } catch (err) {
+      toast.error('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (approvalRequests.length === 0) {
     return (
@@ -152,11 +189,20 @@ export default function ApprovalsClientPage({ approvalRequests }: ApprovalsClien
             </div>
             {/* Footer Actions */}
             <div className="p-4 border-t border-zinc-200 bg-zinc-50 flex items-center justify-end gap-3 rounded-b-xl animate-slide-right">
-              <button className="px-4 py-2 border border-zinc-200 rounded-md bg-white text-error font-table-cell-primary text-table-cell-primary hover:bg-zinc-50 transition-colors">
+              <button 
+                onClick={() => handleAction('returned')}
+                disabled={loading}
+                className="px-4 py-2 border border-zinc-200 rounded-md bg-white text-error font-table-cell-primary text-table-cell-primary hover:bg-zinc-50 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 Return for Edits
               </button>
-              <button className="px-4 py-2 bg-zinc-900 text-white rounded-md font-table-cell-primary text-table-cell-primary hover:bg-zinc-800 transition-colors flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px]">check</span>
+              <button 
+                onClick={() => handleAction('approved')}
+                disabled={loading}
+                className="px-4 py-2 bg-zinc-900 text-white rounded-md font-table-cell-primary text-table-cell-primary hover:bg-zinc-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <span className="material-symbols-outlined text-[18px]">check</span>}
                 Approve Goals
               </button>
             </div>

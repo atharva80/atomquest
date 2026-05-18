@@ -1,171 +1,131 @@
 import { createClient } from '@/lib/supabase/server';
+import { getAuditLogs } from '@/queries/audit';
 import Link from 'next/link';
-import { getMyGoals } from '@/queries/goals';
-import { getActiveCycle } from '@/queries/cycles';
-import { calculateProgressScore } from '@/lib/utils';
+import { redirect } from 'next/navigation';
 
-export const metadata = { title: 'Performance Audit — AtomQuest' };
+export const metadata = { title: 'System Audit Trail — AtomQuest' };
 
 export default async function AuditPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div>Not logged in</div>;
+    redirect('/login');
   }
 
+  // Verify that the user is an admin
   const { data: profile } = await supabase
     .from('profiles')
-    .select('*, department:department_id(name)')
+    .select('role')
     .eq('id', user.id)
     .single();
 
-  const cycle = await getActiveCycle();
-  const goals = cycle ? await getMyGoals(cycle.id) : [];
+  if (profile?.role !== 'admin') {
+    redirect('/');
+  }
 
-  let overallScore = 0;
-  const chartData = goals.map(g => {
-    let score = 0;
-    if (g.quarterly_checkins && g.quarterly_checkins.length > 0) {
-      const latest = g.quarterly_checkins[g.quarterly_checkins.length - 1];
-      score = calculateProgressScore(g.uom_type, g.target || 0, latest.achievement);
-    }
-    overallScore += score * (g.weightage / 100);
-    return {
-      name: g.title.substring(0, 20) + '...',
-      "Score (%)": Math.round(score * 100)
-    };
-  });
-
-  const performanceHistory = [
-    { quarter: "Q1 '23", score: 85 },
-    { quarter: "Q2 '23", score: 92 },
-    { quarter: "Q3 '23 (Current)", score: 97.6 },
-  ];
+  // Fetch all audit logs (page size 100 for a detailed log screen)
+  const { data: logs, count } = await getAuditLogs({ pageSize: 100 });
 
   return (
-    <main className="flex-1 p-page-margin max-w-5xl w-full mx-auto">
-      <Link className="inline-flex items-center gap-1 text-zinc-500 hover:text-zinc-900 transition-colors font-body-sm text-body-sm mb-6" href="#">
-        <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_back</span>
-        Back to My Team Directory
-      </Link>
-      <div className="flex items-end justify-between mb-8 pb-6 border-b border-zinc-200">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-zinc-100 rounded-full border border-zinc-200 flex items-center justify-center">
-            <span className="text-xl font-medium text-zinc-700 tracking-tight">
-              {profile?.first_name?.[0]}{profile?.last_name?.[0]}
-            </span>
-          </div>
-          <div>
-            <h2 className="font-page-title text-page-title font-semibold text-zinc-900 mb-1">
-              {profile?.first_name} {profile?.last_name}
-            </h2>
-            <div className="flex items-center gap-2">
-              <span className="font-body-sm text-body-sm text-zinc-500">{profile?.department?.name}</span>
-            </div>
-          </div>
+    <main className="flex-1 p-page-margin max-w-6xl w-full mx-auto animate-fade-in">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 pb-6 border-b border-zinc-200">
+        <div>
+          <h1 className="font-page-title text-page-title font-semibold text-zinc-900 mb-1">
+            System Audit Trail
+          </h1>
+          <p className="font-body-sm text-body-sm text-zinc-500">
+            Real-time security log and action history of all goal setting, approvals, and performance events.
+          </p>
         </div>
-        <div className="text-right">
-          <div className="font-section-label text-section-label text-zinc-500 uppercase tracking-widest mb-1">
-            Q1 Aggregate Score
-          </div>
-          <div className="flex items-center justify-end gap-2">
-            <span className="w-2 h-2 rounded-full bg-status-on-track"></span>
-            <span className="font-data-value-lg text-data-value-lg tabular-nums text-zinc-900">
-              {Math.round(overallScore * 100)}%
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="font-badge-label text-badge-label bg-zinc-100 text-zinc-700 border border-zinc-200 px-3 py-1.5 rounded-md tabular-nums">
+            Total Logs: {count}
+          </span>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-white border border-zinc-200 rounded-lg p-card-padding">
-          <h3 className="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-6">
-            CUMULATIVE PERFORMANCE HISTORY
-          </h3>
-          <div className="h-64 flex items-end gap-8 pb-8 pt-4 px-4 border-b border-zinc-200 relative">
-            {performanceHistory.map((item, i) => (
-              <div key={item.quarter} className="flex-1 flex flex-col justify-end items-center h-full group relative">
-                {/* Tooltip */}
-                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 bg-zinc-900 text-white font-caption text-caption px-2 py-1 rounded transition-opacity">
-                  {item.score}%
-                </div>
-                {/* Bar */}
-                <div 
-                  className="w-16 bg-zinc-800 rounded-t-sm transition-all duration-500 group-hover:bg-zinc-900" 
-                  style={{ height: `${item.score}%` }}
-                ></div>
-                {/* Label */}
-                <div className="absolute -bottom-7 font-caption text-caption text-zinc-500">
-                  {item.quarter}
-                </div>
-              </div>
-            ))}
+
+      <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden">
+        {logs.length === 0 ? (
+          <div className="p-12 text-center text-zinc-500">
+            <span className="material-symbols-outlined text-4xl text-zinc-300 mb-2">history</span>
+            <p className="font-body-sm text-body-sm font-medium">No audit logs recorded yet.</p>
           </div>
-        </div>
-        <div className="space-y-6">
-          <div className="bg-white border border-zinc-200 rounded-lg p-card-padding">
-            <h3 className="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-4">
-              Current Status
-            </h3>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-zinc-100 border border-zinc-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-status-on-track"></span>
-              <span className="font-badge-label text-badge-label text-zinc-700">Exceeding Expectations</span>
-            </div>
-            <p className="mt-4 font-body-sm text-body-sm text-zinc-600">
-              Consistently delivering above target metrics across primary OKRs for the past 3 quarters.
-            </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-zinc-50 border-b border-zinc-200">
+                  <th className="px-6 py-3 font-table-header text-table-header uppercase text-zinc-500 tracking-wider">
+                    Timestamp
+                  </th>
+                  <th className="px-6 py-3 font-table-header text-table-header uppercase text-zinc-500 tracking-wider">
+                    User / Actor
+                  </th>
+                  <th className="px-6 py-3 font-table-header text-table-header uppercase text-zinc-500 tracking-wider">
+                    Action Event
+                  </th>
+                  <th className="px-6 py-3 font-table-header text-table-header uppercase text-zinc-500 tracking-wider">
+                    Comments / Reason
+                  </th>
+                  <th className="px-6 py-3 font-table-header text-table-header uppercase text-zinc-500 tracking-wider">
+                    Goal Reference ID
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200">
+                {logs.map((log) => {
+                  const timestamp = new Date(log.created_at).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                  });
+
+                  // Format action into nice readable badge
+                  let actionClass = 'bg-zinc-100 text-zinc-700 border-zinc-200';
+                  if (log.action.includes('approve') || log.action.includes('submit')) {
+                    actionClass = 'bg-zinc-900 text-white border-zinc-900';
+                  } else if (log.action.includes('return') || log.action.includes('reject')) {
+                    actionClass = 'bg-zinc-100 text-red-700 border-red-200';
+                  }
+
+                  return (
+                    <tr key={log.id} className="hover:bg-zinc-50/50 transition-colors">
+                      <td className="px-6 py-4 font-caption text-caption text-zinc-500 whitespace-nowrap">
+                        {timestamp}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center border border-zinc-200">
+                            <span className="text-[10px] font-medium text-zinc-600">
+                              {log.profile?.first_name?.[0]}{log.profile?.last_name?.[0]}
+                            </span>
+                          </div>
+                          <span className="font-table-cell-primary text-table-cell-primary text-zinc-900">
+                            {log.profile?.first_name} {log.profile?.last_name}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border uppercase tracking-wider ${actionClass}`}>
+                          {log.action.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-body-sm text-body-sm text-zinc-600 max-w-xs truncate">
+                        {log.reason || <span className="text-zinc-400 italic">No description provided</span>}
+                      </td>
+                      <td className="px-6 py-4 font-caption text-caption text-zinc-400 font-mono whitespace-nowrap">
+                        {log.goal_id ? log.goal_id.slice(0, 8) + '...' : <span className="text-zinc-300">—</span>}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-          <div className="bg-white border border-zinc-200 rounded-lg p-card-padding">
-            <h3 className="font-section-label text-section-label tracking-widest uppercase text-zinc-500 mb-4">
-              Key Strengths
-            </h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-zinc-400" style={{ fontSize: '16px', marginTop: '2px' }}>check</span>
-                <span className="font-body-sm text-body-sm text-zinc-700">Cross-functional collaboration</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-zinc-400" style={{ fontSize: '16px', marginTop: '2px' }}>check</span>
-                <span className="font-body-sm text-body-sm text-zinc-700">System design documentation</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="material-symbols-outlined text-zinc-400" style={{ fontSize: '16px', marginTop: '2px' }}>check</span>
-                <span className="font-body-sm text-body-sm text-zinc-700">Mentoring junior staff</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div className="mt-6 bg-white border border-zinc-200 rounded-lg overflow-hidden">
-        <div className="px-card-padding py-4 border-b border-zinc-200 bg-zinc-50/50 flex justify-between items-center">
-          <h3 className="font-section-heading text-section-heading font-medium text-zinc-900">Q3 Active Goals</h3>
-          <button className="text-xs font-medium text-zinc-500 hover:text-zinc-900 transition-colors">View All</button>
-        </div>
-        <div className="divide-y divide-zinc-200">
-          {goals.map(goal => {
-            const score = (goal.quarterly_checkins && goal.quarterly_checkins.length > 0)
-              ? calculateProgressScore(goal.uom_type, goal.target || 0, goal.quarterly_checkins[goal.quarterly_checkins.length - 1].achievement)
-              : 0;
-            return (
-              <div key={goal.id} className="p-card-padding hover:bg-zinc-50/50 transition-colors">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="font-table-cell-primary text-table-cell-primary text-zinc-900">{goal.title}</h4>
-                    <p className="font-caption text-caption text-zinc-500 mt-1">{goal.description}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-table-cell-primary text-table-cell-primary tabular-nums text-zinc-900">
-                      {Math.round(score * 100)}%
-                    </div>
-                  </div>
-                </div>
-                <div className="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-status-on-track h-full rounded-full" style={{ width: `${score * 100}%` }}></div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        )}
       </div>
     </main>
   );

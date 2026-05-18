@@ -30,8 +30,8 @@ test.describe('Multi-User Workflow & Backend Enforcement', () => {
       // No specific check here without DB-to-UI mapping, but we verify page loads
       await expect(page.locator('h1, h2').first()).toContainText('My Goals');
 
-      // Sign out via form POST
-      await page.locator('form[action="/api/auth/signout"] button').click();
+      // Sign out via standard button
+      await page.click('button:has-text("Sign Out")');
       await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
     });
   }
@@ -87,18 +87,16 @@ test.describe('Multi-User Workflow & Backend Enforcement', () => {
     await page.click('button:has(span:text-is("Manager"))');
     await page.goto('/manager/approvals');
 
-    const approvalCards = page.locator('div.bg-white.border-zinc-200');
-    if (await approvalCards.count() > 0) {
-      const firstCard = approvalCards.first();
-      const employeeName = await firstCard.locator('h3').first().textContent();
+    const requestCards = page.locator('div.cursor-pointer', { hasText: 'Goals' });
+    if (await requestCards.count() > 0) {
+      const firstCard = requestCards.first();
+      await firstCard.click();
 
-      await firstCard.locator('button:has-text("Approve")').click();
-      await page.click('button:has-text("Confirm Approval")');
+      const approveBtn = page.locator('button:has-text("Approve Goals")').first();
+      await expect(approveBtn).toBeVisible({ timeout: 10000 });
+      await approveBtn.click();
 
-      await expect(page.locator('[data-sonner-toast]')).toContainText('approved');
-
-      // 2. Verify state change by logging in as that employee (simulated via name)
-      // Note: In real E2E we'd use a specific ID, but here we just confirm manager success
+      await expect(page.locator('[data-sonner-toast]')).toContainText('approved', { timeout: 15000 });
     }
   });
 

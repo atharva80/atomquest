@@ -1,0 +1,236 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: multi-user-logic.spec.ts >> Multi-User Workflow & Backend Enforcement >> Login Isolation: Kevin Malone should see only their data
+- Location: tests/multi-user-logic.spec.ts:17:9
+
+# Error details
+
+```
+Test timeout of 60000ms exceeded.
+```
+
+```
+Error: locator.click: Test timeout of 60000ms exceeded.
+Call log:
+  - waiting for locator('form[action="/api/auth/signout"] button')
+
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - img "Orbit Logo" [ref=e6]
+      - navigation [ref=e7]:
+        - link "dashboard Dashboard" [ref=e8] [cursor=pointer]:
+          - /url: /employee
+          - generic [ref=e9]: dashboard
+          - generic [ref=e10]: Dashboard
+        - link "target My Goals" [ref=e11] [cursor=pointer]:
+          - /url: /employee/goals
+          - generic [ref=e12]: target
+          - generic [ref=e13]: My Goals
+        - link "fact_check Check-ins" [ref=e14] [cursor=pointer]:
+          - /url: /employee/check-ins
+          - generic [ref=e15]: fact_check
+          - generic [ref=e16]: Check-ins
+      - generic [ref=e17]:
+        - link "add Create New Goal" [ref=e18] [cursor=pointer]:
+          - /url: /employee/goals/new
+          - generic [ref=e19]: add
+          - text: Create New Goal
+        - generic [ref=e20]:
+          - link "help Help Center" [ref=e21] [cursor=pointer]:
+            - /url: "#"
+            - generic [ref=e22]: help
+            - generic [ref=e23]: Help Center
+          - button "logout Sign Out" [ref=e24] [cursor=pointer]:
+            - generic [ref=e25]: logout
+            - generic [ref=e26]: Sign Out
+    - generic [ref=e27]:
+      - banner [ref=e28]:
+        - navigation [ref=e30]:
+          - generic [ref=e31]: FY 2025-26
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: search
+            - textbox "Search goals, users..." [ref=e35]
+          - generic [ref=e36]:
+            - button "notifications" [ref=e37] [cursor=pointer]:
+              - generic [ref=e38]: notifications
+            - button "settings" [ref=e40] [cursor=pointer]:
+              - generic [ref=e41]: settings
+          - button "KM" [ref=e43] [cursor=pointer]:
+            - generic [ref=e44]: KM
+      - main [ref=e45]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - heading "My Goals" [level=2] [ref=e51]
+              - paragraph [ref=e52]: FY 2025-26 — Define and track your operational targets.
+            - generic [ref=e53]:
+              - button "Submit for Approval" [disabled] [ref=e55]
+              - link "add Add Goal" [ref=e56] [cursor=pointer]:
+                - /url: /employee/goals/new
+                - generic [ref=e57]: add
+                - text: Add Goal
+          - generic [ref=e58]:
+            - generic [ref=e59]: target
+            - heading "No goals created yet" [level=3] [ref=e60]
+            - paragraph [ref=e61]: Start defining your objectives for this cycle. You can add up to 8 goals, and their combined weightage must equal exactly 100%.
+            - link "add Create Your First Goal" [ref=e63] [cursor=pointer]:
+              - /url: /employee/goals/new
+              - generic [ref=e64]: add
+              - text: Create Your First Goal
+      - button [ref=e66] [cursor=pointer]:
+        - generic [ref=e68]:
+          - img [ref=e69]
+          - img [ref=e71]
+  - region "Notifications alt+T"
+  - alert [ref=e73]
+```
+
+# Test source
+
+```ts
+  1   | import { test, expect } from '@playwright/test';
+  2   | 
+  3   | /**
+  4   |  * Backend Business Logic & Multi-User Workflow Tests
+  5   |  * Verifies that the system enforces rules correctly across different user roles and edge cases.
+  6   |  */
+  7   | test.describe('Multi-User Workflow & Backend Enforcement', () => {
+  8   | 
+  9   |   // Test Case 1: Multiple Employee Logins & Isolation
+  10  |   const employees = [
+  11  |     { email: 'dev1@atomberg.com', name: 'Dwight Schrute' },
+  12  |     { email: 'dev2@atomberg.com', name: 'Angela Martin' },
+  13  |     { email: 'dev3@atomberg.com', name: 'Kevin Malone' },
+  14  |   ];
+  15  | 
+  16  |   for (const employee of employees) {
+  17  |     test(`Login Isolation: ${employee.name} should see only their data`, async ({ page }) => {
+  18  |       await page.goto('/login');
+  19  |       await page.fill('input[id="email"]', employee.email);
+  20  |       await page.fill('input[id="password"]', 'password123');
+  21  |       await page.click('button[type="submit"]');
+  22  |       // Wait for the demo login button and session to establish
+  23  |       await expect(page).toHaveURL(/\/employee/, { timeout: 15000 });
+  24  |       
+  25  |       // Verify we are on the employee dashboard
+  26  |       await expect(page.locator('h1, h2').first()).toContainText(/Welcome back|Dashboard/i);
+  27  | 
+  28  |       // Verify that goals are specific to this employee
+  29  |       await page.goto('/employee/goals');
+  30  |       // No specific check here without DB-to-UI mapping, but we verify page loads
+  31  |       await expect(page.locator('h1, h2').first()).toContainText('My Goals');
+  32  | 
+  33  |       // Sign out via form POST
+> 34  |       await page.locator('form[action="/api/auth/signout"] button').click();
+      |                                                                     ^ Error: locator.click: Test timeout of 60000ms exceeded.
+  35  |       await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
+  36  |     });
+  37  |   }
+  38  | 
+  39  |   // Test Case 2: Max Goals Limit (Backend enforcement check via UI)
+  40  |   test('Edge Case: Prevent exceeding 8 goals limit', async ({ page }) => {
+  41  |     await page.goto('/login');
+  42  |     await page.click('button:has(span:text-is("Employee"))');
+  43  |     await expect(page).toHaveURL(/\/employee/, { timeout: 15000 });
+  44  |     await page.goto('/employee/goals');
+  45  | 
+  46  |     const goalCards = page.locator('a[href^="/employee/goals/"]:not([href$="/new"])');
+  47  |     const count = await goalCards.count();
+  48  | 
+  49  |     if (count >= 8) {
+  50  |       await page.goto('/employee/goals/new');
+  51  |       // Should be redirected with error message
+  52  |       await expect(page).toHaveURL(/\/employee\/goals\?error=/);
+  53  |       await expect(page.locator('[data-sonner-toast]')).toContainText('Cannot add more goals');
+  54  |     }
+  55  |   });
+  56  | 
+  57  |   // Test Case 3: Weightage Total Integrity
+  58  |   test('Logic: Block submission if total weightage != 100%', async ({ page }) => {
+  59  |     await page.goto('/login');
+  60  |     await page.click('button:has(span:text-is("Employee"))');
+  61  |     await page.goto('/employee/goals');
+  62  | 
+  63  |     // Check total weightage in the header of the goals page
+  64  |     const weightageElement = page.locator('span:has-text("Total Weightage")').locator('xpath=following-sibling::span');
+  65  |     
+  66  |     if (await weightageElement.isVisible()) {
+  67  |       const weightageText = await weightageElement.textContent();
+  68  |       const currentWeightage = parseInt(weightageText?.match(/\d+/)?.[0] || '0');
+  69  |   
+  70  |       if (currentWeightage !== 100) {
+  71  |         const submitBtn = page.locator('button:has-text("Submit Sheet"), button:has-text("Submit for Approval")').first();
+  72  |         if (await submitBtn.isVisible() && !(await submitBtn.isDisabled())) {
+  73  |           await submitBtn.click();
+  74  |           await page.locator('button:has-text("Confirm Submission"), button:has-text("Confirm")').first().click();
+  75  | 
+  76  |           // Backend validation or UI toast should catch this
+  77  |           await expect(page.locator('[data-sonner-toast]')).toContainText(/100%/);
+  78  |         }
+  79  |       }
+  80  |     }
+  81  |   });
+  82  | 
+  83  |   // Test Case 4: Manager Approval Cycle
+  84  |   test('Workflow: Manager approval updates goal status to LOCKED', async ({ page }) => {
+  85  |     // 1. Manager logs in
+  86  |     await page.goto('/login');
+  87  |     await page.click('button:has(span:text-is("Manager"))');
+  88  |     await page.goto('/manager/approvals');
+  89  | 
+  90  |     const approvalCards = page.locator('div.bg-white.border-zinc-200');
+  91  |     if (await approvalCards.count() > 0) {
+  92  |       const firstCard = approvalCards.first();
+  93  |       const employeeName = await firstCard.locator('h3').first().textContent();
+  94  | 
+  95  |       await firstCard.locator('button:has-text("Approve")').click();
+  96  |       await page.click('button:has-text("Confirm Approval")');
+  97  | 
+  98  |       await expect(page.locator('[data-sonner-toast]')).toContainText('approved');
+  99  | 
+  100 |       // 2. Verify state change by logging in as that employee (simulated via name)
+  101 |       // Note: In real E2E we'd use a specific ID, but here we just confirm manager success
+  102 |     }
+  103 |   });
+  104 | 
+  105 |   // Test Case 5: Audit Trail Accuracy
+  106 |   test('Audit: Important actions should be logged', async ({ page }) => {
+  107 |     await page.goto('/login');
+  108 |     await page.click('button:has(span:text-is("Admin"))');
+  109 |     await expect(page).toHaveURL(/\/admin/, { timeout: 10000 });
+  110 |     await page.goto('/admin/audit');
+  111 | 
+  112 |     // Check if audit table exists and has headers at least
+  113 |     await expect(page.locator('text=Aggregate Score').first()).toBeVisible();
+  114 |     
+  115 |     // Give it a moment to load data
+  116 |     await page.waitForTimeout(2000);
+  117 |     
+  118 |     // We expect at least one action if we've run previous tests
+  119 |     const rows = page.locator('div.divide-y > div');
+  120 |     const count = await rows.count();
+  121 |     if (count > 0 && !(await rows.first().textContent())?.includes('No audit logs')) {
+  122 |       const firstRowAction = rows.first();
+  123 |       await expect(firstRowAction).toBeVisible({ timeout: 10000 });
+  124 |       const actionText = await firstRowAction.textContent();
+  125 |       console.log(`Latest audit action: ${actionText}`);
+  126 |     } else {
+  127 |       console.log('Audit trail is currently empty');
+  128 |     }
+  129 |   });
+  130 | });
+  131 | 
+```

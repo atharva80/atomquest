@@ -57,7 +57,7 @@ test.describe('Employee Workflow', () => {
     await page.goto('/employee/goals');
 
     // Find the first goal link
-    const firstGoal = page.locator('a[href^="/employee/goals/"]:not([href$="/new"])').first();
+    const firstGoal = page.locator('a[href^="/employee/goals/"]:not([href$="/new"]):not([href$="/edit"])').first();
     const goalTitle = await firstGoal.textContent();
 
     await firstGoal.click();

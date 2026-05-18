@@ -106,8 +106,8 @@ test.describe('Comprehensive AtomQuest Workflow', () => {
     await page.click('button:has-text("Submit for Approval")');
     await expect(page.locator('text=SUBMITTED').first()).toBeVisible({ timeout: 15000 });
     
-    // Logout via sidebar form POST
-    await page.locator('form[action="/api/auth/signout"] button').click();
+    // Logout via standard sidebar button
+    await page.click('button:has-text("Sign Out")');
     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
 
     // 2. Manager Approval
@@ -118,17 +118,20 @@ test.describe('Comprehensive AtomQuest Workflow', () => {
     
     await expect(page).toHaveURL(/\/manager/, { timeout: 15000 });
     await page.goto('/manager/approvals');
-    const angelaCard = page.locator('main .border-indigo-100', { hasText: employee.name });
-    await expect(angelaCard).toBeVisible();
     
-    // Expand the card first
-    await angelaCard.locator('.cursor-pointer').click();
-    await angelaCard.locator('button:has-text("Approve")').click();
-    await page.click('button:has-text("Confirm")');
-    await expect(page.locator('[data-sonner-toast]')).toContainText('approved');
+    // Click on Angela Martin's pending approval card
+    const requestCard = page.locator('div.cursor-pointer', { hasText: employee.name }).first();
+    await expect(requestCard).toBeVisible({ timeout: 10000 });
+    await requestCard.click();
+    
+    // Click on Approve Goals button directly in the detail view
+    const approveBtn = page.locator('button:has-text("Approve Goals")').first();
+    await expect(approveBtn).toBeVisible({ timeout: 10000 });
+    await approveBtn.click();
+    await expect(page.locator('[data-sonner-toast]')).toContainText('approved', { timeout: 15000 });
 
-    // Logout via sidebar form POST
-    await page.locator('form[action="/api/auth/signout"] button').click();
+    // Logout via standard sidebar button
+    await page.click('button:has-text("Sign Out")');
     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
 
     // 3. Employee Verification
@@ -142,8 +145,8 @@ test.describe('Comprehensive AtomQuest Workflow', () => {
     // The goal should now show 'locked' status badge
     await expect(page.locator('span').filter({ hasText: 'locked' }).first()).toBeVisible();
 
-    // Logout via sidebar form POST
-    await page.locator('form[action="/api/auth/signout"] button').click();
+    // Logout via standard sidebar button
+    await page.click('button:has-text("Sign Out")');
     await expect(page).toHaveURL(/\/login/, { timeout: 10000 });
 
     // 4. Admin Audit Verification

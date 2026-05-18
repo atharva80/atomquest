@@ -41,8 +41,8 @@ test.describe('Authentication Flow', () => {
     await page.click('button:has-text("Employee")');
     await expect(page).toHaveURL(/\/employee/);
     
-    // Click sign out via sidebar form POST
-    await page.locator('form[action="/api/auth/signout"] button').click();
+    // Click sign out via standard button
+    await page.click('button:has-text("Sign Out")');
     
     // Should be back at login
     await expect(page).toHaveURL(/\/login/);

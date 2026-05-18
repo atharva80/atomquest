@@ -7,8 +7,12 @@ import { getInitials } from '@/lib/utils';
 import { RoleSwitcher } from './role-switcher';
 import { Profile, Cycle } from '@/types';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { signOut } from '@/actions/auth';
+import { NAV_ITEMS } from '@/lib/constants';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface TopbarProps {
   profile: Profile;
@@ -17,7 +21,9 @@ interface TopbarProps {
 
 export function Topbar({ profile, cycle }: TopbarProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const supabase = createClient();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -29,17 +35,22 @@ export function Topbar({ profile, cycle }: TopbarProps) {
   };
 
   const handleSignOut = async () => {
-    await fetch('/api/auth/signout', { method: 'POST' });
-    // Also clear supabase client state just in case
-    await supabase.auth.signOut();
-    window.location.href = '/login';
+    try {
+      await signOut();
+    } catch (e) {
+      await supabase.auth.signOut();
+      window.location.href = '/login';
+    }
   };
 
   return (
     <header className="h-[56px] bg-white border-b border-zinc-200 flex justify-between items-center px-6 w-full sticky top-0 z-50 flex-shrink-0">
       <div className="flex items-center gap-6">
         {/* Mobile Menu Button (hidden on md) */}
-        <button className="md:hidden text-zinc-500 hover:text-zinc-900 transition-colors">
+        <button 
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="md:hidden text-zinc-500 hover:text-zinc-900 transition-colors"
+        >
           <span className="material-symbols-outlined">menu</span>
         </button>
         <div className="text-[24px] leading-[32px] font-semibold text-zinc-900 tracking-tight md:hidden">Orbit</div>
@@ -93,7 +104,7 @@ export function Topbar({ profile, cycle }: TopbarProps) {
                     <span className="material-symbols-outlined text-green-500 text-[20px]">check_circle</span>
                     <div>
                       <p className="font-medium text-zinc-900">Goal Approved</p>
-                      <p className="text-zinc-500 mt-0.5">Your manager approved the "Launch Mobile App" goal.</p>
+                      <p className="text-zinc-500 mt-0.5">Your manager approved the &quot;Launch Mobile App&quot; goal.</p>
                     </div>
                   </div>
                 </div>
@@ -144,6 +155,64 @@ export function Topbar({ profile, cycle }: TopbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      {isMobileMenuOpen && (
+        <div role="dialog" className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm md:hidden animate-fade-in" onClick={() => setIsMobileMenuOpen(false)}>
+          <div 
+            className="w-[280px] bg-zinc-50 border-r border-zinc-200 h-full flex flex-col p-6 animate-slide-right relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Logo */}
+            <div className="flex items-center justify-between mb-8">
+              <img alt="Orbit Logo" className="h-10 w-auto" src="/orbit-logo.png" />
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-1 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-zinc-200 flex items-center justify-center"
+              >
+                <span className="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            {/* Nav Items */}
+            <nav className="flex-1 space-y-1">
+              <p className="text-[10px] font-bold text-zinc-400 mb-4 uppercase tracking-widest px-3">Dashboard</p>
+              {NAV_ITEMS[profile.role]?.map((item, idx) => {
+                const isActive = pathname === item.href || (pathname.startsWith(item.href + '/') && item.href !== `/${profile.role}`);
+                return (
+                  <Link
+                    key={idx}
+                    href={item.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 transition-all duration-200 rounded-md font-medium text-[14px]",
+                      isActive
+                        ? "bg-zinc-900 text-white shadow-md shadow-zinc-900/10"
+                        : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-200/50"
+                    )}
+                  >
+                    <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                    {item.title}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Footer with Sign Out */}
+            <div className="pt-4 border-t border-zinc-200">
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleSignOut();
+                }}
+                className="flex items-center gap-3 px-3 py-2.5 text-zinc-600 hover:text-red-600 hover:bg-red-50 rounded-md font-medium text-[14px] w-full transition-all duration-200"
+              >
+                <span className="material-symbols-outlined text-[20px]">logout</span>
+                Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

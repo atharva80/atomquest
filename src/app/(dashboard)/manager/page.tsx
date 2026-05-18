@@ -38,9 +38,9 @@ export default async function ManagerDashboard() {
       {/* Header */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in">
         <div className="flex flex-col gap-2">
-          <h2 className="text-[24px] font-semibold text-zinc-900 tracking-tight leading-[32px]">
+          <h1 className="text-[24px] font-semibold text-zinc-900 tracking-tight leading-[32px]">
             Manager Overview
-          </h2>
+          </h1>
           <p className="text-[14px] text-zinc-500 leading-[20px]">
             {cycle ? `Active cycle: ${cycle.name}` : 'No active cycle found'}
           </p>

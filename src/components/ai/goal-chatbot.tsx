@@ -235,6 +235,7 @@ export function GoalChatbot() {
 
       {/* Floating Sparkly Trigger Button */}
       <button
+        id="chatbot-trigger"
         onClick={() => setIsOpen(!isOpen)}
         className={`p-4 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform active:scale-95 group relative ${
           isOpen ? 'rotate-90 bg-slate-800 hover:bg-slate-900' : 'hover:scale-105'

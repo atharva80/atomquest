@@ -31,10 +31,12 @@ export default async function ApprovalsPage() {
   if (teamIds.length > 0) {
     const { data: submittedGoals, error } = await supabase
       .from('goals')
-      .select('*, profiles:profile_id(id, first_name, last_name, email, department_id, avatar_url)')
+      .select('*, profiles(id, first_name, last_name, email, department_id)')
       .eq('cycle_id', cycle.id)
       .eq('status', 'submitted')
       .in('profile_id', teamIds);
+
+
 
     if (submittedGoals) {
       const employeeMap = new Map();

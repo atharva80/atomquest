@@ -22,6 +22,7 @@ interface GoalFormProps {
   cycleId?: string;
   mode: 'create' | 'edit';
   onSuccess?: () => void;
+  existingGoals?: any[];
 }
 
 export function GoalForm({ thrustAreas, existingGoal, remainingWeightage, cycleId, mode, onSuccess, existingGoals = [] }: GoalFormProps) {

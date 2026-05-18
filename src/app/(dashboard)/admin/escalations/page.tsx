@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server';
 import { ShieldAlert, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 
+import { ForceTriggerButton } from '@/components/admin/force-trigger-button';
+
 export const metadata = { title: 'Escalations — Orbit' };
 
 export default async function EscalationsPage() {
@@ -19,12 +21,7 @@ export default async function EscalationsPage() {
           <h1 className="font-page-title text-page-title font-semibold text-zinc-900">Escalation Log</h1>
           <p className="font-body-sm text-body-sm text-zinc-500">Track process delays requiring HR or Admin intervention</p>
         </div>
-        <form action="/api/cron/escalation" method="POST">
-          <button type="submit" className="bg-white border border-zinc-200 text-zinc-900 hover:bg-zinc-50 px-4 py-2 rounded-md font-table-cell-primary text-table-cell-primary transition-colors flex items-center space-x-2">
-            <span className="material-symbols-outlined text-[18px] text-zinc-500">gpp_maybe</span>
-            <span>Force Trigger Check</span>
-          </button>
-        </form>
+        <ForceTriggerButton />
       </div>
 
       <div className="bg-white border border-zinc-200 rounded-xl overflow-hidden animate-fade-in-up-stagger">
