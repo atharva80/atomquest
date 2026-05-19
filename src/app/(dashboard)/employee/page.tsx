@@ -63,11 +63,12 @@ export default async function EmployeeDashboard() {
         
         <div className="flex gap-3">
           {totalGoals === 0 ? (
-            <Button asChild>
-              <Link href="/employee/goals/new">
-                <Target className="mr-2 h-4 w-4" /> Create Goals
-              </Link>
-            </Button>
+            <Link
+              href="/employee/goals/new"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 text-white text-[14px] font-medium rounded-md hover:bg-zinc-800 transition-colors"
+            >
+              <Target className="h-4 w-4" /> Create Goals
+            </Link>
           ) : (
             <>
               {isLocked && (
