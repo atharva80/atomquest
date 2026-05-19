@@ -339,6 +339,7 @@ export async function submitGoalSheet(cycleId: string): Promise<ActionResult<voi
           to: managerProfile.email,
           managerName: `${managerProfile.first_name} ${managerProfile.last_name}`,
           employeeName: `${employeeProfile.first_name} ${employeeProfile.last_name}`,
+          employeeId: user.id,
           goalCount: goals.length,
           cycleName: cycle.name,
         });

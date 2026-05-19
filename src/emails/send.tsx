@@ -13,16 +13,17 @@ const FROM = process.env.EMAIL_FROM || 'AtomQuest <notifications@atomquest.demo>
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
 async function send(to: string | string[], subject: string, html: string) {
-  // DEV OVERRIDE: Force all emails to the verified Resend testing address
-  const target = 'scrollwithme80@gmail.com';
+  // DEV OVERRIDE: Force all emails to the verified Resend testing address if configured
+  // In a real production environment, we would use the actual `to` address.
+  const target = process.env.NODE_ENV === 'development' ? 'scrollwithme80@gmail.com' : to;
 
   if (!resend) {
     console.log(`[Email Stub] TO: ${target} | SUBJECT: ${subject}`);
     return;
   }
-  const recipients = Array.isArray(to) ? to : [to];
+  const recipients = Array.isArray(target) ? target : [target];
   try {
-    await resend.emails.send({ from: FROM, to: target, subject, html });
+    await resend.emails.send({ from: FROM, to: recipients, subject, html });
   } catch (err) {
     console.error('[Email] Send failed:', err);
   }
@@ -32,6 +33,7 @@ export async function sendGoalSubmittedEmail(params: {
   to: string;
   managerName: string;
   employeeName: string;
+  employeeId: string;
   goalCount: number;
   cycleName: string;
 }) {
@@ -39,7 +41,7 @@ export async function sendGoalSubmittedEmail(params: {
     <GoalSubmittedEmail
       {...params}
       appUrl={APP_URL}
-      approvalLink={`${APP_URL}/manager/approvals`}
+      approvalLink={`${APP_URL}/manager/approvals?employee=${params.employeeId}`}
     />
   );
   await send(params.to, `${params.employeeName} submitted their goal sheet`, html);
@@ -96,6 +98,7 @@ export async function sendCheckinSubmittedEmail(params: {
   to: string;
   managerName: string;
   employeeName: string;
+  employeeId: string;
   quarter: string;
   goalsReviewed: number;
 }) {
@@ -103,7 +106,7 @@ export async function sendCheckinSubmittedEmail(params: {
     <CheckinSubmittedEmail
       {...params}
       appUrl={APP_URL}
-      reviewLink={`${APP_URL}/manager/check-ins`}
+      reviewLink={`${APP_URL}/manager/check-ins?employee=${params.employeeId}`}
     />
   );
   await send(params.to, `${params.employeeName} submitted their ${params.quarter} check-in`, html);

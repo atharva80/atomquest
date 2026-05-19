@@ -128,6 +128,7 @@ export async function submitCheckins(formData: CheckinActionInput): Promise<Acti
           to: managerProfile.email,
           managerName,
           employeeName,
+          employeeId: user.id,
           quarter: parsedData.quarter,
           goalsReviewed: parsedData.checkins.length
         });

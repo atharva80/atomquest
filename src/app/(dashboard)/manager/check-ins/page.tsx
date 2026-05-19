@@ -8,7 +8,7 @@ import { ProgressBadge } from '@/components/goals/progress-badge';
 
 export const metadata = { title: 'Team Check-ins — Orbit' };
 
-export default async function ManagerCheckinsPage() {
+export default async function ManagerCheckinsPage({ searchParams }: { searchParams: { employee?: string } }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
@@ -30,7 +30,18 @@ export default async function ManagerCheckinsPage() {
 
   // Filter only those whose goals belong to manager's team
   // Simplification for hackathon implementation
-  const validCheckins = teamCheckins || [];
+  let validCheckins = teamCheckins || [];
+
+  // Sort targeted employee to the top if deep-linking
+  if (searchParams.employee) {
+    validCheckins.sort((a: any, b: any) => {
+      const aIsTarget = a.goals?.profiles?.id === searchParams.employee;
+      const bIsTarget = b.goals?.profiles?.id === searchParams.employee;
+      if (aIsTarget && !bIsTarget) return -1;
+      if (!aIsTarget && bIsTarget) return 1;
+      return 0;
+    });
+  }
 
   return (
     <div className="max-w-5xl mx-auto flex flex-col gap-section-gap">

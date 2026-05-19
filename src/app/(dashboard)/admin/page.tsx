@@ -53,7 +53,7 @@ export default async function AdminDashboard() {
     { name: 'User Directory', icon: 'manage_accounts', href: '/admin/users' },
     { name: 'Security Policies', icon: 'security', href: '/admin/security' },
     { name: 'Data Export', icon: 'dataset', href: '/admin/export' },
-    { name: 'System Logs', icon: 'list_alt', href: '/admin/logs' },
+    { name: 'System Logs', icon: 'list_alt', href: '/admin/audit' },
     { name: 'API Configuration', icon: 'api', href: '/admin/api' },
   ];
 

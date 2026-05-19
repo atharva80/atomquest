@@ -13,7 +13,7 @@ interface ApprovalRequest {
   submittedAt: string;
 }
 
-export default async function ApprovalsPage() {
+export default async function ApprovalsPage({ searchParams }: { searchParams: { employee?: string } }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
@@ -54,5 +54,5 @@ export default async function ApprovalsPage() {
     }
   }
 
-  return <ApprovalsClientPage approvalRequests={approvalRequests} />;
+  return <ApprovalsClientPage approvalRequests={approvalRequests} defaultEmployeeId={searchParams.employee} />;
 }

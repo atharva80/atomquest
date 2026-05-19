@@ -16,10 +16,13 @@ interface ApprovalRequest {
 
 interface ApprovalsClientPageProps {
   approvalRequests: ApprovalRequest[];
+  defaultEmployeeId?: string;
 }
 
-export default function ApprovalsClientPage({ approvalRequests }: ApprovalsClientPageProps) {
-  const [selectedRequest, setSelectedRequest] = useState<ApprovalRequest | null>(approvalRequests.length > 0 ? approvalRequests[0] : null);
+export default function ApprovalsClientPage({ approvalRequests, defaultEmployeeId }: ApprovalsClientPageProps) {
+  const [selectedRequest, setSelectedRequest] = useState<ApprovalRequest | null>(
+    approvalRequests.find(r => r.profile.id === defaultEmployeeId) || (approvalRequests.length > 0 ? approvalRequests[0] : null)
+  );
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
