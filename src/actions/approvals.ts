@@ -7,6 +7,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { approveGoalSheetSchema, unlockGoalSheetSchema } from '@/schemas/approval';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
@@ -108,6 +109,15 @@ export async function approveOrReturnGoalSheet(formData: ApprovalActionInput): P
         action: 'locked'
       });
 
+      // Audit log - goal sheet approved and locked
+      const adminClient = await createAdminClient();
+      await adminClient.from('audit_logs').insert({
+        profile_id: user.id,
+        goal_id: null,
+        action: 'goal_sheet_approved_and_locked',
+        reason: parsedData.comment || `Goal sheet approved and locked for cycle ${parsedData.cycle_id}`
+      });
+
       // Send approval email to employee
       const { data: employeeProfile } = await supabase
         .from('profiles')
@@ -142,6 +152,15 @@ export async function approveOrReturnGoalSheet(formData: ApprovalActionInput): P
         cycle_id: parsedData.cycle_id,
         action: parsedData.action,
         comment: parsedData.comment
+      });
+
+      // Audit log - goal sheet returned
+      const adminClient = await createAdminClient();
+      await adminClient.from('audit_logs').insert({
+        profile_id: user.id,
+        goal_id: null,
+        action: 'goal_sheet_returned',
+        reason: parsedData.comment || 'Goal sheet returned for revision'
       });
 
       // Send return email to employee
@@ -232,10 +251,14 @@ export async function unlockGoalSheet(formData: FormData): Promise<ActionResult<
       comment: parsedData.reason
     });
 
-    // We can't insert into audit_log from the client using the standard client due to RLS,
-    // so we either use a Postgres trigger (which we don't have for general unlocks, only goal changes)
-    // or we'd use the admin client here. For simplicity, skipping explicit audit insert 
-    // unless admin client is strictly required.
+    // Audit log - goal sheet unlocked
+    const adminClient = await createAdminClient();
+    await adminClient.from('audit_logs').insert({
+      profile_id: user.id,
+      goal_id: null,
+      action: 'goal_sheet_unlocked',
+      reason: parsedData.reason || 'Goal sheet unlocked for modification'
+    });
 
     revalidatePath('/admin/users');
     return { success: true, data: undefined };

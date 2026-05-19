@@ -8,6 +8,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { createGoalSchema, updateGoalSchema, goalSheetSchema } from '@/schemas/goal';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
@@ -292,6 +293,15 @@ export async function submitGoalSheet(cycleId: string): Promise<ActionResult<voi
       .eq('cycle_id', cycleId);
 
     if (updateError) throw updateError;
+
+    // Audit log - goal sheet submitted
+    const adminClient = await createAdminClient();
+    await adminClient.from('audit_logs').insert({
+      profile_id: user.id,
+      goal_id: null,
+      action: 'goal_sheet_submitted',
+      reason: `Goal sheet submitted for cycle ${cycleId}`
+    });
 
     // Fetch user manager
     const { data: profile } = await supabase.from('profiles').select('manager_id').eq('id', user.id).single();

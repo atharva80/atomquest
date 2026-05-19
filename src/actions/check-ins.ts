@@ -7,6 +7,7 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { batchCheckinSchema, managerCommentSchema } from '@/schemas/check-in';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
@@ -94,6 +95,15 @@ export async function submitCheckins(formData: CheckinActionInput): Promise<Acti
     const { error } = await supabase.from('quarterly_checkins').upsert(upserts, { onConflict: 'goal_id,quarter' });
     
     if (error) throw error;
+
+    // Audit log - check-in submitted
+    const adminClient = await createAdminClient();
+    await adminClient.from('audit_logs').insert({
+      profile_id: user.id,
+      goal_id: null,
+      action: 'quarterly_checkin_submitted',
+      reason: `Check-in submitted for ${parsedData.quarter} of cycle ${parsedData.cycle_id}`
+    });
 
     // TODO: Sync to shared goals
     // We would fetch shared_goals where primary_goal_id is IN our checkins, then map the achievements.
