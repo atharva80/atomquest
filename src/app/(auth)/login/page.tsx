@@ -1,16 +1,50 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+// Microsoft logo SVG (official brand colors)
+function MicrosoftLogo({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="10" height="10" fill="#f25022" />
+      <rect x="11" y="0" width="10" height="10" fill="#7fba00" />
+      <rect x="0" y="11" width="10" height="10" fill="#00a4ef" />
+      <rect x="11" y="11" width="10" height="10" fill="#ffb900" />
+    </svg>
+  );
+}
+
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [ssoEnabled, setSsoEnabled] = useState(false);
+  const [ssoLoading, setSsoLoading] = useState(false);
+
+  useEffect(() => {
+    // Show SSO error from callback redirect
+    const ssoError = searchParams.get('sso_error');
+    if (ssoError) {
+      toast.error(`SSO failed: ${decodeURIComponent(ssoError)}`);
+    }
+
+    // Check if Azure SSO is configured and enabled
+    fetch('/api/admin/security')
+      .then(r => r.ok ? r.json() : null)
+      .then(cfg => { if (cfg?.enabled) setSsoEnabled(true); })
+      .catch(() => {});
+  }, []);
+
+  const handleSsoLogin = () => {
+    setSsoLoading(true);
+    window.location.href = '/api/auth/azure/login';
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -219,6 +253,28 @@ export default function LoginPage() {
                 </button>
               </div>
             </form>
+            {/* Microsoft SSO Button — shown only when Azure is configured */}
+            {ssoEnabled && (
+              <>
+                <div className="my-6 flex items-center gap-3">
+                  <div className="flex-grow border-t border-zinc-200" />
+                  <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider">or</span>
+                  <div className="flex-grow border-t border-zinc-200" />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSsoLogin}
+                  disabled={ssoLoading}
+                  className="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-zinc-200 rounded bg-white hover:bg-zinc-50 transition-colors text-[14px] font-medium text-zinc-700 shadow-sm disabled:opacity-60"
+                >
+                  {ssoLoading
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <MicrosoftLogo size={18} />}
+                  Sign in with Microsoft
+                </button>
+              </>
+            )}
+
             {/* Divider */}
             <div className="my-8 flex items-center">
               <div className="flex-grow border-t border-zinc-200"></div>

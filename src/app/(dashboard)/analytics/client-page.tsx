@@ -5,6 +5,7 @@ import { AchievementTrendChart } from '@/components/analytics/achievement-trend'
 import { CompletionHeatmap } from '@/components/analytics/completion-heatmap';
 import { GoalDistributionChart } from '@/components/analytics/goal-distribution';
 import { ManagerEffectivenessTable } from '@/components/analytics/manager-effectiveness';
+import { ExportButton } from '@/components/shared/export-button';
 
 interface Props {
   trendData: any[];
@@ -14,6 +15,8 @@ interface Props {
   departments: string[];
   quarters: string[];
   cycleName: string;
+  userRole?: string;
+  cycleId: string;
 }
 
 const TABS = ['Overview', 'Department Trends', 'Completion Heatmap', 'Manager Metrics'];
@@ -25,9 +28,13 @@ export function AnalyticsClientPage({
   managerData, 
   departments, 
   quarters, 
-  cycleName 
+  cycleName,
+  userRole,
+  cycleId
 }: Props) {
   const [activeTab, setActiveTab] = useState('Overview');
+
+  const canExport = userRole === 'admin' || userRole === 'manager';
 
   const renderContent = () => {
     switch (activeTab) {
@@ -63,11 +70,16 @@ export function AnalyticsClientPage({
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-zinc-950 font-page-title">Corporate Performance Analytics</h2>
-        <p className="text-sm text-zinc-500 font-body-relaxed mt-1">
-          Cycle: {cycleName}
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold text-zinc-950 font-page-title">Corporate Performance Analytics</h2>
+          <p className="text-sm text-zinc-500 font-body-relaxed mt-1">
+            Cycle: {cycleName}
+          </p>
+        </div>
+        {canExport && cycleId && (
+          <ExportButton type="achievements" cycleId={cycleId} label="Export Achievements" />
+        )}
       </div>
       <div className="flex items-center gap-1 border-b border-zinc-200">
         {TABS.map(tab => (

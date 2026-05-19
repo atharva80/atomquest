@@ -2,12 +2,15 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, Metric, Text, Title } from '@tremor/react';
 import { ShieldAlert, Users, History, Activity, Settings, Database, Share2, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import { getActiveCycle } from '@/queries/cycles';
+import { ExportButton } from '@/components/shared/export-button';
 
 export const metadata = { title: 'Admin Dashboard — AtomQuest' };
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const cycle = await getActiveCycle();
 
   // Fetch real stats from Supabase
   const { count: totalUsers } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
@@ -57,11 +60,16 @@ export default async function AdminDashboard() {
   return (
     <div className="max-w-6xl mx-auto flex flex-col min-h-full">
       {/* Page Header */}
-      <div className="flex flex-col gap-1 mb-section-gap">
-        <h2 className="font-page-title text-page-title text-zinc-900 tracking-tight">System Administration</h2>
-        <p className="font-body-sm text-body-sm text-zinc-500">
-          Monitor platform health, user activity, and critical administrative functions.
-        </p>
+      <div className="flex items-center justify-between mb-section-gap">
+        <div className="flex flex-col gap-1">
+          <h2 className="font-page-title text-page-title text-zinc-900 tracking-tight">System Administration</h2>
+          <p className="font-body-sm text-body-sm text-zinc-500">
+            Monitor platform health, user activity, and critical administrative functions.
+          </p>
+        </div>
+        {cycle && (
+          <ExportButton type="achievements" cycleId={cycle.id} label="Export Achievements" />
+        )}
       </div>
       {/* KPI Stat Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-section-gap">

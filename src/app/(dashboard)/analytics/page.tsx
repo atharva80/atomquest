@@ -50,6 +50,8 @@ export default async function AnalyticsPage() {
       departments={departments}
       quarters={quarters}
       cycleName={cycle.name}
+      userRole={profile?.role}
+      cycleId={cycle.id}
     />
   );
 }

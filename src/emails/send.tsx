@@ -4,6 +4,7 @@ import { GoalSubmittedEmail } from './templates/goal-submitted';
 import { GoalApprovedEmail } from './templates/goal-approved';
 import { GoalReturnedEmail } from './templates/goal-returned';
 import { CheckinReminderEmail } from './templates/checkin-reminder';
+import { CheckinSubmittedEmail } from './templates/checkin-submitted';
 import { EscalationAlertEmail } from './templates/escalation-alert';
 import { EscalationResolvedEmail } from './templates/escalation-resolved';
 
@@ -89,6 +90,23 @@ export async function sendCheckinReminderEmail(params: {
     />
   );
   await send(params.to, `Action required: ${params.quarter} check-in due ${params.deadline}`, html);
+}
+
+export async function sendCheckinSubmittedEmail(params: {
+  to: string;
+  managerName: string;
+  employeeName: string;
+  quarter: string;
+  goalsReviewed: number;
+}) {
+  const html = await render(
+    <CheckinSubmittedEmail
+      {...params}
+      appUrl={APP_URL}
+      reviewLink={`${APP_URL}/manager/check-ins`}
+    />
+  );
+  await send(params.to, `${params.employeeName} submitted their ${params.quarter} check-in`, html);
 }
 
 export async function sendEscalationAlertEmail(params: {

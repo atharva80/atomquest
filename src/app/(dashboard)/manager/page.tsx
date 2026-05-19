@@ -5,6 +5,7 @@ import { getTeamMembers } from '@/queries/users';
 import { getManagerStats } from '@/queries/manager';
 import { ManagerStatusChart } from '@/components/dashboard/manager-chart';
 import { StatCard } from '@/components/ui/stat-card';
+import { ExportButton } from '@/components/shared/export-button';
 
 export const metadata = { title: 'Manager Dashboard — Orbit' };
 
@@ -45,6 +46,9 @@ export default async function ManagerDashboard() {
             {cycle ? `Active cycle: ${cycle.name}` : 'No active cycle found'}
           </p>
         </div>
+        {cycle && (
+          <ExportButton type="achievements" cycleId={cycle.id} label="Export Achievements" />
+        )}
       </section>
 
       {/* Metrics */}

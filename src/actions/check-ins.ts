@@ -12,6 +12,7 @@ import { batchCheckinSchema, managerCommentSchema } from '@/schemas/check-in';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
 import { getActiveCycle, getCurrentQuarter } from '@/queries/cycles';
+import { sendCheckinSubmittedEmail } from '@/emails/send';
 
 type CheckinActionInput = FormData | {
   cycle_id: string;
@@ -104,6 +105,34 @@ export async function submitCheckins(formData: CheckinActionInput): Promise<Acti
       action: 'quarterly_checkin_submitted',
       reason: `Check-in submitted for ${parsedData.quarter} of cycle ${parsedData.cycle_id}`
     });
+
+    // Email manager notification
+    const { data: employeeProfile } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, manager_id')
+      .eq('id', user.id)
+      .single();
+
+    if (employeeProfile?.manager_id) {
+      const { data: managerProfile } = await adminClient
+        .from('profiles')
+        .select('first_name, last_name, email')
+        .eq('id', employeeProfile.manager_id)
+        .single();
+
+      if (managerProfile?.email) {
+        const employeeName = `${employeeProfile.first_name} ${employeeProfile.last_name}`;
+        const managerName = `${managerProfile.first_name} ${managerProfile.last_name}`;
+        
+        await sendCheckinSubmittedEmail({
+          to: managerProfile.email,
+          managerName,
+          employeeName,
+          quarter: parsedData.quarter,
+          goalsReviewed: parsedData.checkins.length
+        });
+      }
+    }
 
     // TODO: Sync to shared goals
     // We would fetch shared_goals where primary_goal_id is IN our checkins, then map the achievements.
