@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 import { batchCheckinSchema, managerCommentSchema } from '@/schemas/check-in';
 import { handleActionError, ActionResult } from '@/lib/errors';
 import { revalidatePath } from 'next/cache';
+import { getActiveCycle, getCurrentQuarter } from '@/queries/cycles';
 
 type CheckinActionInput = FormData | {
   cycle_id: string;
@@ -63,8 +64,18 @@ export async function submitCheckins(formData: CheckinActionInput): Promise<Acti
     if (!user) throw new Error('Not authenticated');
 
     const rawData = checkinInputToRaw(formData);
-
     const parsedData = batchCheckinSchema.parse(rawData);
+
+    // Enforce check-in window: must be the currently open quarter
+    const cycle = await getActiveCycle();
+    if (!cycle) throw new Error('No active cycle found');
+    const currentQ = getCurrentQuarter(cycle);
+    if (!currentQ) {
+      throw new Error('No check-in window is currently open. Windows open in July (Q1), October (Q2), January (Q3), and March/April (Q4).');
+    }
+    if (parsedData.quarter !== currentQ) {
+      throw new Error(`You can only submit check-ins for the currently open quarter (${currentQ}).`);
+    }
 
     // Prepare upsert payload
     const upserts = parsedData.checkins.map(c => {

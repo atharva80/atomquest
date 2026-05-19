@@ -44,7 +44,10 @@ export function calculateProgressScore(
   }
   
   if (uomType === UomType.NUMERIC_MAX || uomType === UomType.PERCENTAGE_MAX) {
-    if (achNum === 0) return 1; // Cap at 1.0 (avoid Infinity)
+    // MAX type: lower actual = better (minimize defects, costs, etc.)
+    // target/achievement: if you achieve exactly target → 100%, if you exceed it → less than 100%
+    if (achNum === 0) return 0; // Not started = 0%
+    if (targetNum === 0) return 0;
     const score = targetNum / achNum;
     return Math.min(Math.max(score, 0), 1);
   }
