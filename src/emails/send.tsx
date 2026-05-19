@@ -13,17 +13,15 @@ const FROM = process.env.EMAIL_FROM || 'AtomQuest <notifications@atomquest.demo>
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
 async function send(to: string | string[], subject: string, html: string) {
-  // DEV OVERRIDE: Force all emails to the verified Resend testing address if configured
-  // In a real production environment, we would use the actual `to` address.
-  const target = process.env.NODE_ENV === 'development' ? 'scrollwithme80@gmail.com' : to;
+  // Hardcoded delivery address — all emails go here regardless of actual recipient
+  const target = 'atharva.atomquest@gmail.com';
 
   if (!resend) {
     console.log(`[Email Stub] TO: ${target} | SUBJECT: ${subject}`);
     return;
   }
-  const recipients = Array.isArray(target) ? target : [target];
   try {
-    await resend.emails.send({ from: FROM, to: recipients, subject, html });
+    await resend.emails.send({ from: FROM, to: target, subject, html });
   } catch (err) {
     console.error('[Email] Send failed:', err);
   }

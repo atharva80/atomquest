@@ -9,11 +9,28 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 
 // Define public routes that don't require authentication
-const PUBLIC_ROUTES = ['/login', '/callback', '/api/cron/escalation'];
+const PUBLIC_ROUTES = [
+  '/login',
+  '/callback',
+  '/api/cron/escalation',
+  '/api/cron/checkin-reminders',
+  '/api/auth/azure',
+  '/api/dev/test-emails',
+];
 
 export async function middleware(request: NextRequest) {
-  // 1. Update session and get user
-  const { supabaseResponse, user } = await updateSession(request);
+  // 1. Update session and get user (suppress noisy refresh_token_not_found in console)
+  let supabaseResponse: NextResponse;
+  let user: any;
+  try {
+    const result = await updateSession(request);
+    supabaseResponse = result.supabaseResponse;
+    user = result.user;
+  } catch (e: any) {
+    // Stale/expired refresh token cookie — treat as unauthenticated
+    supabaseResponse = NextResponse.next();
+    user = null;
+  }
   const path = request.nextUrl.pathname;
 
   // 2. Check if route is public

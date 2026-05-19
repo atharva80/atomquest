@@ -35,4 +35,13 @@ next-env.d.ts
 # supabase
 .supabase
 
+# dev scratch files
 /scratch
+*.py
+*.zip
+scratch.js
+scratchpad.md
+test-results
+playwright-report
+after-final-revamp.png
+stitch-frontend
