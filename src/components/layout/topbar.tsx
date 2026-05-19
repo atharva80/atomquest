@@ -53,7 +53,7 @@ export function Topbar({ profile, cycle }: TopbarProps) {
         >
           <span className="material-symbols-outlined">menu</span>
         </button>
-        <div className="text-[24px] leading-[32px] font-semibold text-zinc-900 tracking-tight md:hidden">Orbit</div>
+        <div className="text-[28px] leading-[36px] font-semibold text-zinc-900 tracking-tight md:hidden">Orbit</div>
         
         {/* Left: Breadcrumb / Cycle */}
         <nav className="hidden md:flex text-zinc-900 font-medium text-[14px]">
@@ -164,7 +164,7 @@ export function Topbar({ profile, cycle }: TopbarProps) {
           >
             {/* Logo */}
             <div className="flex items-center justify-between mb-8">
-              <img alt="Orbit Logo" className="h-10 w-auto" src="/orbit-logo.png" />
+              <img alt="Orbit Logo" className="h-14 w-auto" src="/orbit-logo.png" />
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-1 text-zinc-500 hover:text-zinc-900 rounded-full hover:bg-zinc-200 flex items-center justify-center"

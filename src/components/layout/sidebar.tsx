@@ -35,7 +35,7 @@ export function Sidebar({ role, collapsed: initialCollapsed = false, className }
       {/* Header */}
       <div className="px-4 mb-8">
         <div className="flex items-center gap-3 mb-1 mt-2">
-          <img alt="Orbit Logo" className="w-auto h-12 flex-shrink-0" src="/orbit-logo.png" />
+          <img alt="Orbit Logo" className="w-auto h-16 flex-shrink-0" src="/orbit-logo.png" />
         </div>
       </div>
 

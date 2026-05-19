@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { Card, Metric, Text, Title, BarChart } from '@tremor/react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+
 import { Target, CheckCircle2, AlertCircle, Calendar } from 'lucide-react';
 import { getMyGoals } from '@/queries/goals';
 import { getActiveCycle } from '@/queries/cycles';
@@ -71,17 +71,19 @@ export default async function EmployeeDashboard() {
           ) : (
             <>
               {isLocked && (
-                <Button asChild variant="default" className="bg-indigo-600 hover:bg-indigo-700">
-                  <Link href="/employee/check-ins">
-                    <CheckCircle2 className="mr-2 h-4 w-4" /> Submit Check-in
-                  </Link>
-                </Button>
-              )}
-              <Button asChild variant="outline">
-                <Link href="/employee/goals">
-                  <Calendar className="mr-2 h-4 w-4" /> View Goal Sheet
+                <Link
+                  href="/employee/check-ins"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-900 text-white text-[14px] font-medium rounded-md hover:bg-zinc-800 transition-colors"
+                >
+                  <CheckCircle2 className="h-4 w-4" /> Submit Check-in
                 </Link>
-              </Button>
+              )}
+              <Link
+                href="/employee/goals"
+                className="inline-flex items-center gap-2 px-4 py-2 border border-zinc-200 bg-white text-zinc-700 text-[14px] font-medium rounded-md hover:bg-zinc-50 hover:border-zinc-300 transition-colors"
+              >
+                <Calendar className="h-4 w-4" /> View Goal Sheet
+              </Link>
             </>
           )}
         </div>
