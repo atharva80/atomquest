@@ -2,7 +2,7 @@
 
 Built for AtomQuest Hackathon 1.0. A multi-role goal management system for employees, managers, and admins.
 
-**Live:** [atomquest.vercel.app](https://atomquest.vercel.app) &nbsp;|&nbsp; **Stack:** Next.js 14 · Supabase · TypeScript · Tailwind
+**Live:** [atomquest.vercel.app](](https://atomquest-blond.vercel.app/login\)) &nbsp;|&nbsp; **Stack:** Next.js 14 · Supabase · TypeScript · Tailwind
 
 ---
 
